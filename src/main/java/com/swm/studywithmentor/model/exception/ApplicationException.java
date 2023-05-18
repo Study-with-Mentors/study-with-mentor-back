@@ -6,16 +6,19 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ApplicationException extends RuntimeException {
-    private String errorCode;
+    private final String errorCode;
     private Object payload;
+    private final int httpStatusCode;
 
-    public ApplicationException(String errorCode, String message) {
+    public ApplicationException(String errorCode, int httpStatusCode, String message) {
         super(message);
         this.errorCode = errorCode;
+        this.httpStatusCode = httpStatusCode;
     }
 
-    public ApplicationException(String errorCode, String message, Throwable cause) {
+    public ApplicationException(String errorCode, int httpStatusCode, String message, Throwable cause) {
         super(message, cause);
         this.errorCode = errorCode;
+        this.httpStatusCode = httpStatusCode;
     }
 }
