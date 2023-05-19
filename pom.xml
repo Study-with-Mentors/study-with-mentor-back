@@ -45,11 +45,13 @@
             <artifactId>querydsl-apt</artifactId>
             <version>5.0.0</version>
             <scope>provided</scope>
+            <classifier>jakarta</classifier>
         </dependency>
         <dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
             <version>5.0.0</version>
+            <classifier>jakarta</classifier>
         </dependency>
 
         <dependency>
@@ -91,6 +93,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>mssql-jdbc</artifactId>
+            <version>11.2.3.jre17</version>
         </dependency>
     </dependencies>
 
