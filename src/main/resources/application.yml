@@ -1,0 +1,8 @@
+#server
+server.port: 9696
+
+spring:
+  profiles:
+    group:
+      local: common, local
+      deploy: common, deploy
