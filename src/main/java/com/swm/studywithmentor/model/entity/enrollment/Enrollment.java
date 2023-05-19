@@ -1,9 +1,9 @@
 package com.swm.studywithmentor.model.entity.enrollment;
 
-import com.swm.studywithmentor.model.entity.Classes;
+import com.swm.studywithmentor.model.entity.Clazz;
 import com.swm.studywithmentor.model.entity.invoice.Invoice;
 import com.swm.studywithmentor.model.entity.user.User;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -27,7 +27,7 @@ public class Enrollment {
     private User user;
     @ManyToOne
     @JoinColumn(name = "class_id")
-    private Classes classes;
+    private Clazz clazz;
     private Date enrollmentDate;
     @Enumerated(EnumType.ORDINAL)
     private EnrollmentStatus status;

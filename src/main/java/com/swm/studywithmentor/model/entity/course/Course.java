@@ -1,14 +1,14 @@
 package com.swm.studywithmentor.model.entity.course;
 
-import com.swm.studywithmentor.model.entity.Classes;
+import com.swm.studywithmentor.model.entity.Clazz;
 import com.swm.studywithmentor.model.entity.Field;
 import com.swm.studywithmentor.model.entity.user.User;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.util.Set;
 
 @Entity
@@ -37,5 +37,5 @@ public class Course {
     @JoinColumn(name = "user_id")
     private User user;
     @OneToMany(mappedBy = "course")
-    private Set<Classes> classes;
+    private Set<Clazz> clazzes;
 }

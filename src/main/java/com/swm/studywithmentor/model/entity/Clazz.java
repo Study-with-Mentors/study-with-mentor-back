@@ -2,7 +2,7 @@ package com.swm.studywithmentor.model.entity;
 
 import com.swm.studywithmentor.model.entity.course.Course;
 import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,12 +12,11 @@ import java.sql.Date;
 import java.util.Set;
 
 @Entity
-@Table(name = "class")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Classes {
+public class Clazz {
     @Column
     @Version
     private Long version;
@@ -32,8 +31,8 @@ public class Classes {
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
-    @OneToMany(mappedBy = "classes")
+    @OneToMany(mappedBy = "clazz")
     private Set<Lesson> lessons;
-    @OneToMany(mappedBy = "classes")
+    @OneToMany(mappedBy = "clazz")
     private Set<Enrollment> enrollments;
 }

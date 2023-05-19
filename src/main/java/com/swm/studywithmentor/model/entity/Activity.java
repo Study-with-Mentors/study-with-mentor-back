@@ -1,7 +1,7 @@
 package com.swm.studywithmentor.model.entity;
 
 import com.swm.studywithmentor.model.entity.session.Session;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;

@@ -1,7 +1,7 @@
 package com.swm.studywithmentor.model.entity.invoice;
 
 import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
