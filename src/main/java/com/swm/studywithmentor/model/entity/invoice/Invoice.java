@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.util.UUID;
 
 @Entity
 @Builder
@@ -18,7 +19,7 @@ public class Invoice {
     private Long version;
 
     @Id
-    private Long invoiceId;
+    private UUID invoiceId;
     @OneToOne
     @MapsId
     @JoinColumn(name = "invoice_id")

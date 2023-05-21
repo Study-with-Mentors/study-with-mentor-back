@@ -1,12 +1,11 @@
 package com.swm.studywithmentor.model.entity.user;
 
+import com.swm.studywithmentor.model.entity.BaseEntity;
 import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
 import com.swm.studywithmentor.model.entity.course.Course;
 import javax.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +14,7 @@ import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "[User]")
@@ -22,14 +22,13 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements UserDetails {
+@EqualsAndHashCode(callSuper = true)
+@AttributeOverride(name = "id", column = @Column(name = "user_id") )
+public class User extends BaseEntity implements UserDetails {
     @Column
     @Version
     private Long version;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
     private String email;
     private String password;
     private String firstName;

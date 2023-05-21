@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -20,7 +21,7 @@ public class Mentor {
     private Long version;
 
     @Id
-    private Long mentorId;
+    private UUID mentorId;
     @OneToOne
     @MapsId
     @JoinColumn(name = "mentor_id")
