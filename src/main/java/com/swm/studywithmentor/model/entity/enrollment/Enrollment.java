@@ -1,27 +1,28 @@
 package com.swm.studywithmentor.model.entity.enrollment;
 
+import com.swm.studywithmentor.model.entity.BaseEntity;
 import com.swm.studywithmentor.model.entity.Clazz;
 import com.swm.studywithmentor.model.entity.invoice.Invoice;
 import com.swm.studywithmentor.model.entity.user.User;
 import javax.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 import java.sql.Date;
+import java.util.UUID;
 
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Enrollment {
+@Data
+@EqualsAndHashCode(callSuper = true)
+@AttributeOverride(name = "id", column = @Column(name = "enrollment_id"))
+public class Enrollment extends BaseEntity {
     @Column
     @Version
     private Long version;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long enrollmentId;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

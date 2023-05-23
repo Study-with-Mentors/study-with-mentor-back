@@ -3,27 +3,26 @@ package com.swm.studywithmentor.model.entity;
 import com.swm.studywithmentor.model.entity.course.Course;
 import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
 import javax.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 import java.sql.Date;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Data
+@Table(name = "class")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Clazz {
+@EqualsAndHashCode(callSuper = true)
+@AttributeOverride(name = "id", column = @Column(name = "class_id"))
+public class Clazz extends BaseEntity{
     @Column
     @Version
     private Long version;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long classId;
     private Date startDate;
     private Date endDate;
     private Date enrollmentEndDate;

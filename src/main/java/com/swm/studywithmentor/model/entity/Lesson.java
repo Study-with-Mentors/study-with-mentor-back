@@ -2,24 +2,24 @@ package com.swm.studywithmentor.model.entity;
 
 import com.swm.studywithmentor.model.entity.session.Session;
 import javax.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 import java.sql.Date;
+import java.util.UUID;
 
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Lesson {
+@Data
+@EqualsAndHashCode(callSuper = true)
+@AttributeOverride(name = "id", column = @Column(name = "lession_id"))
+public class Lesson extends BaseEntity{
     @Column
     @Version
     private Long version;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long lessonId;
     private long lessonNum;
     private Date startTime;
     private Date endTime;

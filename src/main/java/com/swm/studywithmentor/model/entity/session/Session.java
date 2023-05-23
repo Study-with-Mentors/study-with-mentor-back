@@ -1,26 +1,27 @@
 package com.swm.studywithmentor.model.entity.session;
 
 import com.swm.studywithmentor.model.entity.Activity;
+import com.swm.studywithmentor.model.entity.BaseEntity;
 import com.swm.studywithmentor.model.entity.Lesson;
 import javax.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Session {
+@Data
+@EqualsAndHashCode(callSuper = true)
+@AttributeOverride(name = "id", column = @Column(name = "session_id"))
+public class Session extends BaseEntity {
     @Column
     @Version
     private Long version;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long sessionId;
     private long sessionNum;
     private String sessionName;
     @Enumerated(EnumType.ORDINAL)

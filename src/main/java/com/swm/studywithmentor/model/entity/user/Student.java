@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @Data
 @Builder
@@ -17,7 +19,7 @@ public class Student {
     private Long version;
 
     @Id
-    private Long studentId;
+    private UUID studentId;
     @OneToOne
     @MapsId
     @JoinColumn(name = "student_id")
