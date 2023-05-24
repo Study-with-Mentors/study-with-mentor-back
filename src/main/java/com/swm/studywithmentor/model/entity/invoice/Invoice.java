@@ -24,10 +24,10 @@ public class Invoice {
     @MapsId
     @JoinColumn(name = "invoice_id")
     private Enrollment enrollment;
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private PaymentType type;
     private Date payDate;
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private InvoiceStatus status;
     private float totalPrice;
 }

@@ -30,7 +30,7 @@ public class Enrollment extends BaseEntity {
     @JoinColumn(name = "class_id")
     private Clazz clazz;
     private Date enrollmentDate;
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private EnrollmentStatus status;
     @OneToOne(mappedBy = "enrollment")
     @PrimaryKeyJoinColumn
