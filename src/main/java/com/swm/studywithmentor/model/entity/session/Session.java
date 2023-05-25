@@ -24,7 +24,7 @@ public class Session extends BaseEntity {
 
     private long sessionNum;
     private String sessionName;
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private SessionType type;
     private String description;
     private String resource;

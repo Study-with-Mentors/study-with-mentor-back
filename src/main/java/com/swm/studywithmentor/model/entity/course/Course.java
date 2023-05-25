@@ -27,7 +27,7 @@ public class Course extends BaseEntity {
     private String description;
     private String learningOutcome;
     private String intendedLearner;
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private CourseLevel courseLevel;
     @ManyToOne
     @JoinColumn(name = "field_id")

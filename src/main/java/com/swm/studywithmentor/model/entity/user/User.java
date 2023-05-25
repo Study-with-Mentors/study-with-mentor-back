@@ -35,9 +35,9 @@ public class User extends BaseEntity implements UserDetails {
     private String lastName;
     private Date birthdate;
     private String profileImage;
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Gender gender;
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Role role;
     @OneToOne(mappedBy = "user")
     @PrimaryKeyJoinColumn

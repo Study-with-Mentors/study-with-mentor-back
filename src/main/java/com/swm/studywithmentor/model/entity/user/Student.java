@@ -27,6 +27,6 @@ public class Student {
     private int year;
     private String bio;
     private String experience;
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Education Education;
 }

@@ -27,6 +27,7 @@ public class Mentor {
     @JoinColumn(name = "mentor_id")
     private User user;
     private String bio;
+    @Enumerated(EnumType.STRING)
     private Education degree;
     @ManyToOne
     @JoinColumn(name = "field_id")
