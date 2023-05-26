@@ -8,7 +8,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Data
@@ -32,9 +31,9 @@ public class Course extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "field_id")
     private Field field;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User mentor;
     @OneToMany(mappedBy = "course")
     private Set<Clazz> clazzes;
 }

@@ -14,7 +14,6 @@ import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Table(name = "[User]")
@@ -45,9 +44,9 @@ public class User extends BaseEntity implements UserDetails {
     @OneToOne(mappedBy = "user")
     @PrimaryKeyJoinColumn
     private Mentor mentor;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "mentor")
     private Set<Course> courses;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "student")
     private Set<Enrollment> enrollments;
 
     @Override
