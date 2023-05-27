@@ -2,8 +2,10 @@ package com.swm.studywithmentor.util;
 
 import com.swm.studywithmentor.model.dto.CourseDto;
 import com.swm.studywithmentor.model.dto.FieldDto;
+import com.swm.studywithmentor.model.dto.UserDto;
 import com.swm.studywithmentor.model.entity.Field;
 import com.swm.studywithmentor.model.entity.course.Course;
+import com.swm.studywithmentor.model.entity.user.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,5 +44,17 @@ public class ApplicationMapper {
 
     public void toEntity(FieldDto fieldDto, Field field) {
         mapper.map(fieldDto, field);
+    }
+
+    public UserDto toDto(User user) {
+        return mapper.map(user, UserDto.class);
+    }
+
+    public User toEntity(UserDto userDto) {
+        return mapper.map(userDto, User.class);
+    }
+
+    public void toEntity(UserDto userDto, User user) {
+        mapper.map(userDto, user);
     }
 }

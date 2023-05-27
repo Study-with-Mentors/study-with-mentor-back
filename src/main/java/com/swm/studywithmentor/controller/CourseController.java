@@ -44,5 +44,9 @@ public class CourseController {
         return new ResponseEntity<>(resultDto, HttpStatus.OK);
     }
 
-    // Delete
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCourse(@PathVariable UUID id) {
+        courseService.deleteCourse(id);
+    }
 }
