@@ -1,6 +1,86 @@
 package com.swm.studywithmentor.service.impl;
 
+import com.swm.studywithmentor.model.dto.CourseDto;
+import com.swm.studywithmentor.model.entity.Field;
+import com.swm.studywithmentor.model.entity.course.Course;
+import com.swm.studywithmentor.model.exception.ApplicationException;
+import com.swm.studywithmentor.model.exception.ExceptionErrorCodeConstants;
+import com.swm.studywithmentor.model.exception.NotFoundException;
+import com.swm.studywithmentor.repository.CourseRepository;
+import com.swm.studywithmentor.repository.FieldRepository;
 import com.swm.studywithmentor.service.CourseService;
+import com.swm.studywithmentor.util.ApplicationMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Service
+@Transactional
 public class CourseServiceImpl implements CourseService {
+    private final CourseRepository courseRepository;
+    private final FieldRepository fieldRepository;
+    private final ApplicationMapper mapper;
+
+    @Autowired
+    public CourseServiceImpl(CourseRepository courseRepository, FieldRepository fieldRepository, ApplicationMapper mapper) {
+        this.courseRepository = courseRepository;
+        this.fieldRepository = fieldRepository;
+        this.mapper = mapper;
+    }
+
+    @Override
+    public CourseDto getCourseById(UUID id) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new ApplicationException(ExceptionErrorCodeConstants.NOT_FOUND, HttpStatus.NOT_FOUND, "Course not found. Id: " + id));
+
+        return mapper.toDto(course);
+    }
+
+    @Override
+    public List<CourseDto> getCourses() {
+        // TODO: change this into searching with criteria and pagination
+        return courseRepository.findAll().stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public CourseDto createCourse(CourseDto courseDto) {
+        Course course = mapper.toEntity(courseDto);
+        course.setId(null);
+        Field field = fieldRepository.findById(courseDto.getField().getId())
+                .orElseThrow(() -> new NotFoundException(Field.class, courseDto.getField().getId()));
+        // TODO: set mentor after implement user repository
+        course.setField(field);
+        course = courseRepository.save(course);
+        return mapper.toDto(course);
+    }
+
+    @Override
+    public CourseDto updateCourse(CourseDto courseDto) {
+        // TODO: check if the user owns this course or not
+        Course course = courseRepository.findById(courseDto.getId())
+                .orElseThrow(() -> new NotFoundException(Course.class, courseDto.getId()));
+
+        // update field
+        if (!course.getField().getId().equals(courseDto.getField().getId())) {
+            Field field = fieldRepository.findById(courseDto.getField().getId())
+                    .orElseThrow(() -> new NotFoundException(Field.class, courseDto.getField().getId()));
+            course.setField(field);
+        }
+
+        mapper.toEntity(courseDto, course);
+        course = courseRepository.save(course);
+        return mapper.toDto(course);
+    }
+
+    @Override
+    public void deleteCourse(UUID id) {
+        // TODO: modify for soft delete
+    }
 }
