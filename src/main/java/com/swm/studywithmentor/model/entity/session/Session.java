@@ -5,6 +5,7 @@ import com.swm.studywithmentor.model.entity.BaseEntity;
 import com.swm.studywithmentor.model.entity.Lesson;
 import javax.persistence.*;
 
+import com.swm.studywithmentor.model.entity.course.Course;
 import lombok.*;
 
 import java.util.Set;
@@ -28,9 +29,11 @@ public class Session extends BaseEntity {
     private SessionType type;
     private String description;
     private String resource;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id")
+    private Course course;
     @OneToMany(mappedBy = "session")
     private Set<Activity> activities;
     @OneToMany(mappedBy = "session")
     private Set<Lesson> lessons;
-
 }
