@@ -28,8 +28,8 @@ public class FieldController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FieldDto>> getFields() {
-        List<FieldDto> dtos = fieldService.getFields();
+    public ResponseEntity<List<FieldDto>> getFields(@RequestParam(required = false, defaultValue = "") String name) {
+        List<FieldDto> dtos = fieldService.searchFields(name);
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 

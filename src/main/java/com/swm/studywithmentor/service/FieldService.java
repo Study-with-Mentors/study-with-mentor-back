@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface FieldService {
     FieldDto getFieldById(UUID id);
-    List<FieldDto> getFields();
+    List<FieldDto> searchFields(String keyword);
     FieldDto createField(FieldDto fieldDto);
     FieldDto updateField(FieldDto fieldDto);
     void deleteField(UUID id);

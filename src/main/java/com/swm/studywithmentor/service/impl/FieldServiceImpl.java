@@ -2,7 +2,9 @@ package com.swm.studywithmentor.service.impl;
 
 import com.swm.studywithmentor.model.dto.FieldDto;
 import com.swm.studywithmentor.model.entity.Field;
+import com.swm.studywithmentor.model.exception.ActionConflict;
 import com.swm.studywithmentor.model.exception.ApplicationException;
+import com.swm.studywithmentor.model.exception.ConflictException;
 import com.swm.studywithmentor.model.exception.NotFoundException;
 import com.swm.studywithmentor.repository.FieldRepository;
 import com.swm.studywithmentor.service.FieldService;
@@ -36,9 +38,8 @@ public class FieldServiceImpl implements FieldService {
     }
 
     @Override
-    public List<FieldDto> getFields() {
-        // TODO: modify this into searching, pagination
-        List<Field> fields = fieldRepository.findAll();
+    public List<FieldDto> searchFields(String name) {
+        List<Field> fields = fieldRepository.findByNameContains(name);
         return fields.stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
@@ -67,8 +68,9 @@ public class FieldServiceImpl implements FieldService {
         // only delete when there are no reference to this field
         long referenceCount = fieldRepository.countFieldReference(id);
         if (referenceCount > 0) {
-            // TODO: change this to ConflictException after merging session-crud
-            throw new ApplicationException("", HttpStatus.CONFLICT, "Field is referenced elsewhere");
+            Field field = fieldRepository.findById(id)
+                    .orElseThrow(() -> new NotFoundException(Field.class, id));
+            throw new ConflictException(Field.class, ActionConflict.DELETE, "Field is reference by courses or mentors. Field: " + field.getName(), field.getName());
         }
         fieldRepository.deleteById(id);
     }
