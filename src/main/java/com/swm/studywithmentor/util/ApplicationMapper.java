@@ -1,8 +1,10 @@
 package com.swm.studywithmentor.util;
 
+import com.swm.studywithmentor.model.dto.ClazzDto;
 import com.swm.studywithmentor.model.dto.CourseDto;
 import com.swm.studywithmentor.model.dto.FieldDto;
 import com.swm.studywithmentor.model.dto.UserDto;
+import com.swm.studywithmentor.model.entity.Clazz;
 import com.swm.studywithmentor.model.entity.Field;
 import com.swm.studywithmentor.model.entity.course.Course;
 import com.swm.studywithmentor.model.entity.user.User;
@@ -22,7 +24,8 @@ public class ApplicationMapper {
     public CourseDto toDto(Course course) {
         CourseDto courseDto = mapper.map(course, CourseDto.class);
         courseDto.setField(toDto(course.getField()));
-        // TODO: field mentor
+        // TODO: use mentor id to create course (maybe a CourseCreateDto)
+//        courseDto.setMentor(toDto(course.getMentor()));
         return courseDto;
     }
 
@@ -56,5 +59,17 @@ public class ApplicationMapper {
 
     public void toEntity(UserDto userDto, User user) {
         mapper.map(userDto, user);
+    }
+
+    public ClazzDto toDto(Clazz clazz) {
+        return mapper.map(clazz, ClazzDto.class);
+    }
+
+    public Clazz toEntity(ClazzDto clazzDto) {
+        return mapper.map(clazzDto, Clazz.class);
+    }
+
+    public void toEntity(ClazzDto clazzDto, Clazz clazz) {
+        mapper.map(clazzDto, clazz);
     }
 }

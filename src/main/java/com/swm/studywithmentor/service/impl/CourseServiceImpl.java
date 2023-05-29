@@ -3,9 +3,11 @@ package com.swm.studywithmentor.service.impl;
 import com.swm.studywithmentor.model.dto.CourseDto;
 import com.swm.studywithmentor.model.entity.Field;
 import com.swm.studywithmentor.model.entity.course.Course;
+import com.swm.studywithmentor.model.entity.course.CourseStatus;
 import com.swm.studywithmentor.model.exception.ApplicationException;
 import com.swm.studywithmentor.model.exception.ExceptionErrorCodeConstants;
 import com.swm.studywithmentor.model.exception.NotFoundException;
+import com.swm.studywithmentor.repository.ClazzRepository;
 import com.swm.studywithmentor.repository.CourseRepository;
 import com.swm.studywithmentor.repository.FieldRepository;
 import com.swm.studywithmentor.service.CourseService;
@@ -23,12 +25,14 @@ import java.util.stream.Collectors;
 @Transactional
 public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
+    private final ClazzRepository clazzRepository;
     private final FieldRepository fieldRepository;
     private final ApplicationMapper mapper;
 
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository, FieldRepository fieldRepository, ApplicationMapper mapper) {
+    public CourseServiceImpl(CourseRepository courseRepository, ClazzRepository clazzRepository, FieldRepository fieldRepository, ApplicationMapper mapper) {
         this.courseRepository = courseRepository;
+        this.clazzRepository = clazzRepository;
         this.fieldRepository = fieldRepository;
         this.mapper = mapper;
     }
@@ -53,6 +57,7 @@ public class CourseServiceImpl implements CourseService {
     public CourseDto createCourse(CourseDto courseDto) {
         Course course = mapper.toEntity(courseDto);
         course.setId(null);
+        course.setStatus(CourseStatus.ENABLE);
         Field field = fieldRepository.findById(courseDto.getField().getId())
                 .orElseThrow(() -> new NotFoundException(Field.class, courseDto.getField().getId()));
         // TODO: set mentor after implement user repository
@@ -81,6 +86,17 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteCourse(UUID id) {
-        // TODO: modify for soft delete
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(Course.class, id));
+        if (course.getStatus() != CourseStatus.DISABLE) {
+            // TODO: test this one
+            long referenceCount = clazzRepository.countByCourse(course);
+            if (referenceCount != 0) {
+                course.setStatus(CourseStatus.DISABLE);
+                courseRepository.save(course);
+            } else {
+                courseRepository.delete(course);
+            }
+        }
     }
 }
