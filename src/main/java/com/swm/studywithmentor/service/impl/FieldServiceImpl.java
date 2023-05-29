@@ -65,10 +65,9 @@ public class FieldServiceImpl implements FieldService {
     @Override
     public void deleteField(UUID id) {
         // only delete when there are no reference to this field
-        // TODO: test the custome repository
         long referenceCount = fieldRepository.countFieldReference(id);
         if (referenceCount > 0) {
-            // TODO: Modify to more meaningful exception
+            // TODO: change this to ConflictException after merging session-crud
             throw new ApplicationException("", HttpStatus.CONFLICT, "Field is referenced elsewhere");
         }
         fieldRepository.deleteById(id);

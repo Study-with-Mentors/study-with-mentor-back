@@ -19,10 +19,14 @@ public class FieldRepositoryCustomImpl implements FieldRepositoryCustom {
     public long countFieldReference(UUID id) {
         QField field = QField.field;
         var query = new JPAQuery<>(entityManager);
-        return query.from(field)
+        long courseRefCount = query.from(field)
                 .innerJoin(field.courses, QCourse.course)
+                .where(field.id.eq(id))
+                .stream().count();
+        long mentorRefCount = query.from(field)
                 .innerJoin(field.mentors, QMentor.mentor)
                 .where(field.id.eq(id))
                 .stream().count();
+        return courseRefCount + mentorRefCount;
     }
 }
