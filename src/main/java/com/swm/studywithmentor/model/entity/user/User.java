@@ -1,19 +1,17 @@
 package com.swm.studywithmentor.model.entity.user;
 
 import com.swm.studywithmentor.model.entity.BaseEntity;
-import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
 import com.swm.studywithmentor.model.entity.course.Course;
-import javax.persistence.*;
-
+import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.persistence.*;
 import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "[User]")
@@ -45,9 +43,9 @@ public class User extends BaseEntity implements UserDetails {
     @PrimaryKeyJoinColumn
     private Mentor mentor;
     @OneToMany(mappedBy = "mentor")
-    private Set<Course> courses;
+    private List<Course> courses;
     @OneToMany(mappedBy = "student")
-    private Set<Enrollment> enrollments;
+    private List<Enrollment> enrollments;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

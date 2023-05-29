@@ -2,12 +2,10 @@ package com.swm.studywithmentor.model.entity;
 
 import com.swm.studywithmentor.model.entity.course.Course;
 import com.swm.studywithmentor.model.entity.user.Mentor;
-import javax.persistence.*;
-
 import lombok.*;
 
-import java.util.Set;
-import java.util.UUID;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -24,7 +22,7 @@ public class Field extends BaseEntity{
     private String name;
     private String description;
     @OneToMany(mappedBy = "field")
-    private Set<Mentor> mentors;
+    private List<Mentor> mentors;
     @OneToMany(mappedBy = "field")
-    private Set<Course> courses;
+    private List<Course> courses;
 }

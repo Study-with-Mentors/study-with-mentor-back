@@ -2,13 +2,11 @@ package com.swm.studywithmentor.model.entity;
 
 import com.swm.studywithmentor.model.entity.course.Course;
 import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
-import javax.persistence.*;
-
 import lombok.*;
 
+import javax.persistence.*;
 import java.sql.Date;
-import java.util.Set;
-import java.util.UUID;
+import java.util.List;
 
 @Entity
 @Data
@@ -31,7 +29,7 @@ public class Clazz extends BaseEntity{
     @JoinColumn(name = "course_id")
     private Course course;
     @OneToMany(mappedBy = "clazz")
-    private Set<Lesson> lessons;
+    private List<Lesson> lessons;
     @OneToMany(mappedBy = "clazz")
-    private Set<Enrollment> enrollments;
+    private List<Enrollment> enrollments;
 }

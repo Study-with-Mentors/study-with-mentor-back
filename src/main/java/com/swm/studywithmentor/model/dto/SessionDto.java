@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,6 +20,8 @@ public class SessionDto extends BaseDto {
     @NotEmpty
     private String description;
     private String resource;
+    // TODO: might change courseDto to only courseId
+    @NotNull
     private CourseDto course;
-    private Set<ActivityDto> activities;
+    private List<ActivityDto> activities;
 }

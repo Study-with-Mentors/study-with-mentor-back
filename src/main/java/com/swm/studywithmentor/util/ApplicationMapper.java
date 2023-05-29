@@ -10,7 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -63,10 +63,10 @@ public class ApplicationMapper {
 
     public SessionDto toDto(Session session) {
         SessionDto sessionDto = mapper.map(session, SessionDto.class);
-        Set<ActivityDto> activityDtos = session.getActivities()
+        List<ActivityDto> activityDtos = session.getActivities()
                 .stream()
                 .map(this::toDto)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
         sessionDto.setActivities(activityDtos);
         sessionDto.setCourse(toDto(session.getCourse()));
         return sessionDto;
