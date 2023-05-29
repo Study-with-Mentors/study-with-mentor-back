@@ -3,6 +3,7 @@ package com.swm.studywithmentor.service.impl;
 import com.swm.studywithmentor.model.dto.SessionDto;
 import com.swm.studywithmentor.model.entity.Activity;
 import com.swm.studywithmentor.model.entity.course.Course;
+import com.swm.studywithmentor.model.entity.course.CourseStatus;
 import com.swm.studywithmentor.model.entity.session.Session;
 import com.swm.studywithmentor.model.exception.ActionConflict;
 import com.swm.studywithmentor.model.exception.ConflictException;
@@ -11,16 +12,16 @@ import com.swm.studywithmentor.repository.CourseRepository;
 import com.swm.studywithmentor.repository.SessionRepository;
 import com.swm.studywithmentor.service.SessionService;
 import com.swm.studywithmentor.util.ApplicationMapper;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class SessionServiceImpl implements SessionService {
     private final SessionRepository sessionRepository;
     private final CourseRepository courseRepository;
@@ -37,20 +38,25 @@ public class SessionServiceImpl implements SessionService {
     public SessionDto getSession(UUID id) {
         Session session = sessionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Session.class, id));
-        return mapper.toDto(session);
+
+        SessionDto dto = mapper.toDto(session);
+        dto.setCourse(mapper.toDto(session.getCourse()));
+        return dto;
     }
 
     @Override
     public List<SessionDto> getSessions() {
-        // TODO: implement get session by course id
-        throw new NotImplementedException();
+        List<Session> sessions = sessionRepository.findAll();
+        return sessions.stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<SessionDto> getSessionsByCourseId(UUID courseId) {
-        // TODO: test this method
-        List<Session> sessions = sessionRepository.findByCourseId(courseId);
-        return sessions.stream()
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new NotFoundException(Course.class, courseId));
+        return course.getSessions().stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -63,7 +69,7 @@ public class SessionServiceImpl implements SessionService {
                 .orElseThrow(() -> new NotFoundException(Session.class, sessionDto.getId()));
         // TODO: fix dto might override activities
         mapper.toEntity(sessionDto, session);
-        // TODO: update activities as well
+        // TODO: should i delete or update old activities
 
         session = sessionRepository.save(session);
 
@@ -72,19 +78,24 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public SessionDto createSession(SessionDto sessionDto) {
-        // TODO: test this
         Course course = courseRepository.findById(sessionDto.getCourse().getId())
                 .orElseThrow(() -> new NotFoundException(Course.class, sessionDto.getCourse().getId()));
+        if (course.getStatus() == CourseStatus.DISABLE) {
+            throw new ConflictException(Session.class, ActionConflict.CREATE, "Course is unable to modify", course.getId());
+        }
         if (course.getSessions().stream().anyMatch(s -> s.getSessionNum() == sessionDto.getSessionNum())) {
             throw new ConflictException(Session.class, ActionConflict.CREATE, "Duplicate session number", sessionDto.getSessionNum());
         }
         Session session = mapper.toEntity(sessionDto);
-        Set<Activity> activities = sessionDto.getActivities().stream()
+        List<Activity> activities = sessionDto.getActivities().stream()
                 .map(mapper::toEntity)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
         // mapping
         session.setActivities(activities);
+        for (Activity activity : session.getActivities()) {
+            activity.setSession(session);
+        }
         session.setCourse(course);
         course.getSessions().add(session);
 
@@ -95,12 +106,12 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public void deleteSession(UUID id) {
-        // TODO: cascade delete all activity
         Session session = sessionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Session.class, id));
         // TODO: delete only when there is not clazz
         int numOfClazz = 0;
-        if (numOfClazz != 0) {
+        if (numOfClazz == 0) {
+            // FIXME: n + 1 activities delete
             sessionRepository.delete(session);
         } else {
             throw new ConflictException(Session.class, ActionConflict.DELETE, "Cannot delete session after starting classes", id);

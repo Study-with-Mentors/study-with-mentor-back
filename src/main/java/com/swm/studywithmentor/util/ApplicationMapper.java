@@ -68,7 +68,6 @@ public class ApplicationMapper {
                 .map(this::toDto)
                 .collect(Collectors.toList());
         sessionDto.setActivities(activityDtos);
-        sessionDto.setCourse(toDto(session.getCourse()));
         return sessionDto;
     }
 
