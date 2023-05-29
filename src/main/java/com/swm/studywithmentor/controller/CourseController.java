@@ -1,13 +1,14 @@
 package com.swm.studywithmentor.controller;
 
 import com.swm.studywithmentor.model.dto.CourseDto;
+import com.swm.studywithmentor.model.dto.PageResult;
+import com.swm.studywithmentor.model.dto.search.CourseSearchDto;
 import com.swm.studywithmentor.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -27,8 +28,8 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CourseDto>> getCourses() {
-        return new ResponseEntity<>(courseService.getCourses(), HttpStatus.OK);
+    public ResponseEntity<PageResult<CourseDto>> searchCourses(CourseSearchDto courseSearchDto) {
+        return new ResponseEntity<>(courseService.searchCourses(courseSearchDto), HttpStatus.OK);
     }
 
     @PostMapping

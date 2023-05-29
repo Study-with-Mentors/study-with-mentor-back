@@ -1,6 +1,9 @@
 package com.swm.studywithmentor.service.impl;
 
+import com.querydsl.core.types.Predicate;
 import com.swm.studywithmentor.model.dto.CourseDto;
+import com.swm.studywithmentor.model.dto.PageResult;
+import com.swm.studywithmentor.model.dto.search.CourseSearchDto;
 import com.swm.studywithmentor.model.entity.Field;
 import com.swm.studywithmentor.model.entity.course.Course;
 import com.swm.studywithmentor.model.entity.course.CourseStatus;
@@ -13,7 +16,10 @@ import com.swm.studywithmentor.repository.FieldRepository;
 import com.swm.studywithmentor.service.CourseService;
 import com.swm.studywithmentor.util.ApplicationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -46,11 +52,19 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<CourseDto> getCourses() {
-        // TODO: change this into searching with criteria and pagination
-        return courseRepository.findAll().stream()
+    public PageResult<CourseDto> searchCourses(CourseSearchDto courseSearchDto) {
+        Predicate searchPredicate =  courseRepository.prepareSearchPredicate(courseSearchDto);
+        // TODO: add page size to property file
+        // TODO: add sorting to course search dto
+        PageRequest pageRequest = PageRequest.of(courseSearchDto.getPage(), 20);
+        Page<Course> courses = courseRepository.findAll(searchPredicate, pageRequest);
+        PageResult<CourseDto> resultPage = new PageResult<>();
+        resultPage.setResult(courses.stream()
                 .map(mapper::toDto)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
+        resultPage.setTotalPages(courses.getTotalPages());
+        resultPage.setTotalElements(courses.getTotalElements());
+        return resultPage;
     }
 
     @Override

@@ -11,5 +11,7 @@ public class FieldDto extends BaseDto {
     @NotEmpty
     private String name;
     @NotEmpty
+    private String code;
+    @NotEmpty
     private String description;
 }
