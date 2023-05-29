@@ -40,7 +40,7 @@ public class SessionServiceImpl implements SessionService {
                 .orElseThrow(() -> new NotFoundException(Session.class, id));
 
         SessionDto dto = mapper.toDto(session);
-        dto.setCourse(mapper.toDto(session.getCourse()));
+        dto.setCourseId(session.getCourse().getId());
         return dto;
     }
 
@@ -64,7 +64,7 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public SessionDto updateSession(SessionDto sessionDto) {
         // not allow changing session's course
-        sessionDto.setCourse(null);
+        sessionDto.setCourseId(null);
         Session session = sessionRepository.findById(sessionDto.getId())
                 .orElseThrow(() -> new NotFoundException(Session.class, sessionDto.getId()));
         // TODO: fix dto might override activities
@@ -78,8 +78,8 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public SessionDto createSession(SessionDto sessionDto) {
-        Course course = courseRepository.findById(sessionDto.getCourse().getId())
-                .orElseThrow(() -> new NotFoundException(Course.class, sessionDto.getCourse().getId()));
+        Course course = courseRepository.findById(sessionDto.getCourseId())
+                .orElseThrow(() -> new NotFoundException(Course.class, sessionDto.getCourseId()));
         if (course.getStatus() == CourseStatus.DISABLE) {
             throw new ConflictException(Session.class, ActionConflict.CREATE, "Course is unable to modify", course.getId());
         }

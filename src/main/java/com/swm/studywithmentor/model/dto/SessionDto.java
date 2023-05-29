@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -20,8 +21,7 @@ public class SessionDto extends BaseDto {
     @NotEmpty
     private String description;
     private String resource;
-    // TODO: might change courseDto to only courseId
     @NotNull
-    private CourseDto course;
+    private UUID courseId;
     private List<ActivityDto> activities;
 }
