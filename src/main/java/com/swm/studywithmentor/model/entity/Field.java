@@ -19,8 +19,6 @@ public class Field extends BaseEntity{
     @Version
     private Long version;
 
-    // TODO: add field code, such as CS for computer science, PH for physics, MA for math
-    // If decided to add field code, then refactor search course (using field code)
     private String code;
     private String name;
     private String description;
