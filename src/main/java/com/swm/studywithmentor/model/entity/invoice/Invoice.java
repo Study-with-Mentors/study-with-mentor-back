@@ -4,6 +4,7 @@ import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class Invoice {
     @Column
     @Version
