@@ -1,12 +1,8 @@
 package com.swm.studywithmentor.util;
 
-import com.swm.studywithmentor.model.dto.ClazzDto;
-import com.swm.studywithmentor.model.dto.CourseDto;
-import com.swm.studywithmentor.model.dto.FieldDto;
-import com.swm.studywithmentor.model.dto.UserDto;
-import com.swm.studywithmentor.model.entity.Clazz;
 import com.swm.studywithmentor.model.dto.*;
 import com.swm.studywithmentor.model.entity.Activity;
+import com.swm.studywithmentor.model.entity.Clazz;
 import com.swm.studywithmentor.model.entity.Field;
 import com.swm.studywithmentor.model.entity.course.Course;
 import com.swm.studywithmentor.model.entity.session.Session;
@@ -72,6 +68,7 @@ public class ApplicationMapper {
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+        sessionDto.setCourse(null);
         sessionDto.setActivities(activityDtos);
         return sessionDto;
     }
