@@ -1,14 +1,17 @@
 package com.swm.studywithmentor.util;
 
-import com.swm.studywithmentor.model.dto.CourseDto;
-import com.swm.studywithmentor.model.dto.FieldDto;
-import com.swm.studywithmentor.model.dto.UserDto;
+import com.swm.studywithmentor.model.dto.*;
+import com.swm.studywithmentor.model.entity.Activity;
 import com.swm.studywithmentor.model.entity.Field;
 import com.swm.studywithmentor.model.entity.course.Course;
+import com.swm.studywithmentor.model.entity.session.Session;
 import com.swm.studywithmentor.model.entity.user.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class ApplicationMapper {
@@ -56,5 +59,36 @@ public class ApplicationMapper {
 
     public void toEntity(UserDto userDto, User user) {
         mapper.map(userDto, user);
+    }
+
+    public SessionDto toDto(Session session) {
+        SessionDto sessionDto = mapper.map(session, SessionDto.class);
+        Set<ActivityDto> activityDtos = session.getActivities()
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toSet());
+        sessionDto.setActivities(activityDtos);
+        sessionDto.setCourse(toDto(session.getCourse()));
+        return sessionDto;
+    }
+
+    public Session toEntity(SessionDto sessionDto) {
+        return mapper.map(sessionDto, Session.class);
+    }
+
+    public void toEntity(SessionDto sessionDto, Session session) {
+        mapper.map(sessionDto, session);
+    }
+
+    public ActivityDto toDto(Activity activity) {
+        return mapper.map(activity, ActivityDto.class);
+    }
+
+    public Activity toEntity(ActivityDto activityDto) {
+        return mapper.map(activityDto, Activity.class);
+    }
+
+    public void toEntity(ActivityDto activityDto, Activity activity) {
+        mapper.map(activityDto, activity);
     }
 }
