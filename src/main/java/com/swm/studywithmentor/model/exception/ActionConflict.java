@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum ActionConflict {
     CREATE("creating"),
-    UPDATE("updating");
+    UPDATE("updating"),
+    DELETE("deleting");
 
     String name;
     ActionConflict(String name) {
