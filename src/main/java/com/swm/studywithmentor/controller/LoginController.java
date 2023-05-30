@@ -20,4 +20,9 @@ public class LoginController {
     public String login(@RequestBody Map<String, String> credential) {
         return loginService.authenticate(credential.get("email"), credential.get("password"));
     }
+
+    @PostMapping("/google")
+    public String authenticateGoogle(@RequestBody String tokenId) {
+        return loginService.authenticateGoogle(tokenId);
+    }
 }

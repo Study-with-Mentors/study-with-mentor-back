@@ -40,7 +40,7 @@ public class SecurityConfiguration {
         http.cors()
             .configurationSource(request -> {
                 CorsConfiguration cors = new CorsConfiguration();
-//                cors.setAllowedOrigins(List.of("http://localhost:3000"));
+                //                cors.setAllowedOrigins(List.of("http://localhost:3000"));
                 cors.setAllowedOriginPatterns(List.of("*"));
                 cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
                 cors.setAllowedHeaders(List.of("*"));
@@ -53,7 +53,7 @@ public class SecurityConfiguration {
             .and()
             .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeRequests()
-            .antMatchers("/login").permitAll()
+            .antMatchers("/test", "/login", "/login/google").permitAll()
             // Comment out the following line for the ease of testing
             .anyRequest().authenticated();
         return http.build();
