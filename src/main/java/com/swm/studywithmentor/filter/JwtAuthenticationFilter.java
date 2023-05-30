@@ -3,6 +3,7 @@ package com.swm.studywithmentor.filter;
 import com.swm.studywithmentor.model.exception.ApplicationException;
 import com.swm.studywithmentor.service.UserService;
 import com.swm.studywithmentor.util.JwtTokenProvider;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,21 +39,24 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         throws ServletException, IOException {
         try {
             String jwt = getJwtFromRequest(request);
-            // Will throw exception if jwt is invalid
-            tokenProvider.validateToken(jwt);
+            // No JWT will be provided if the request does not require authentication
+            if (StringUtils.isNotBlank(jwt)) {
+                // Will throw exception if jwt is invalid
+                tokenProvider.validateToken(jwt);
 
-            String usersEmail = tokenProvider.getEmailFromJwt(jwt);
-            UserDetails userDetails = userService.loadUserByUsername(usersEmail);
+                String usersEmail = tokenProvider.getEmailFromJwt(jwt);
+                UserDetails userDetails = userService.loadUserByUsername(usersEmail);
 
-            // If email is valid, set auth for security context
-            UsernamePasswordAuthenticationToken authenticationToken
-                = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                // If email is valid, set auth for security context
+                UsernamePasswordAuthenticationToken authenticationToken
+                    = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-            // Pass user to request scope
-            // so that controller can retrieve it later, if needed
-            request.setAttribute("user", userDetails);
+                // Pass user to request scope
+                // so that controller can retrieve it later, if needed
+                request.setAttribute("user", userDetails);
+            }
             filterChain.doFilter(request, response);
         } catch (ApplicationException ex) {
             // Throw exception to ApplicationExceptionHandler
