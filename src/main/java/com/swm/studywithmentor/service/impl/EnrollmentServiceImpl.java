@@ -59,7 +59,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Override
     public EnrollmentDto updateEnrollment(EnrollmentDto enrollmentDto) {
         var enrollment = findById.apply(enrollmentDto.getId());
-        if(enrollmentDto.getUser().getId().toString() != null && !enrollment.getUser().getId().toString().equals(enrollmentDto.getUser().getId().toString())) {
+        var user = enrollmentDto.getUser();
+        if(user != null && user.getId() != null && !enrollment.getUser().getId().toString().equals(enrollmentDto.getUser().getId().toString())) {
             //TODO: use UserService to get user
             var newUser = userRepository.findById(enrollmentDto.getUser().getId())
                     .orElseThrow(() -> new ApplicationException("Not Found", 404, "Not found user: " + enrollmentDto.getUser().getId().toString()));
