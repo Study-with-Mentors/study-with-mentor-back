@@ -54,6 +54,7 @@ public class SecurityConfiguration {
             .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeRequests()
             .antMatchers("/test", "/login", "/login/google").permitAll()
+            .antMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
             // Comment out the following line for the ease of testing
             .anyRequest().authenticated();
         return http.build();
