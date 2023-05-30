@@ -4,6 +4,7 @@ import com.swm.studywithmentor.model.entity.enrollment.EnrollmentStatus;
 import lombok.*;
 
 import java.sql.Date;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -14,5 +15,5 @@ public class EnrollmentDto extends BaseDto {
     private UserDto user;
     private Date enrollmentDate;
     private EnrollmentStatus status;
-    private InvoiceDto invoice;
+    private UUID invoice;
 }

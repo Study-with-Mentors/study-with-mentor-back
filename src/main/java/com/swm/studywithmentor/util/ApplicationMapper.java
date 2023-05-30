@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -29,7 +30,9 @@ public class ApplicationMapper {
     }
 
     public EnrollmentDto enrollmentToDto (Enrollment enrollment) {
-        return mapper.map(enrollment, EnrollmentDto.class);
+        return mapper.typeMap(Enrollment.class, EnrollmentDto.class)
+                .addMappings(mapping -> mapping.map(src -> src.getInvoice().getInvoiceId(), (destination, value) -> destination.setInvoice((UUID) value)))
+                .map(enrollment);
     }
 
     public List<UserDto> userToDto(List<User> users) {
@@ -45,7 +48,6 @@ public class ApplicationMapper {
     }
     public InvoiceDto invoiceToDto(Invoice invoice) {
         return mapper.typeMap(Invoice.class, InvoiceDto.class)
-                .addMappings(mapper -> mapper.skip(InvoiceDto::setEnrollment))
                 //TODO: Total price will be mapped when Clazz finish implemented.
                 .addMappings(mapper -> mapper.skip(InvoiceDto::setTotalPrice))
                 .map(invoice);
@@ -78,6 +80,10 @@ public class ApplicationMapper {
         return mapper.typeMap(InvoiceDto.class, Invoice.class)
                 .addMappings(mapper -> mapper.skip(Invoice::setTotalPrice))
                 .map(invoice);
+    }
+
+    public void invoiceToEntity(Invoice invoice, InvoiceDto invoiceDto) {
+        mapper.map(invoiceDto, invoice);
     }
 
 }

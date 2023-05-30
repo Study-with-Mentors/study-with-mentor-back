@@ -1,0 +1,93 @@
+package com.swm.studywithmentor.controller;
+
+import com.swm.studywithmentor.model.dto.InvoiceDto;
+import com.swm.studywithmentor.model.exception.ApplicationException;
+import com.swm.studywithmentor.service.InvoiceService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/api/invoice")
+@Slf4j
+@RequiredArgsConstructor
+public class InvoiceController {
+    private final InvoiceService invoiceService;
+
+    @GetMapping
+    public ResponseEntity<?> getInvoices() {
+        return ResponseEntity.ok(invoiceService);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getInvoice(@PathVariable String id) {
+        try {
+            UUID invoiceId = UUID.fromString(id);
+            return ResponseEntity.ok(invoiceService.getInvoiceById(invoiceId));
+        } catch (ApplicationException e) {
+            log.error(e.getMessage());
+            if(e.getHttpStatusCode() == 404)
+                return ResponseEntity.notFound().build();
+        } catch (IllegalArgumentException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body("ID: " + id + " is wrong format");
+        }
+        return ResponseEntity.internalServerError().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createInvoice(@RequestBody InvoiceDto invoiceDto) {
+        try {
+            var invoice = invoiceService.createInvoice(invoiceDto);
+            return ResponseEntity.created(new URI("/api/invoice/" + invoice.getInvoiceId().toString())).build();
+        } catch (ApplicationException exception) {
+            log.error(exception.getMessage());
+            if(exception.getHttpStatusCode() == 404)
+                return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
+        } catch (URISyntaxException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateInvoice(@PathVariable String id, @RequestBody InvoiceDto invoiceDto) {
+        try {
+            UUID invoiceId = UUID.fromString(id);
+            invoiceDto.setInvoiceId(invoiceId);
+            var invoice = invoiceService.updateInvoice(invoiceDto);
+            return ResponseEntity.ok(invoice);
+        } catch (ApplicationException a) {
+            log.error(a.getMessage());
+            if(a.getHttpStatusCode() == 404)
+                return ResponseEntity.notFound().build();
+            return ResponseEntity.internalServerError().build();
+        } catch (IllegalArgumentException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body("ID: " + id + " is wrong format");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteInvoice(@PathVariable String id) {
+        try {
+            UUID invoiceId = UUID.fromString(id);
+            invoiceService.deleteInvoice(invoiceId);
+            return ResponseEntity.accepted().build();
+        } catch (ApplicationException a) {
+            log.error(a.getMessage());
+            if(a.getHttpStatusCode() == 404)
+                return ResponseEntity.notFound().build();
+            return ResponseEntity.internalServerError().build();
+        } catch (IllegalArgumentException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body("ID: " + id + " is wrong format");
+        }
+    }
+}
