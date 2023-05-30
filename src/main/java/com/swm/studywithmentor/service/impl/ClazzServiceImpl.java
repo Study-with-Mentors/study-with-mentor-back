@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ClazzServiceImpl implements ClazzService {
@@ -38,8 +39,8 @@ public class ClazzServiceImpl implements ClazzService {
             throw new ConflictException(Clazz.class, ActionConflict.CREATE, "Enrollment end date must be before start date", clazzDto.getEnrollmentEndDate(), clazzDto.getStartDate());
         }
         Clazz clazz = mapper.toEntity(clazzDto);
-        Course course = courseRepository.findById(clazzDto.getCourse().getId())
-                .orElseThrow(() -> new NotFoundException(Course.class, clazzDto.getCourse().getId()));
+        Course course = courseRepository.findById(clazzDto.getCourseId())
+                .orElseThrow(() -> new NotFoundException(Course.class, clazzDto.getCourseId()));
 
         if (course.getStatus() == CourseStatus.DISABLE) {
             throw new ConflictException(Clazz.class, ActionConflict.CREATE, "Course is not possible to create new class", course.getId());
@@ -60,6 +61,16 @@ public class ClazzServiceImpl implements ClazzService {
     }
 
     @Override
+    public List<ClazzDto> getClazzesByCourse(UUID courseId) {
+        // TODO: pagination and maybe searching, filtering, sorting
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new NotFoundException(Course.class, courseId));
+        return course.getClazzes().stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<ClazzDto> getClazzes() {
         return null;
     }
@@ -71,6 +82,6 @@ public class ClazzServiceImpl implements ClazzService {
 
     @Override
     public void deleteClazz(UUID id) {
-
+        // TODO: only delete when there is no enrollment and maybe in one week after created
     }
 }

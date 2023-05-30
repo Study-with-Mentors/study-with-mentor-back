@@ -8,6 +8,7 @@ import java.util.UUID;
 public interface ClazzService {
     ClazzDto startNewClazz(ClazzDto clazzDto);
     ClazzDto getClazz(UUID id);
+    List<ClazzDto> getClazzesByCourse(UUID courseId);
     List<ClazzDto> getClazzes();
     ClazzDto updateClazz(ClazzDto clazzDto);
     void deleteClazz(UUID id);

@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -17,5 +18,5 @@ public class ClazzDto extends BaseDto {
     @Min(0)
     private float price;
     @NotNull
-    private CourseDto course;
+    private UUID courseId;
 }

@@ -26,6 +26,7 @@ public class Course extends BaseEntity {
     private String fullName;
     private String description;
     private String learningOutcome;
+    // TODO: refactor intendedLearner to enum
     private String intendedLearner;
     @Enumerated(EnumType.STRING)
     private CourseStatus status;

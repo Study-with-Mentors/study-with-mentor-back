@@ -103,7 +103,7 @@ public class CourseServiceImpl implements CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Course.class, id));
         if (course.getStatus() != CourseStatus.DISABLE) {
-            // TODO: test this one
+            // TODO: test this one after implementing clazz CRUD
             long referenceCount = clazzRepository.countByCourse(course);
             if (referenceCount != 0) {
                 course.setStatus(CourseStatus.DISABLE);
