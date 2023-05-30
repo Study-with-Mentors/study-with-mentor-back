@@ -1,11 +1,13 @@
 package com.swm.studywithmentor.controller;
 
 import com.swm.studywithmentor.model.dto.EnrollmentDto;
+import com.swm.studywithmentor.model.dto.query.SearchRequest;
 import com.swm.studywithmentor.model.exception.ApplicationException;
 import com.swm.studywithmentor.service.EnrollmentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -18,12 +20,6 @@ import java.util.UUID;
 @Slf4j
 public class EnrollmentController {
     private final EnrollmentService enrollmentService;
-
-    @GetMapping
-    public ResponseEntity<?> getEnrollments() {
-        var enrollments = enrollmentService.getEnrollments();
-        return ResponseEntity.ok(enrollments);
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getEnrollment(@PathVariable String id) {
@@ -38,6 +34,11 @@ public class EnrollmentController {
             log.error(e.getMessage());
             return ResponseEntity.badRequest().body("ID: " + id + " is wrong format");
         }
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<?> searchEnrollments(@RequestBody SearchRequest searchRequest) {
+        return ResponseEntity.ok(enrollmentService.searchEnrollments(searchRequest));
     }
 
     @PostMapping

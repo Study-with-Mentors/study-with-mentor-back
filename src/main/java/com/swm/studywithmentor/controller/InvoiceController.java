@@ -1,6 +1,7 @@
 package com.swm.studywithmentor.controller;
 
 import com.swm.studywithmentor.model.dto.InvoiceDto;
+import com.swm.studywithmentor.model.dto.query.SearchRequest;
 import com.swm.studywithmentor.model.exception.ApplicationException;
 import com.swm.studywithmentor.service.InvoiceService;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +20,6 @@ import java.util.UUID;
 public class InvoiceController {
     private final InvoiceService invoiceService;
 
-    @GetMapping
-    public ResponseEntity<?> getInvoices() {
-        return ResponseEntity.ok(invoiceService);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<?> getInvoice(@PathVariable String id) {
         try {
@@ -40,6 +36,10 @@ public class InvoiceController {
         return ResponseEntity.internalServerError().build();
     }
 
+    @PostMapping("/search")
+    public ResponseEntity<?> searchInvoices(@RequestBody SearchRequest searchRequest) {
+        return ResponseEntity.ok(invoiceService.searchInvoices(searchRequest));
+    }
     @PostMapping
     public ResponseEntity<?> createInvoice(@RequestBody InvoiceDto invoiceDto) {
         try {

@@ -1,6 +1,8 @@
 package com.swm.studywithmentor.service.impl;
 
 import com.swm.studywithmentor.model.dto.InvoiceDto;
+import com.swm.studywithmentor.model.dto.query.SearchRequest;
+import com.swm.studywithmentor.model.dto.query.SearchSpecification;
 import com.swm.studywithmentor.model.entity.invoice.Invoice;
 import com.swm.studywithmentor.model.entity.invoice.InvoiceStatus;
 import com.swm.studywithmentor.model.exception.ApplicationException;
@@ -10,12 +12,14 @@ import com.swm.studywithmentor.service.InvoiceService;
 import com.swm.studywithmentor.util.ApplicationMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +33,14 @@ public class InvoiceServiceImpl implements InvoiceService {
         return id -> invoiceRepository.findById(id)
                 .orElseThrow(() -> new ApplicationException("NOT_FOUND", 404, "Not found invoice ID: " + id.toString()));
     }
+
+    @Override
+    public List<InvoiceDto> searchInvoices(SearchRequest searchRequest) {
+        SearchSpecification<Invoice> searchSpecification = new SearchSpecification<>(searchRequest);
+        Pageable pageable = SearchSpecification.getPage(searchRequest.getPage(), searchRequest.getSize());
+        return applicationMapper.invoiceToDto(invoiceRepository.findAll(searchSpecification, pageable).get().collect(Collectors.toList()));
+    }
+
     @Override
     public List<InvoiceDto> getInvoices() {
         var invoices = invoiceRepository.findAll();

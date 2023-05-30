@@ -1,18 +1,22 @@
 package com.swm.studywithmentor.service.impl;
 
 import com.swm.studywithmentor.model.dto.EnrollmentDto;
+import com.swm.studywithmentor.model.dto.query.SearchRequest;
+import com.swm.studywithmentor.model.dto.query.SearchSpecification;
 import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
 import com.swm.studywithmentor.model.exception.ApplicationException;
 import com.swm.studywithmentor.repository.EnrollmentRepository;
 import com.swm.studywithmentor.repository.UserRepository;
 import com.swm.studywithmentor.service.EnrollmentService;
 import com.swm.studywithmentor.util.ApplicationMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -37,6 +41,14 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         //TODO: use specification and pagination
         var enrollments = enrollmentRepository.findAll();
         return applicationMapper.enrollmentToDto(enrollments);
+    }
+
+    @Override
+    public List<EnrollmentDto> searchEnrollments(SearchRequest searchRequest) {
+        SearchSpecification<Enrollment> searchSpecification = new SearchSpecification<Enrollment>(searchRequest);
+        Pageable pageable = SearchSpecification.getPage(searchRequest.getPage(), searchRequest.getSize());
+        var result = enrollmentRepository.findAll(searchSpecification, pageable);
+        return applicationMapper.enrollmentToDto(result.get().collect(Collectors.toList()));
     }
 
     @Override
