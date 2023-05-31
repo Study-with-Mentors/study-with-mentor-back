@@ -9,7 +9,6 @@ import javax.persistence.*;
 import lombok.*;
 
 import java.sql.Date;
-import java.util.UUID;
 
 @Entity
 @Builder
@@ -25,7 +24,7 @@ public class Enrollment extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private User student;
     @ManyToOne
     @JoinColumn(name = "class_id")
     private Clazz clazz;

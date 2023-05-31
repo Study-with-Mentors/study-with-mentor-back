@@ -3,13 +3,11 @@ package com.swm.studywithmentor.model.entity.session;
 import com.swm.studywithmentor.model.entity.Activity;
 import com.swm.studywithmentor.model.entity.BaseEntity;
 import com.swm.studywithmentor.model.entity.Lesson;
-import javax.persistence.*;
-
 import com.swm.studywithmentor.model.entity.course.Course;
 import lombok.*;
 
-import java.util.Set;
-import java.util.UUID;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Builder
@@ -32,8 +30,8 @@ public class Session extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
     private Course course;
+    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL)
+    private List<Activity> activities;
     @OneToMany(mappedBy = "session")
-    private Set<Activity> activities;
-    @OneToMany(mappedBy = "session")
-    private Set<Lesson> lessons;
+    private List<Lesson> lessons;
 }

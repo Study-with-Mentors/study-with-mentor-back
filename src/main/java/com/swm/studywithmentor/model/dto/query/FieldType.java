@@ -5,9 +5,22 @@ import com.swm.studywithmentor.model.entity.invoice.PaymentType;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 @Slf4j
 public enum FieldType {
+    ID {
+        @Override
+        public Object parse(String value) {
+            Object uuid = null;
+            try {
+                uuid = UUID.fromString(value);
+            } catch (IllegalArgumentException e) {
+                log.error("cannot convert {} to UUID", value);
+            }
+            return uuid;
+        }
+    },
     INTEGER {
         @Override
         public Object parse(String value) {

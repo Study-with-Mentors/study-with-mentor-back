@@ -10,6 +10,7 @@ import com.swm.studywithmentor.repository.UserRepository;
 import com.swm.studywithmentor.service.EnrollmentService;
 import com.swm.studywithmentor.util.ApplicationMapper;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -33,7 +34,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         this.applicationMapper = applicationMapper;
         this.userRepository = userRepository;
         findById = id -> enrollmentRepository.findById(id)
-                .orElseThrow(() -> new ApplicationException("NOT_FOUND", 404 , "Not found enrollment " + id.toString()));
+                .orElseThrow(() -> new ApplicationException("NOT_FOUND", HttpStatus.NOT_FOUND , "Not found enrollment " + id.toString()));
     }
 
     @Override
@@ -61,9 +62,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public EnrollmentDto createEnrollment(EnrollmentDto enrollmentDto) {
         var enrollment = applicationMapper.enrollmentToEntity(enrollmentDto);
         //TODO: use UserService to get user
-        var user = userRepository.findById(enrollmentDto.getUser().getId())
-                .orElseThrow(() -> new ApplicationException("Not Found", 404, "Not found user: " + enrollmentDto.getUser().getId().toString()));
-        enrollment.setUser(user);
+        var user = userRepository.findById(enrollmentDto.getStudent().getId())
+                .orElseThrow(() -> new ApplicationException("Not Found", HttpStatus.NOT_FOUND, "Not found user: " + enrollmentDto.getStudent().getId().toString()));
+        enrollment.setStudent(user);
         enrollment = enrollmentRepository.save(enrollment);
         return applicationMapper.enrollmentToDto(enrollment);
     }
@@ -71,12 +72,12 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Override
     public EnrollmentDto updateEnrollment(EnrollmentDto enrollmentDto) {
         var enrollment = findById.apply(enrollmentDto.getId());
-        var user = enrollmentDto.getUser();
-        if(user != null && user.getId() != null && !enrollment.getUser().getId().toString().equals(enrollmentDto.getUser().getId().toString())) {
+        var user = enrollmentDto.getStudent();
+        if(user != null && user.getId() != null && !enrollment.getStudent().getId().toString().equals(enrollmentDto.getStudent().getId().toString())) {
             //TODO: use UserService to get user
-            var newUser = userRepository.findById(enrollmentDto.getUser().getId())
-                    .orElseThrow(() -> new ApplicationException("Not Found", 404, "Not found user: " + enrollmentDto.getUser().getId().toString()));
-            enrollment.setUser(newUser);
+            var newUser = userRepository.findById(enrollmentDto.getStudent().getId())
+                    .orElseThrow(() -> new ApplicationException("Not Found", HttpStatus.NOT_FOUND, "Not found user: " + enrollmentDto.getStudent().getId().toString()));
+            enrollment.setStudent(newUser);
         }
         applicationMapper.enrollmentToEntity(enrollment, enrollmentDto);
         enrollment = enrollmentRepository.save(enrollment);

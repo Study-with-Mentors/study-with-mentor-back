@@ -13,6 +13,7 @@ import com.swm.studywithmentor.util.ApplicationMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -31,7 +32,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Bean
     private Function<UUID, Invoice> findById() {
         return id -> invoiceRepository.findById(id)
-                .orElseThrow(() -> new ApplicationException("NOT_FOUND", 404, "Not found invoice ID: " + id.toString()));
+                .orElseThrow(() -> new ApplicationException("NOT_FOUND", HttpStatus.NOT_FOUND, "Not found invoice ID: " + id));
     }
 
     @Override
@@ -56,7 +57,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public InvoiceDto createInvoice(InvoiceDto invoiceDto) {
         var enrollment = enrollmentRepository.findById(invoiceDto.getEnrollment().getId())
-                .orElseThrow(() -> new ApplicationException("NOT_FOUND", 404, "Not found enrollment ID: " + invoiceDto.getEnrollment().getId()));
+                .orElseThrow(() -> new ApplicationException("NOT_FOUND", HttpStatus.NOT_FOUND, "Not found enrollment ID: " + invoiceDto.getEnrollment().getId()));
         var invoice = applicationMapper.invoiceToEntity(invoiceDto);
         invoice.setEnrollment(enrollment);
         if(invoiceDto.getStatus().equals(InvoiceStatus.PAYED))
@@ -72,7 +73,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         var enrollmentDto = invoiceDto.getEnrollment();
         if(enrollmentDto != null && enrollmentDto.getId() != null && !enrollmentDto.getId().equals(invoice.getEnrollment().getId())) {
             var enrollment = enrollmentRepository.findById(invoiceDto.getEnrollment().getId())
-                            .orElseThrow(() -> new ApplicationException("NOT_FOUND", 404, "Not found enrollment" + enrollmentDto.getEnrollmentDate().toString()));
+                            .orElseThrow(() -> new ApplicationException("NOT_FOUND", HttpStatus.NOT_FOUND, "Not found enrollment" + enrollmentDto.getEnrollmentDate().toString()));
             invoice.setEnrollment(enrollment);
             invoiceDto.setInvoiceId(enrollment.getId());
             this.deleteInvoice(invoice.getInvoiceId());

@@ -6,6 +6,7 @@ import com.swm.studywithmentor.model.exception.ApplicationException;
 import com.swm.studywithmentor.service.InvoiceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,7 @@ public class InvoiceController {
             return ResponseEntity.ok(invoiceService.getInvoiceById(invoiceId));
         } catch (ApplicationException e) {
             log.error(e.getMessage());
-            if(e.getHttpStatusCode() == 404)
+            if(e.getStatus() == HttpStatus.NOT_FOUND)
                 return ResponseEntity.notFound().build();
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());
@@ -47,7 +48,7 @@ public class InvoiceController {
             return ResponseEntity.created(new URI("/api/invoice/" + invoice.getInvoiceId().toString())).build();
         } catch (ApplicationException exception) {
             log.error(exception.getMessage());
-            if(exception.getHttpStatusCode() == 404)
+            if(exception.getStatus() == HttpStatus.NOT_FOUND)
                 return ResponseEntity.notFound().build();
             return ResponseEntity.badRequest().build();
         } catch (URISyntaxException e) {
@@ -65,7 +66,7 @@ public class InvoiceController {
             return ResponseEntity.ok(invoice);
         } catch (ApplicationException a) {
             log.error(a.getMessage());
-            if(a.getHttpStatusCode() == 404)
+            if(a.getStatus() == HttpStatus.NOT_FOUND)
                 return ResponseEntity.notFound().build();
             return ResponseEntity.internalServerError().build();
         } catch (IllegalArgumentException e) {
@@ -82,7 +83,7 @@ public class InvoiceController {
             return ResponseEntity.accepted().build();
         } catch (ApplicationException a) {
             log.error(a.getMessage());
-            if(a.getHttpStatusCode() == 404)
+            if(a.getStatus() == HttpStatus.NOT_FOUND)
                 return ResponseEntity.notFound().build();
             return ResponseEntity.internalServerError().build();
         } catch (IllegalArgumentException e) {

@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EnrollmentDto extends BaseDto {
-    private UserDto user;
+    private UserDto student;
     private Date enrollmentDate;
     private EnrollmentStatus status;
     private UUID invoice;
