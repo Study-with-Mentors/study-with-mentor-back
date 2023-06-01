@@ -17,7 +17,7 @@ public class ApplicationExceptionHandler {
     @ExceptionHandler(ApplicationException.class)
     public ResponseEntity<ErrorMessage> applicationUnexpectedException(ApplicationException ex, WebRequest request) {
         log.error(ex.getMessage(), ex);
-        return ResponseEntity.status(ex.getHttpStatusCode())
+        return ResponseEntity.status(ex.getStatus())
             .body(new ErrorMessage(ex.getErrorCode(), ex.getPayload()));
     }
 
