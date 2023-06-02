@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/api/payment/vnpay")
+@RequestMapping("/api/payment")
 @RequiredArgsConstructor
 @Slf4j
 public class PaymentController {
 
     private final PaymentService paymentService;
 
-    @PostMapping
+    @PostMapping("/vnpay")
     public ResponseEntity<?> createPayment(@RequestBody InvoiceDto invoiceDto, HttpServletRequest req) {
         String paymentURL;
         var resObjBuilder = ResponseObject.builder();
@@ -34,7 +34,7 @@ public class PaymentController {
         return paymentURL.isEmpty() ? ResponseEntity.accepted().build() : ResponseEntity.ok(resObjBuilder.build());
     }
 
-    @GetMapping
+    @GetMapping("/vnpay")
     public ResponseEntity<?> paymentResult(HttpServletRequest request) {
         var res = paymentService.paymentReturn(request);
         return ResponseEntity.ok(ResponseObject.builder().code(200).message(res).build());
