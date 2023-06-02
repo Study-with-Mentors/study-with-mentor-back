@@ -143,8 +143,6 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElseThrow(() -> new ApplicationException("NOT_FOUND", HttpStatus.NOT_FOUND, "Not found invoice " + invoiceDto.getInvoiceId()));
         if(!isValidInvoice(find))
             return "";
-        String orderType = req.getParameter("ordertype");
-        // TODO: add method to convert money in any currencies into VND
         //VNPay only support VND
         //multiply with 100 is required by VNPay
         long amount = (long)(Math.ceil(find.getTotalPrice()) * 100);
@@ -231,7 +229,6 @@ public class PaymentServiceImpl implements PaymentService {
 
     public String paymentReturn(HttpServletRequest req) {
         String message = "Transaction fail";
-        log.info("Payment Info: " + req.getParameter("vnp_OrderInfo"));
         String responseCode = "V" + req.getParameter("vnp_ResponseCode");
         if(!VNPayStatus.isVNPayStatus(responseCode))
             return message;
@@ -244,7 +241,6 @@ public class PaymentServiceImpl implements PaymentService {
             invoice.setType(PaymentType.VNPAY);
             invoice.setStatus(InvoiceStatus.PAYED);
             invoice.setTotalPrice(totalPrice);
-            invoice = invoiceRepository.save(invoice);
         }
         message = VNPayStatus.valueOf(responseCode).getMessage();
         return message;

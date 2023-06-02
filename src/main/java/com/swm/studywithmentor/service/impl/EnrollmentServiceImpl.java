@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-//TODO: validate ID format
 public class EnrollmentServiceImpl implements EnrollmentService {
 
     private final EnrollmentRepository enrollmentRepository;
@@ -39,7 +38,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public List<EnrollmentDto> getEnrollments() {
-        //TODO: use specification and pagination
         var enrollments = enrollmentRepository.findAll();
         return applicationMapper.enrollmentToDto(enrollments);
     }
@@ -61,7 +59,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     @Override
     public EnrollmentDto createEnrollment(EnrollmentDto enrollmentDto) {
         var enrollment = applicationMapper.enrollmentToEntity(enrollmentDto);
-        //TODO: use UserService to get user
         var user = userRepository.findById(enrollmentDto.getStudent().getId())
                 .orElseThrow(() -> new ApplicationException("Not Found", HttpStatus.NOT_FOUND, "Not found user: " + enrollmentDto.getStudent().getId().toString()));
         enrollment.setStudent(user);
@@ -74,7 +71,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         var enrollment = findById.apply(enrollmentDto.getId());
         var user = enrollmentDto.getStudent();
         if(user != null && user.getId() != null && !enrollment.getStudent().getId().toString().equals(enrollmentDto.getStudent().getId().toString())) {
-            //TODO: use UserService to get user
             var newUser = userRepository.findById(enrollmentDto.getStudent().getId())
                     .orElseThrow(() -> new ApplicationException("Not Found", HttpStatus.NOT_FOUND, "Not found user: " + enrollmentDto.getStudent().getId().toString()));
             enrollment.setStudent(newUser);
