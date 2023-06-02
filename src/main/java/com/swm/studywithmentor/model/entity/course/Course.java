@@ -8,8 +8,7 @@ import com.swm.studywithmentor.model.entity.user.User;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
-import java.util.UUID;
+import java.util.List;
 
 @Entity
 @Data
@@ -32,14 +31,14 @@ public class Course extends BaseEntity {
     private CourseStatus status;
     @Enumerated(EnumType.STRING)
     private CourseLevel courseLevel;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "field_id")
     private Field field;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User mentor;
     @OneToMany(mappedBy = "course")
-    private Set<Clazz> clazzes;
+    private List<Clazz> clazzes;
     @OneToMany(mappedBy = "course")
-    private Set<Session> sessions;
+    private List<Session> sessions;
 }
