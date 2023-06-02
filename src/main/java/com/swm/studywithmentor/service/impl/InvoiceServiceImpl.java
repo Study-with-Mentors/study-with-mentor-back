@@ -11,11 +11,13 @@ import com.swm.studywithmentor.repository.InvoiceRepository;
 import com.swm.studywithmentor.service.InvoiceService;
 import com.swm.studywithmentor.util.ApplicationMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +26,8 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
+@Slf4j
 public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final EnrollmentRepository enrollmentRepository;
@@ -62,7 +66,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setEnrollment(enrollment);
         if(invoiceDto.getStatus().equals(InvoiceStatus.PAYED))
             invoice.setPayDate(new Date(System.currentTimeMillis()));
-
+        invoice.setTotalPrice(enrollment.getClazz().getPrice());
         invoice = invoiceRepository.save(invoice);
         return applicationMapper.invoiceToDto(invoice);
     }
