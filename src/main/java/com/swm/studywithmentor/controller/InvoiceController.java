@@ -2,14 +2,18 @@ package com.swm.studywithmentor.controller;
 
 import com.swm.studywithmentor.model.dto.InvoiceDto;
 import com.swm.studywithmentor.model.dto.query.SearchRequest;
+import com.swm.studywithmentor.model.entity.invoice.InvoiceStatus;
+import com.swm.studywithmentor.model.entity.invoice.PaymentType;
 import com.swm.studywithmentor.model.exception.ApplicationException;
 import com.swm.studywithmentor.service.InvoiceService;
+import com.swm.studywithmentor.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
@@ -20,6 +24,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class InvoiceController {
     private final InvoiceService invoiceService;
+    private final PaymentService paymentService;
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getInvoice(@PathVariable String id) {
@@ -42,9 +47,12 @@ public class InvoiceController {
         return ResponseEntity.ok(invoiceService.searchInvoices(searchRequest));
     }
     @PostMapping
-    public ResponseEntity<?> createInvoice(@RequestBody InvoiceDto invoiceDto) {
+    public ResponseEntity<?> createInvoice(@RequestBody InvoiceDto invoiceDto, HttpServletRequest request) {
         try {
             var invoice = invoiceService.createInvoice(invoiceDto);
+            if(invoice.getStatus() != null && invoice.getStatus() == InvoiceStatus.NONE && invoice.getPaymentType() == PaymentType.VNPAY) {
+                return ResponseEntity.ok(paymentService.createPaymentURL(invoice, request));
+            }
             return ResponseEntity.created(new URI("/api/invoice/" + invoice.getInvoiceId().toString())).build();
         } catch (ApplicationException exception) {
             log.error(exception.getMessage());
