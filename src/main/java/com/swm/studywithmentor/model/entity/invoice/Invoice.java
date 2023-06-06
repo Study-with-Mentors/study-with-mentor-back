@@ -4,7 +4,9 @@ import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
 import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import java.sql.Date;
 import java.util.UUID;
@@ -13,12 +15,14 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class Invoice {
     @Column
     @Version
     private Long version;
 
     @Id
+    @Type(type = "uuid-char")
     private UUID invoiceId;
     @OneToOne
     @MapsId

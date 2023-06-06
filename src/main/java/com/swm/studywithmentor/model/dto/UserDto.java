@@ -1,13 +1,15 @@
 package com.swm.studywithmentor.model.dto;
 
 import com.swm.studywithmentor.model.entity.user.Gender;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.sql.Date;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDto extends BaseDto {
     private String email;
     private String firstName;
