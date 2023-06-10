@@ -1,7 +1,7 @@
 package com.swm.studywithmentor.controller;
 
 import com.swm.studywithmentor.model.dto.SessionDto;
-import com.swm.studywithmentor.model.entity.session.Session;
+import com.swm.studywithmentor.model.dto.create.SessionCreateDto;
 import com.swm.studywithmentor.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,7 +40,7 @@ public class SessionController {
     }
 
     @PostMapping
-    public ResponseEntity<SessionDto> createSession(@RequestBody SessionDto dto) {
+    public ResponseEntity<SessionDto> createSession(@RequestBody SessionCreateDto dto) {
         SessionDto resultDto = sessionService.createSession(dto);
         return new ResponseEntity<>(resultDto, HttpStatus.OK);
     }

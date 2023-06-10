@@ -1,6 +1,7 @@
 package com.swm.studywithmentor.service.impl;
 
 import com.swm.studywithmentor.model.dto.SessionDto;
+import com.swm.studywithmentor.model.dto.create.SessionCreateDto;
 import com.swm.studywithmentor.model.entity.Activity;
 import com.swm.studywithmentor.model.entity.course.Course;
 import com.swm.studywithmentor.model.entity.course.CourseStatus;
@@ -77,7 +78,7 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public SessionDto createSession(SessionDto sessionDto) {
+    public SessionDto createSession(SessionCreateDto sessionDto) {
         Course course = courseRepository.findById(sessionDto.getCourseId())
                 .orElseThrow(() -> new NotFoundException(Course.class, sessionDto.getCourseId()));
         if (course.getStatus() == CourseStatus.DISABLE) {

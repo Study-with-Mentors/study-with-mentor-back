@@ -3,6 +3,10 @@ package com.swm.studywithmentor.util;
 import com.swm.studywithmentor.model.dto.EnrollmentDto;
 import com.swm.studywithmentor.model.dto.InvoiceDto;
 import com.swm.studywithmentor.model.dto.UserDto;
+import com.swm.studywithmentor.model.dto.create.ActivityCreateDto;
+import com.swm.studywithmentor.model.dto.create.CourseCreateDto;
+import com.swm.studywithmentor.model.dto.create.FieldCreateDto;
+import com.swm.studywithmentor.model.dto.create.SessionCreateDto;
 import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
 import com.swm.studywithmentor.model.entity.invoice.Invoice;
 import com.swm.studywithmentor.model.entity.user.User;
@@ -101,6 +105,10 @@ public class ApplicationMapper {
         return mapper.map(courseDto, Course.class);
     }
 
+    public Course toEntity(CourseCreateDto courseCreateDto) {
+        return mapper.map(courseCreateDto, Course.class);
+    }
+
     public void toEntity(CourseDto courseDto, Course course) {
         mapper.map(courseDto, course);
     }
@@ -110,6 +118,10 @@ public class ApplicationMapper {
     }
 
     public Field toEntity(FieldDto fieldDto) {
+        return mapper.map(fieldDto, Field.class);
+    }
+
+    public Field toEntity(FieldCreateDto fieldDto) {
         return mapper.map(fieldDto, Field.class);
     }
 
@@ -143,6 +155,9 @@ public class ApplicationMapper {
         return mapper.map(sessionDto, Session.class);
     }
 
+    public Session toEntity(SessionCreateDto sessionCreateDto) {
+        return mapper.map(sessionCreateDto, Session.class);
+    }
     public void toEntity(SessionDto sessionDto, Session session) {
         mapper.map(sessionDto, session);
     }
@@ -155,6 +170,9 @@ public class ApplicationMapper {
         return mapper.map(activityDto, Activity.class);
     }
 
+    public Activity toEntity(ActivityCreateDto activityCreateDto) {
+        return mapper.map(activityCreateDto, Activity.class);
+    }
     public void toEntity(ActivityDto activityDto, Activity activity) {
         mapper.map(activityDto, activity);
     }
