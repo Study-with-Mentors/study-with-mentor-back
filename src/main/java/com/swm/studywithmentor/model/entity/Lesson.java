@@ -1,12 +1,19 @@
 package com.swm.studywithmentor.model.entity;
 
 import com.swm.studywithmentor.model.entity.session.Session;
-import javax.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-import lombok.*;
-
-import java.sql.Date;
-import java.util.UUID;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Version;
+import java.sql.Timestamp;
 
 @Entity
 @Builder
@@ -21,8 +28,8 @@ public class Lesson extends BaseEntity{
     private Long version;
 
     private long lessonNum;
-    private Date startTime;
-    private Date endTime;
+    private Timestamp startTime;
+    private Timestamp endTime;
     private String location;
     @ManyToOne
     @JoinColumn(name = "class_id")
