@@ -2,6 +2,7 @@ package com.swm.studywithmentor.controller;
 
 import com.swm.studywithmentor.model.dto.CourseDto;
 import com.swm.studywithmentor.model.dto.PageResult;
+import com.swm.studywithmentor.model.dto.create.CourseCreateDto;
 import com.swm.studywithmentor.model.dto.search.CourseSearchDto;
 import com.swm.studywithmentor.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity<CourseDto> createCourse(@RequestBody CourseDto courseDto) {
+    public ResponseEntity<CourseDto> createCourse(@RequestBody CourseCreateDto courseDto) {
         CourseDto resultDto = courseService.createCourse(courseDto);
         return new ResponseEntity<>(resultDto, HttpStatus.OK);
     }
