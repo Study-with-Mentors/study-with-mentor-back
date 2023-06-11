@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -53,7 +52,7 @@ public class SessionServiceImpl implements SessionService {
         List<Session> sessions = sessionRepository.findAll();
         return sessions.stream()
                 .map(mapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -62,7 +61,7 @@ public class SessionServiceImpl implements SessionService {
                 .orElseThrow(() -> new NotFoundException(Course.class, courseId));
         return course.getSessions().stream()
                 .map(mapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -93,7 +92,7 @@ public class SessionServiceImpl implements SessionService {
         Session session = mapper.toEntity(sessionDto);
         List<Activity> activities = sessionDto.getActivities().stream()
                 .map(mapper::toEntity)
-                .collect(Collectors.toList());
+                .toList();
 
         // mapping
         session.setActivities(activities);

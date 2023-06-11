@@ -4,20 +4,17 @@ import com.swm.studywithmentor.model.dto.FieldDto;
 import com.swm.studywithmentor.model.dto.create.FieldCreateDto;
 import com.swm.studywithmentor.model.entity.Field;
 import com.swm.studywithmentor.model.exception.ActionConflict;
-import com.swm.studywithmentor.model.exception.ApplicationException;
 import com.swm.studywithmentor.model.exception.ConflictException;
 import com.swm.studywithmentor.model.exception.NotFoundException;
 import com.swm.studywithmentor.repository.FieldRepository;
 import com.swm.studywithmentor.service.FieldService;
 import com.swm.studywithmentor.util.ApplicationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -43,7 +40,7 @@ public class FieldServiceImpl implements FieldService {
         List<Field> fields = fieldRepository.findByNameContains(name);
         return fields.stream()
                 .map(mapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

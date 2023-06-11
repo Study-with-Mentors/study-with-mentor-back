@@ -31,7 +31,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -78,7 +77,7 @@ public class CourseServiceImpl implements CourseService {
         PageResult<CourseDto> resultPage = new PageResult<>();
         resultPage.setResult(courses.stream()
                 .map(mapper::toDto)
-                .collect(Collectors.toList()));
+                .toList());
         resultPage.setTotalPages(courses.getTotalPages());
         resultPage.setTotalElements(courses.getTotalElements());
         return resultPage;
