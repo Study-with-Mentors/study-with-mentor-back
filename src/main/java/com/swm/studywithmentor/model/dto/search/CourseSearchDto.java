@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class CourseSearchDto {
+public class CourseSearchDto extends BaseSearchDto{
     private String name = "";
     private String intendedLearner = "";
     private CourseLevel courseLevel;

@@ -8,14 +8,8 @@ import com.swm.studywithmentor.model.entity.course.QCourse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 @Repository
 public class CourseRepositoryCustomImpl implements CourseRepositoryCustom {
-    @PersistenceContext
-    private EntityManager entityManager;
-
     @Override
     public Predicate prepareSearchPredicate(CourseSearchDto courseSearchDto) {
         QCourse course = QCourse.course;
