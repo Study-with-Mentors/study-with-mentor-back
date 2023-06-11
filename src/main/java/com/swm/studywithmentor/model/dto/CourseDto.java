@@ -1,5 +1,6 @@
 package com.swm.studywithmentor.model.dto;
 
+import com.swm.studywithmentor.model.entity.course.CourseIntendedLearner;
 import com.swm.studywithmentor.model.entity.course.CourseLevel;
 import com.swm.studywithmentor.model.entity.course.CourseStatus;
 import lombok.Getter;
@@ -14,7 +15,7 @@ public class CourseDto extends BaseDto {
     private String learningOutcome;
     private CourseStatus status;
     private CourseLevel courseLevel;
-    private String intendedLearner;
+    private CourseIntendedLearner intendedLearner;
     private FieldDto field;
     private UserDto mentor;
 }
