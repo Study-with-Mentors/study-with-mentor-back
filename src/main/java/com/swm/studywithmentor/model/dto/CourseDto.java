@@ -1,9 +1,12 @@
 package com.swm.studywithmentor.model.dto;
 
+import com.swm.studywithmentor.model.entity.Image;
 import com.swm.studywithmentor.model.entity.course.CourseLevel;
 import com.swm.studywithmentor.model.entity.course.CourseStatus;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,4 +20,5 @@ public class CourseDto extends BaseDto {
     private String intendedLearner;
     private FieldDto field;
     private UserDto mentor;
+    private List<Image> images;
 }
