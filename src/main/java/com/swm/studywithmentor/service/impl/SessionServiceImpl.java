@@ -9,6 +9,7 @@ import com.swm.studywithmentor.model.entity.session.Session;
 import com.swm.studywithmentor.model.exception.ActionConflict;
 import com.swm.studywithmentor.model.exception.ConflictException;
 import com.swm.studywithmentor.model.exception.NotFoundException;
+import com.swm.studywithmentor.repository.ClazzRepository;
 import com.swm.studywithmentor.repository.CourseRepository;
 import com.swm.studywithmentor.repository.SessionRepository;
 import com.swm.studywithmentor.service.SessionService;
@@ -26,12 +27,14 @@ import java.util.stream.Collectors;
 public class SessionServiceImpl implements SessionService {
     private final SessionRepository sessionRepository;
     private final CourseRepository courseRepository;
+    private final ClazzRepository clazzRepository;
     private final ApplicationMapper mapper;
 
     @Autowired
-    public SessionServiceImpl(SessionRepository sessionRepository, CourseRepository courseRepository, ApplicationMapper mapper) {
+    public SessionServiceImpl(SessionRepository sessionRepository, CourseRepository courseRepository, ClazzRepository clazzRepository, ApplicationMapper mapper) {
         this.sessionRepository = sessionRepository;
         this.courseRepository = courseRepository;
+        this.clazzRepository = clazzRepository;
         this.mapper = mapper;
     }
 
@@ -109,8 +112,13 @@ public class SessionServiceImpl implements SessionService {
     public void deleteSession(UUID id) {
         Session session = sessionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Session.class, id));
-        // TODO: delete only when there is not clazz
-        int numOfClazz = 0;
+        Course course = session.getCourse();
+        if (course.getStatus() == CourseStatus.CLOSE) {
+            throw new ConflictException(Session.class, ActionConflict.UPDATE, "Course is not open for editing. Id: " + course.getId(), course.getId());
+        }
+
+        // TODO: test count by course
+        long numOfClazz = clazzRepository.countByCourse(course);
         if (numOfClazz == 0) {
             // FIXME: n + 1 activities delete
             sessionRepository.delete(session);
