@@ -138,7 +138,7 @@ public class ClazzServiceImpl implements ClazzService {
     }
 
     @Override
-    public PageResult<ClazzDto> getClazzes(ClazzSearchDto dto) {
+    public PageResult<ClazzDto> searchClazzes(ClazzSearchDto dto) {
         // TODO: get page size from property file
         PageRequest pageRequest = PageRequest.of(dto.getPage(), 20, Sort.by(dto.getDirection(), dto.getOrderBy()));
         Predicate predicate = clazzRepository.prepareSearchPredicate(dto);
