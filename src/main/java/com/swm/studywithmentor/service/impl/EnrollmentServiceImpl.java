@@ -46,10 +46,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public List<EnrollmentDto> searchEnrollments(SearchRequest searchRequest) {
-        SearchSpecification<Enrollment> searchSpecification = new SearchSpecification<Enrollment>(searchRequest);
+        SearchSpecification<Enrollment> searchSpecification = new SearchSpecification<>(searchRequest);
         Pageable pageable = SearchSpecification.getPage(searchRequest.getPage(), searchRequest.getSize());
         var result = enrollmentRepository.findAll(searchSpecification, pageable);
-        return applicationMapper.enrollmentToDto(result.get().collect(Collectors.toList()));
+        return applicationMapper.enrollmentToDto(result.get().toList());
     }
 
     @Override
@@ -73,6 +73,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public EnrollmentDto updateEnrollment(EnrollmentDto enrollmentDto) {
         var enrollment = findById.apply(enrollmentDto.getId());
         var user = enrollmentDto.getStudent();
+        // FIXME: Optimistic locking
         if(user != null && user.getId() != null && !enrollment.getStudent().getId().toString().equals(enrollmentDto.getStudent().getId().toString())) {
             //TODO: use UserService to get user
             var newUser = userRepository.findById(enrollmentDto.getStudent().getId())

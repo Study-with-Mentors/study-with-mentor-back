@@ -23,8 +23,8 @@ public class ClazzRepositoryCustomImpl implements ClazzRepositoryCustom {
             builder.and(course.fullName.contains(name)
                     .or(course.shortName.contains(name)));
         }
-        if (StringUtils.isNotBlank(searchDto.getIntendedLearner())) {
-            builder.and(course.intendedLearner.contains(searchDto.getIntendedLearner()));
+        if (searchDto.getIntendedLearner() != null) {
+            builder.and(course.intendedLearner.eq(searchDto.getIntendedLearner()));
         }
         if (searchDto.getCourseLevel() != null) {
             builder.and(course.courseLevel.eq(searchDto.getCourseLevel()));

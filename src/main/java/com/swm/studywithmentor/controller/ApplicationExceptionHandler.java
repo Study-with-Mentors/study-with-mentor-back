@@ -26,7 +26,7 @@ public class ApplicationExceptionHandler {
     public ResponseEntity<ErrorMessage> handleAllException(Exception ex, WebRequest request) {
         log.error(ex.getMessage(), ex);
         return ResponseEntity.internalServerError()
-            .body(new ErrorMessage("Unexpected error happens", "UNEXPECTED_ERROR"));
+            .body(new ErrorMessage("Unexpected error happens", ex.getMessage()));
     }
 }
 

@@ -47,7 +47,6 @@ public class SessionController {
 
     @PutMapping("/{id}")
     public ResponseEntity<SessionDto> updateSession(@RequestBody SessionDto dto, @PathVariable UUID id) {
-        // TODO: test this
         dto.setId(id);
         SessionDto resultDto = sessionService.updateSession(dto);
         return new ResponseEntity<>(resultDto, HttpStatus.OK);

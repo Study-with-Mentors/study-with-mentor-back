@@ -20,6 +20,7 @@ import java.util.UUID;
 
 @Service
 @Transactional
+// TODO: authorization only admin
 public class FieldServiceImpl implements FieldService {
     private final FieldRepository fieldRepository;
     private final ApplicationMapper mapper;

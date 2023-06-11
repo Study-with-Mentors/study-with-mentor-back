@@ -12,12 +12,14 @@ import com.swm.studywithmentor.model.entity.user.User;
 import com.swm.studywithmentor.model.exception.ActionConflict;
 import com.swm.studywithmentor.model.exception.ApplicationException;
 import com.swm.studywithmentor.model.exception.ConflictException;
+import com.swm.studywithmentor.model.exception.EntityOptimisticLockingException;
 import com.swm.studywithmentor.model.exception.ExceptionErrorCodeConstants;
 import com.swm.studywithmentor.model.exception.ForbiddenException;
 import com.swm.studywithmentor.model.exception.NotFoundException;
 import com.swm.studywithmentor.repository.ClazzRepository;
 import com.swm.studywithmentor.repository.CourseRepository;
 import com.swm.studywithmentor.repository.FieldRepository;
+import com.swm.studywithmentor.service.BaseService;
 import com.swm.studywithmentor.service.CourseService;
 import com.swm.studywithmentor.service.UserService;
 import com.swm.studywithmentor.util.ApplicationMapper;
@@ -30,11 +32,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
 @Transactional
-public class CourseServiceImpl implements CourseService {
+public class CourseServiceImpl extends BaseService implements CourseService {
     private final CourseRepository courseRepository;
     private final ClazzRepository clazzRepository;
     private final FieldRepository fieldRepository;
@@ -61,17 +64,15 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public PageResult<CourseDto> searchCourses(CourseSearchDto courseSearchDto) {
         Predicate searchPredicate =  courseRepository.prepareSearchPredicate(courseSearchDto);
-        // TODO: add page size to property file
         PageRequest pageRequest;
         if (courseSearchDto.getOrderBy() != null) {
             Sort.Direction direction = courseSearchDto.getDirection();
             if (direction == null) {
                 direction = Sort.Direction.ASC;
             }
-            pageRequest = PageRequest.of(courseSearchDto.getPage(), 20, Sort.by(direction, courseSearchDto.getOrderBy()));
+            pageRequest = PageRequest.of(courseSearchDto.getPage(), pageSize, Sort.by(direction, courseSearchDto.getOrderBy()));
         } else {
-
-            pageRequest = PageRequest.of(courseSearchDto.getPage(), 20);
+            pageRequest = PageRequest.of(courseSearchDto.getPage(), pageSize);
         }
         Page<Course> courses = courseRepository.findAll(searchPredicate, pageRequest);
         PageResult<CourseDto> resultPage = new PageResult<>();
@@ -90,7 +91,6 @@ public class CourseServiceImpl implements CourseService {
         course.setStatus(CourseStatus.DRAFTING);
         Field field = fieldRepository.findById(courseDto.getFieldId())
                 .orElseThrow(() -> new NotFoundException(Field.class, courseDto.getFieldId()));
-        // TODO: test this
         User user = userService.getCurrentUser();
         course.setMentor(user);
         course.setField(field);
@@ -106,7 +106,9 @@ public class CourseServiceImpl implements CourseService {
             throw new ConflictException(Course.class, ActionConflict.UPDATE, "Cannot update course when course status is " + course.getStatus(), course.getId());
         }
         User user = userService.getCurrentUser();
-        // TODO: test this
+        if (!Objects.equals(courseDto.getVersion(), course.getVersion())) {
+            throw new EntityOptimisticLockingException(course, course.getId());
+        }
         if (ObjectUtils.notEqual(user.getId(), course.getMentor().getId())) {
             throw new ForbiddenException(Course.class, ActionConflict.UPDATE, "User does not own this course", user.getId());
         }
@@ -133,7 +135,6 @@ public class CourseServiceImpl implements CourseService {
                 // DRAFTING and OPEN guarantee course has no clazz
                 courseRepository.delete(course);
             } else {
-                // TODO: test this one after implementing clazz CRUD
                 long referenceCount = clazzRepository.countByCourse(course);
                 if (referenceCount != 0) {
                     course.setStatus(CourseStatus.DISABLE);

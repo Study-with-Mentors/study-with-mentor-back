@@ -46,6 +46,18 @@ public class CourseController {
         return new ResponseEntity<>(resultDto, HttpStatus.OK);
     }
 
+    @PutMapping("/{id}/open")
+    public ResponseEntity<CourseDto> openCourse(@PathVariable UUID id) {
+        CourseDto resultDto = courseService.openCourse(id);
+        return new ResponseEntity<>(resultDto, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/disable")
+    public ResponseEntity<CourseDto> disableCourse(@PathVariable UUID id) {
+        CourseDto resultDto = courseService.disableCourse(id);
+        return new ResponseEntity<>(resultDto, HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCourse(@PathVariable UUID id) {

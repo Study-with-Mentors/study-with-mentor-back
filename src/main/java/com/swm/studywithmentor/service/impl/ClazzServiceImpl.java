@@ -15,14 +15,16 @@ import com.swm.studywithmentor.model.entity.course.CourseStatus;
 import com.swm.studywithmentor.model.entity.user.User;
 import com.swm.studywithmentor.model.exception.ActionConflict;
 import com.swm.studywithmentor.model.exception.ConflictException;
+import com.swm.studywithmentor.model.exception.EntityOptimisticLockingException;
 import com.swm.studywithmentor.model.exception.ForbiddenException;
 import com.swm.studywithmentor.model.exception.NotFoundException;
 import com.swm.studywithmentor.repository.ClazzRepository;
 import com.swm.studywithmentor.repository.CourseRepository;
+import com.swm.studywithmentor.repository.EnrollmentRepository;
 import com.swm.studywithmentor.repository.LessonRepository;
 import com.swm.studywithmentor.repository.UserRepository;
+import com.swm.studywithmentor.service.BaseService;
 import com.swm.studywithmentor.service.ClazzService;
-import com.swm.studywithmentor.service.EnrollmentService;
 import com.swm.studywithmentor.service.UserService;
 import com.swm.studywithmentor.util.ApplicationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,33 +38,33 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
-public class ClazzServiceImpl implements ClazzService {
+public class ClazzServiceImpl extends BaseService implements ClazzService {
     private final ClazzRepository clazzRepository;
     private final CourseRepository courseRepository;
     private final UserService userService;
-    private final EnrollmentService enrollmentService;
+    private final EnrollmentRepository enrollmentRepository;
     private final LessonRepository lessonRepository;
     private final UserRepository userRepository;
     private final ApplicationMapper mapper;
 
     @Autowired
-    public ClazzServiceImpl(ClazzRepository clazzRepository, CourseRepository courseRepository, UserService userService, EnrollmentService enrollmentService, LessonRepository lessonRepository, ApplicationMapper mapper, UserRepository userRepository) {
+    public ClazzServiceImpl(ClazzRepository clazzRepository, CourseRepository courseRepository, UserService userService, EnrollmentRepository enrollmentRepository, LessonRepository lessonRepository, ApplicationMapper mapper, UserRepository userRepository) {
         this.clazzRepository = clazzRepository;
         this.courseRepository = courseRepository;
         this.userService = userService;
         this.lessonRepository = lessonRepository;
-        this.enrollmentService = enrollmentService;
+        this.enrollmentRepository = enrollmentRepository;
         this.userRepository = userRepository;
         this.mapper = mapper;
     }
 
     @Override
     public ClazzDto startNewClazz(ClazzCreateDto clazzDto) {
-        // validate start date, end date and enrollment end date
+        // validate start date, end date and enrollment end date25ddba99-e339-5888-a2c1-c91dd6764391
         if (clazzDto.getStartDate().after(clazzDto.getEndDate())) {
             throw new ConflictException(Clazz.class, ActionConflict.CREATE, "Start date must be before end date", clazzDto.getStartDate(), clazzDto.getEndDate());
         } else if (clazzDto.getEnrollmentEndDate().after(clazzDto.getStartDate())) {
@@ -81,6 +83,7 @@ public class ClazzServiceImpl implements ClazzService {
         Course course = courseRepository.findById(clazzDto.getCourseId())
                 .orElseThrow(() -> new NotFoundException(Course.class, clazzDto.getCourseId()));
         User user = userService.getCurrentUser();
+        // TODO: ensure that clazz has enough session
         // validate course owner
         if (!ObjectUtils.nullSafeEquals(user.getId(), course.getMentor().getId())) {
             throw new ForbiddenException(Clazz.class, ActionConflict.CREATE, "User does not own this course", user.getId());
@@ -134,20 +137,28 @@ public class ClazzServiceImpl implements ClazzService {
                 .orElseThrow(() -> new NotFoundException(Course.class, courseId));
         return course.getClazzes().stream()
                 .map(mapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public PageResult<ClazzDto> searchClazzes(ClazzSearchDto dto) {
-        // TODO: get page size from property file
-        PageRequest pageRequest = PageRequest.of(dto.getPage(), 20, Sort.by(dto.getDirection(), dto.getOrderBy()));
+        PageRequest pageRequest;
+        if (dto.getOrderBy() != null) {
+            Sort.Direction direction = dto.getDirection();
+            if (direction == null) {
+                direction = Sort.Direction.ASC;
+            }
+            pageRequest = PageRequest.of(dto.getPage(), pageSize, Sort.by(direction, dto.getOrderBy()));
+        } else {
+            pageRequest = PageRequest.of(dto.getPage(), pageSize);
+        }
         Predicate predicate = clazzRepository.prepareSearchPredicate(dto);
         Page<Clazz> clazzes = clazzRepository.findAll(predicate, pageRequest);
         PageResult<ClazzDto> resultPage = new PageResult<>();
         resultPage.setResult(clazzes.stream()
                 // TODO: return course information as well
                 .map(mapper::toDto)
-                .collect(Collectors.toList()));
+                .toList());
         resultPage.setTotalPages(clazzes.getTotalPages());
         resultPage.setTotalElements(clazzes.getTotalElements());
         return resultPage;
@@ -162,12 +173,14 @@ public class ClazzServiceImpl implements ClazzService {
         } else if (clazzDto.getEnrollmentEndDate().before(Date.valueOf(LocalDate.now()))) {
             throw new ConflictException(Clazz.class, ActionConflict.UPDATE, "Enrollment end date must be after today", clazzDto.getEnrollmentEndDate());
         }
-        // TODO: check validation from create to see if update need those validations
-        // TODO: test this
+
         Clazz clazz = findClazz(clazzDto.getId());
-        // FIXME: why do I find course in here
-        Course course = courseRepository.findById(clazzDto.getCourseId())
-                .orElseThrow(() -> new NotFoundException(Course.class, clazzDto.getCourseId()));
+        if (!Objects.equals(clazzDto.getVersion(), clazz.getVersion())) {
+            throw new EntityOptimisticLockingException(clazz, clazz.getId());
+        }
+        if (clazz.getCourse().getStatus() == CourseStatus.DISABLE) {
+            throw new ConflictException(Clazz.class, ActionConflict.CREATE, "clazz.getCourse() is disable. Cannot update class", clazz.getCourse().getId());
+        }
 
         mapper.toEntity(clazzDto, clazz);
         clazz = clazzRepository.save(clazz);
@@ -176,7 +189,17 @@ public class ClazzServiceImpl implements ClazzService {
 
     @Override
     public void deleteClazz(UUID id) {
-        // TODO: only allow mentor to delete when there is no enrollments
+        Clazz clazz = findClazz(id);
+        User user = userService.getCurrentUser();
+        if (!Objects.equals(user.getId(), clazz.getCourse().getMentor().getId())) {
+            throw new ForbiddenException(Clazz.class, ActionConflict.DELETE, "User does not own this course", user.getId());
+        }
+        long numOfEnrollment = enrollmentRepository.countEnrollmentByClazz(clazz);
+        if (numOfEnrollment != 0) {
+            throw new ConflictException(Clazz.class, ActionConflict.DELETE, "Cannot delete clazz when there are enrollments", id);
+        }
+
+        clazzRepository.delete(clazz);
     }
 
     private Clazz findClazz(UUID id) {
@@ -186,6 +209,7 @@ public class ClazzServiceImpl implements ClazzService {
 
     @Override
     public ClazzDto closeEnrollment(UUID id) {
+        // TDOO: only mentor can do this
         Clazz clazz = findClazz(id);
         clazz.setStatus(ClazzStatus.CLOSE);
         clazz.setEnrollmentEndDate(Date.valueOf(LocalDate.now()));
@@ -195,6 +219,7 @@ public class ClazzServiceImpl implements ClazzService {
 
     @Override
     public List<UserDto> getEnrolledStudent(UUID id) {
+        // TODO: only mentor can get enrollments
         return userRepository.findUserEnrollInCourse(id).stream()
                 .map(mapper::toDto)
                 .toList();

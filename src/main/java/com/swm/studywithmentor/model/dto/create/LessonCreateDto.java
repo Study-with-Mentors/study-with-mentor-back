@@ -1,5 +1,6 @@
 package com.swm.studywithmentor.model.dto.create;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,8 +17,11 @@ public class LessonCreateDto {
     @Min(0)
     private Long lessonNum;
     @NotNull
+    // FIXME: change the timezone of timestamp
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp startTime;
     @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp endTime;
     @NotEmpty
     private String location;

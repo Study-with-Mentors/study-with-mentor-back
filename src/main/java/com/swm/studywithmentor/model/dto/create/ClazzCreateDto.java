@@ -20,5 +20,6 @@ public class ClazzCreateDto {
     private float price;
     @NotNull
     private UUID courseId;
+    @NotNull
     private List<LessonCreateDto> lessonCreateDtos;
 }

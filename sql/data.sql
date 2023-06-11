@@ -66,18 +66,18 @@ VALUES ('63BBC8B6-798F-A84E-AED8-63ACF7AE4BE1', 'COLLEGE', 'first student bio', 
 INSERT INTO course (course_id, course_level, description, full_name, intended_learner, learning_outcome, short_name,
                     status, version, field_id, user_id)
 VALUES ('C7CF563D-5EEC-E521-A8C2-363C425435D3', 'FUNDAMENTAL', 'Introduction to CS',
-        'Introduction to CS: everything you need to know', 'college', 'understand cs', 'CS introduction', 'DRAFTING',
+        'Introduction to CS: everything you need to know', 'COLLEGE', 'understand cs', 'CS introduction', 'DRAFTING',
         0, '70D2986E-2EE2-A7C9-DD49-BD07731614A2', '26177D9D-86CF-65C0-4758-B1ABA6FA566A'),
        ('0DCE39B1-E5D8-0446-82FC-F82A9FAC8B9E', 'FUNDAMENTAL', 'Introduction to sociology', 'Sociology, what is it',
-        'college', 'know what sociology is', 'socilogoy introduction', 'OPEN', 0,
+        'COLLEGE', 'know what sociology is', 'socilogoy introduction', 'OPEN', 0,
         '06187EA9-0447-AB9E-4D53-7BF6C2CB8507', '8CDA824B-87E7-8218-FB7E-2C7AE5BA9DC2'),
        ('121D7DC1-5E94-C931-B461-732EB3D2D3BB', 'ADVANCE', 'Advance spring', 'Everything you need to know about spring',
-        'college', 'backend dev', 'Spring advance', 'CLOSE', 0, '70D2986E-2EE2-A7C9-DD49-BD07731614A2',
+        'COLLEGE', 'backend dev', 'Spring advance', 'CLOSE', 0, '70D2986E-2EE2-A7C9-DD49-BD07731614A2',
         '26177D9D-86CF-65C0-4758-B1ABA6FA566A'),
-       ('25DDBA99-E339-5888-A2C1-C91DD6764391', 'ADVANCE', 'Deep dive physics', 'Physics and math', 'college',
+       ('25DDBA99-E339-5888-A2C1-C91DD6764391', 'ADVANCE', 'Deep dive physics', 'Physics and math', 'COLLEGE',
         'more math', 'Physics course', 'CLOSE', 0, '7DE575A8-C635-4A22-39F9-B13139392B1F',
         'DFA97EAB-76C7-3294-D97D-C4AD2F5F6A94'),
-       ('B5262A68-DE7E-7885-317F-72F7E52751E4', 'ADVANCE', 'HOHO Phil', 'what is this', 'college', 'i dont know',
+       ('B5262A68-DE7E-7885-317F-72F7E52751E4', 'ADVANCE', 'HOHO Phil', 'what is this', 'COLLEGE', 'i dont know',
         'phil', 'DISABLE', 0, '3AF0EEA4-A9C9-8B14-112F-68B18F67737A', 'BDC85B38-0818-2C18-464F-8CAD01D0376E');
 
 -- create session

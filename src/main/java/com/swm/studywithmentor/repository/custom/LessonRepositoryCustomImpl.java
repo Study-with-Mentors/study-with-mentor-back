@@ -21,8 +21,8 @@ public class LessonRepositoryCustomImpl implements LessonRepositoryCustom {
         var query = new JPAQuery<Lesson>(entityManager);
         QLesson lesson = QLesson.lesson;
         return query.from(lesson)
-                .where(lesson.startTime.after(startTime.toLocalDateTime()).and(lesson.endTime.before(endTime.toLocalDateTime())))
-                .where(lesson.endTime.after(startTime.toLocalDateTime()).and(lesson.endTime.before(endTime.toLocalDateTime())))
+                .where(lesson.startTime.after(startTime).and(lesson.endTime.before(endTime)))
+                .where(lesson.endTime.after(startTime).and(lesson.endTime.before(endTime)))
                 .fetch();
     }
 }
