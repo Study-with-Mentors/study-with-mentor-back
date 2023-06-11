@@ -4,5 +4,5 @@ public enum PaymentType {
     CASH,
     MOMO,
     PAYPAL,
-
+    VNPAY,
 }
