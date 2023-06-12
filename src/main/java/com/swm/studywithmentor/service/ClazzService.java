@@ -1,6 +1,7 @@
 package com.swm.studywithmentor.service;
 
 import com.swm.studywithmentor.model.dto.ClazzDto;
+import com.swm.studywithmentor.model.dto.LessonDto;
 import com.swm.studywithmentor.model.dto.PageResult;
 import com.swm.studywithmentor.model.dto.UserDto;
 import com.swm.studywithmentor.model.dto.create.ClazzCreateDto;
@@ -25,4 +26,6 @@ public interface ClazzService {
     ClazzDto closeEnrollment(UUID id);
 
     List<UserDto> getEnrolledStudent(UUID id);
+
+    List<LessonDto> getClazzFromCourse(UUID id);
 }

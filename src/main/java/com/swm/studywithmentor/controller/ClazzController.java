@@ -1,6 +1,7 @@
 package com.swm.studywithmentor.controller;
 
 import com.swm.studywithmentor.model.dto.ClazzDto;
+import com.swm.studywithmentor.model.dto.LessonDto;
 import com.swm.studywithmentor.model.dto.PageResult;
 import com.swm.studywithmentor.model.dto.UserDto;
 import com.swm.studywithmentor.model.dto.create.ClazzCreateDto;
@@ -74,5 +75,8 @@ public class ClazzController {
         return new ResponseEntity<>(clazzService.getEnrolledStudent(id), HttpStatus.OK);
     }
 
-    // TODO: get clazz lesson
+    @GetMapping("/{id}/clazz")
+    public ResponseEntity<List<LessonDto>> getClazzFromCourse(@PathVariable UUID id) {
+        return new ResponseEntity<>(clazzService.getClazzFromCourse(id), HttpStatus.OK);
+    }
 }

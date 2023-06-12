@@ -2,6 +2,7 @@ package com.swm.studywithmentor.service.impl;
 
 import com.querydsl.core.types.Predicate;
 import com.swm.studywithmentor.model.dto.ClazzDto;
+import com.swm.studywithmentor.model.dto.LessonDto;
 import com.swm.studywithmentor.model.dto.PageResult;
 import com.swm.studywithmentor.model.dto.UserDto;
 import com.swm.studywithmentor.model.dto.create.ClazzCreateDto;
@@ -175,6 +176,7 @@ public class ClazzServiceImpl extends BaseService implements ClazzService {
         }
 
         Clazz clazz = findClazz(clazzDto.getId());
+        checkCurrentUserPermission(clazz, ActionConflict.UPDATE);
         if (!Objects.equals(clazzDto.getVersion(), clazz.getVersion())) {
             throw new EntityOptimisticLockingException(clazz, clazz.getId());
         }
@@ -190,10 +192,7 @@ public class ClazzServiceImpl extends BaseService implements ClazzService {
     @Override
     public void deleteClazz(UUID id) {
         Clazz clazz = findClazz(id);
-        User user = userService.getCurrentUser();
-        if (!Objects.equals(user.getId(), clazz.getCourse().getMentor().getId())) {
-            throw new ForbiddenException(Clazz.class, ActionConflict.DELETE, "User does not own this course", user.getId());
-        }
+        checkCurrentUserPermission(clazz, ActionConflict.DELETE);
         long numOfEnrollment = enrollmentRepository.countEnrollmentByClazz(clazz);
         if (numOfEnrollment != 0) {
             throw new ConflictException(Clazz.class, ActionConflict.DELETE, "Cannot delete clazz when there are enrollments", id);
@@ -209,8 +208,8 @@ public class ClazzServiceImpl extends BaseService implements ClazzService {
 
     @Override
     public ClazzDto closeEnrollment(UUID id) {
-        // TDOO: only mentor can do this
         Clazz clazz = findClazz(id);
+        checkCurrentUserPermission(clazz, ActionConflict.UPDATE);
         clazz.setStatus(ClazzStatus.CLOSE);
         clazz.setEnrollmentEndDate(Date.valueOf(LocalDate.now()));
         clazz = clazzRepository.save(clazz);
@@ -219,9 +218,29 @@ public class ClazzServiceImpl extends BaseService implements ClazzService {
 
     @Override
     public List<UserDto> getEnrolledStudent(UUID id) {
-        // TODO: only mentor can get enrollments
+        checkCurrentUserPermission(id, ActionConflict.READ);
         return userRepository.findUserEnrollInCourse(id).stream()
                 .map(mapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public List<LessonDto> getClazzFromCourse(UUID id) {
+        Clazz clazz = findClazz(id);
+        return lessonRepository.getLessonByClazz(clazz).stream()
+                .map(mapper::toDto)
+                .toList();
+    }
+
+    private void checkCurrentUserPermission(UUID id, ActionConflict actionConflict) {
+        Clazz clazz = findClazz(id);
+        checkCurrentUserPermission(clazz, actionConflict);
+    }
+
+    private void checkCurrentUserPermission(Clazz clazz, ActionConflict actionConflict) {
+        User user = userService.getCurrentUser();
+        if (clazz.getCourse().getMentor().getId() != user.getId()) {
+            throw new ForbiddenException(Clazz.class, actionConflict, "User does not own the course", user.getId());
+        }
     }
 }
