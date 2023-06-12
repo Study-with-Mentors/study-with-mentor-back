@@ -1,5 +1,6 @@
 package com.swm.studywithmentor.util;
 
+import com.swm.studywithmentor.model.entity.user.User;
 import com.swm.studywithmentor.model.exception.InvalidJwtException;
 import com.swm.studywithmentor.model.exception.JwtExpiredException;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -25,27 +26,28 @@ public class JwtTokenProvider {
 
     @PostConstruct
     public void postConstruct() {
-        JWT_SECRET_KEY = Keys.hmacShaKeyFor(JWT_SECRET.getBytes(StandardCharsets.UTF_16));
+        JWT_SECRET_KEY = Keys.hmacShaKeyFor(JWT_SECRET.getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateToken(UserDetails userDetails) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
         return Jwts.builder()
-            .setSubject(userDetails.getUsername())
-            .setIssuedAt(now)
-            .setExpiration(expiryDate)
-            .signWith(JWT_SECRET_KEY)
-            .compact();
+                .setSubject(userDetails.getUsername())
+                .claim("rol", ((User)userDetails).getRole())
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(JWT_SECRET_KEY)
+                .compact();
     }
 
     public String getEmailFromJwt(String token) {
         return Jwts.parserBuilder()
-            .setSigningKey(JWT_SECRET_KEY)
-            .build()
-            .parseClaimsJws(token)
-            .getBody()
-            .getSubject();
+                .setSigningKey(JWT_SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     /**
@@ -58,9 +60,9 @@ public class JwtTokenProvider {
     public void validateToken(String token) {
         try {
             Jwts.parserBuilder()
-                .setSigningKey(JWT_SECRET_KEY)
-                .build()
-                .parseClaimsJws(token);
+                    .setSigningKey(JWT_SECRET_KEY)
+                    .build()
+                    .parseClaimsJws(token);
         } catch (ExpiredJwtException ex) {
             throw new JwtExpiredException(token, ex);
         } catch (JwtException | IllegalArgumentException ex) {
