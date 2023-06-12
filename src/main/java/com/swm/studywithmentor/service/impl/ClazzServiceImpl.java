@@ -28,6 +28,7 @@ import com.swm.studywithmentor.service.BaseService;
 import com.swm.studywithmentor.service.ClazzService;
 import com.swm.studywithmentor.service.UserService;
 import com.swm.studywithmentor.util.ApplicationMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,6 +44,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class ClazzServiceImpl extends BaseService implements ClazzService {
     private final ClazzRepository clazzRepository;
     private final CourseRepository courseRepository;
@@ -66,6 +68,7 @@ public class ClazzServiceImpl extends BaseService implements ClazzService {
     @Override
     public ClazzDto startNewClazz(ClazzCreateDto clazzDto) {
         // validate start date, end date and enrollment end date25ddba99-e339-5888-a2c1-c91dd6764391
+        log.debug("Begin start new clazz: " + clazzDto);
         if (clazzDto.getStartDate().after(clazzDto.getEndDate())) {
             throw new ConflictException(Clazz.class, ActionConflict.CREATE, "Start date must be before end date", clazzDto.getStartDate(), clazzDto.getEndDate());
         } else if (clazzDto.getEnrollmentEndDate().after(clazzDto.getStartDate())) {
@@ -115,6 +118,7 @@ public class ClazzServiceImpl extends BaseService implements ClazzService {
 
         // Change course status to close (close to create new session)
         if (course.getStatus() != CourseStatus.CLOSE) {
+            log.info("Update course status to CLOSE");
             course.setStatus(CourseStatus.CLOSE);
             courseRepository.save(course);
         }
