@@ -34,6 +34,7 @@ public class JwtTokenProvider {
         Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
+                .claim("uid", ((User)userDetails).getId())
                 .claim("rol", ((User)userDetails).getRole())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
