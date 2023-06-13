@@ -1,5 +1,6 @@
 package com.swm.studywithmentor.controller;
 
+import com.swm.studywithmentor.model.dto.LoginDto;
 import com.swm.studywithmentor.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +18,8 @@ public class LoginController {
     }
 
     @PostMapping
-    public String login(@RequestBody Map<String, String> credential) {
-        return loginService.authenticate(credential.get("email"), credential.get("password"));
+    public String login(@RequestBody LoginDto credential) {
+        return loginService.authenticate(credential.getEmail(), credential.getPassword());
     }
 
     @PostMapping("/google")

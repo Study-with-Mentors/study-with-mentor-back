@@ -8,12 +8,15 @@ import com.swm.studywithmentor.model.entity.user.User;
 import com.swm.studywithmentor.model.exception.AccountLockedException;
 import com.swm.studywithmentor.model.exception.GoogleIdTokenVerificationFailedException;
 import com.swm.studywithmentor.model.exception.ValidEmailNotInDatabaseException;
+import com.swm.studywithmentor.model.exception.WrongEmailOrPasswordException;
 import com.swm.studywithmentor.service.LoginService;
 import com.swm.studywithmentor.service.UserService;
 import com.swm.studywithmentor.util.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -58,14 +61,20 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public String authenticate(String email, String password) {
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(email, password)
-        );
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, password)
+            );
 
-        // No exception means login request is valid
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        User userDetails = (User) authentication.getPrincipal();
-        return tokenProvider.generateToken(userDetails);
+            // No exception means login request is valid
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            User userDetails = (User) authentication.getPrincipal();
+            return tokenProvider.generateToken(userDetails);
+        } catch (BadCredentialsException e) {
+            throw new WrongEmailOrPasswordException(email, e);
+        } catch (AccountStatusException e) {
+            throw new AccountLockedException(email, e);
+        }
     }
 
     @Override
