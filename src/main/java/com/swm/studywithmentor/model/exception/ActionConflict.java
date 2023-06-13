@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ActionConflict {
+    READ("reading"),
     CREATE("creating"),
     UPDATE("updating"),
     DELETE("deleting");

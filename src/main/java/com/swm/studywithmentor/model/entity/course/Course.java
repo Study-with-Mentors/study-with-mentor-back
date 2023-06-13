@@ -27,7 +27,8 @@ public class Course extends BaseEntity {
     private String fullName;
     private String description;
     private String learningOutcome;
-    private String intendedLearner;
+    @Enumerated(EnumType.STRING)
+    private CourseIntendedLearner intendedLearner;
     @Enumerated(EnumType.STRING)
     private CourseStatus status;
     @Enumerated(EnumType.STRING)

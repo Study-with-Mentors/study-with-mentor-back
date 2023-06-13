@@ -13,7 +13,7 @@ public class CourseCreateDto {
     private String shortName;
     private String fullName;
     private String description;
-    private String learningOutcome;
+    private CourseCreateDto learningOutcome;
     private CourseStatus status;
     private CourseLevel courseLevel;
     private String intendedLearner;

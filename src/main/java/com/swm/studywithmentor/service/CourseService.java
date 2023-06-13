@@ -13,4 +13,6 @@ public interface CourseService {
     CourseDto createCourse(CourseCreateDto courseDto);
     CourseDto updateCourse(CourseDto courseDto);
     void deleteCourse(UUID id);
+    CourseDto openCourse(UUID id);
+    CourseDto disableCourse(UUID id);
 }

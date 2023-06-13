@@ -8,7 +8,9 @@ import com.swm.studywithmentor.model.entity.course.CourseStatus;
 import com.swm.studywithmentor.model.entity.session.Session;
 import com.swm.studywithmentor.model.exception.ActionConflict;
 import com.swm.studywithmentor.model.exception.ConflictException;
+import com.swm.studywithmentor.model.exception.EntityOptimisticLockingException;
 import com.swm.studywithmentor.model.exception.NotFoundException;
+import com.swm.studywithmentor.repository.ClazzRepository;
 import com.swm.studywithmentor.repository.CourseRepository;
 import com.swm.studywithmentor.repository.SessionRepository;
 import com.swm.studywithmentor.service.SessionService;
@@ -18,8 +20,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -50,7 +52,7 @@ public class SessionServiceImpl implements SessionService {
         List<Session> sessions = sessionRepository.findAll();
         return sessions.stream()
                 .map(mapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -59,7 +61,7 @@ public class SessionServiceImpl implements SessionService {
                 .orElseThrow(() -> new NotFoundException(Course.class, courseId));
         return course.getSessions().stream()
                 .map(mapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -68,9 +70,23 @@ public class SessionServiceImpl implements SessionService {
         sessionDto.setCourseId(null);
         Session session = sessionRepository.findById(sessionDto.getId())
                 .orElseThrow(() -> new NotFoundException(Session.class, sessionDto.getId()));
-        // TODO: fix dto might override activities
+
+        if (!Objects.equals(session.getVersion(), sessionDto.getVersion())) {
+            throw new EntityOptimisticLockingException(session, session.getId());
+        }
+        if (isCourseOpenForEdit(session.getCourse())) {
+            throw new ConflictException(Session.class, ActionConflict.UPDATE, "Course is unable to modify", session.getCourse().getId());
+        }
         mapper.toEntity(sessionDto, session);
-        // TODO: should i delete or update old activities
+        List<Activity> activities = sessionDto.getActivities().stream()
+                .map(mapper::toEntity)
+                .toList();
+
+        // mapping
+        session.setActivities(activities);
+        for (Activity activity : session.getActivities()) {
+            activity.setSession(session);
+        }
 
         session = sessionRepository.save(session);
 
@@ -81,7 +97,7 @@ public class SessionServiceImpl implements SessionService {
     public SessionDto createSession(SessionCreateDto sessionDto) {
         Course course = courseRepository.findById(sessionDto.getCourseId())
                 .orElseThrow(() -> new NotFoundException(Course.class, sessionDto.getCourseId()));
-        if (course.getStatus() == CourseStatus.DISABLE) {
+        if (isCourseOpenForEdit(course)) {
             throw new ConflictException(Session.class, ActionConflict.CREATE, "Course is unable to modify", course.getId());
         }
         if (course.getSessions().stream().anyMatch(s -> s.getSessionNum() == sessionDto.getSessionNum())) {
@@ -90,7 +106,7 @@ public class SessionServiceImpl implements SessionService {
         Session session = mapper.toEntity(sessionDto);
         List<Activity> activities = sessionDto.getActivities().stream()
                 .map(mapper::toEntity)
-                .collect(Collectors.toList());
+                .toList();
 
         // mapping
         session.setActivities(activities);
@@ -109,13 +125,17 @@ public class SessionServiceImpl implements SessionService {
     public void deleteSession(UUID id) {
         Session session = sessionRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Session.class, id));
-        // TODO: delete only when there is not clazz
-        int numOfClazz = 0;
-        if (numOfClazz == 0) {
-            // FIXME: n + 1 activities delete
-            sessionRepository.delete(session);
-        } else {
-            throw new ConflictException(Session.class, ActionConflict.DELETE, "Cannot delete session after starting classes", id);
+        Course course = session.getCourse();
+        if (!isCourseOpenForEdit(course)) {
+            throw new ConflictException(Session.class, ActionConflict.DELETE, "Course is not open for editing. Id: " + course.getId(), course.getId());
         }
+        // FIXME: optimistic locking
+        // there is no need to check number of clazz in a course
+        // because the check for status ensure that there is no clazz for course
+        sessionRepository.delete(session);
+    }
+
+    private boolean isCourseOpenForEdit(Course course) {
+        return course.getStatus() == CourseStatus.OPEN || course.getStatus() == CourseStatus.DRAFTING;
     }
 }
