@@ -11,4 +11,8 @@ public class AccountLockedException extends ApplicationException {
         super(ERROR_CODE, HTTP_STATUS, "Account is locked. Id: " + user.getId());
         super.setPayload(user.getEmail());
     }
+
+    public AccountLockedException(String email, Throwable cause) {
+        super(ERROR_CODE, HTTP_STATUS, "Account is locked. Email: " + email, cause);
+    }
 }
