@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    group:
+      local: common, local
+      deploy: common, deploy
+
+server:
+  servlet:
+    context-path: /api
+
+pagesize: 20

@@ -1,14 +1,28 @@
 package com.swm.studywithmentor.model.exception;
 
-public class EntityOptimisticLockingException extends ApplicationException {
-    public static final String ERROR_CODE = "OPTIMISTIC_LOCKING_FAILED";
+import org.springframework.http.HttpStatus;
 
-    public EntityOptimisticLockingException(Object entity, long id, Throwable cause) {
-        super(ERROR_CODE,
-            String.format("Entity [%s#%d] has been modified or deleted by another transaction",
-                entity.getClass().getName(),
-                id),
-            cause);
+import java.util.UUID;
+
+public class EntityOptimisticLockingException extends ApplicationException {
+    public static final HttpStatus HTTP_STATUS = HttpStatus.CONFLICT;
+
+    public EntityOptimisticLockingException(Object entity, UUID id, Throwable cause) {
+        super(ExceptionErrorCodeConstants.OPTIMISTIC_LOCKING_FAILED,
+                HTTP_STATUS,
+                String.format("Entity [%s#%s] has been modified or deleted by another transaction",
+                        entity.getClass().getName(),
+                        id.toString()),
+                cause);
+        this.setPayload(entity.getClass().getSimpleName() + "#" + id);
+    }
+
+    public EntityOptimisticLockingException(Object entity, UUID id) {
+        super(ExceptionErrorCodeConstants.OPTIMISTIC_LOCKING_FAILED,
+                HTTP_STATUS,
+                String.format("Entity [%s#%s] has been modified or deleted by another transaction",
+                        entity.getClass().getName(),
+                        id.toString()));
         this.setPayload(entity.getClass().getSimpleName() + "#" + id);
     }
 }

@@ -2,20 +2,24 @@ package com.swm.studywithmentor.model.exception;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
 public class ApplicationException extends RuntimeException {
-    private String errorCode;
     private Object payload;
+    private final HttpStatus status;
+    private final String errorCode;
 
-    public ApplicationException(String errorCode, String message) {
+    public ApplicationException(String errorCode, HttpStatus status, String message) {
         super(message);
         this.errorCode = errorCode;
+        this.status = status;
     }
 
-    public ApplicationException(String errorCode, String message, Throwable cause) {
+    public ApplicationException(String errorCode, HttpStatus status, String message, Throwable cause) {
         super(message, cause);
         this.errorCode = errorCode;
+        this.status = status;
     }
 }
