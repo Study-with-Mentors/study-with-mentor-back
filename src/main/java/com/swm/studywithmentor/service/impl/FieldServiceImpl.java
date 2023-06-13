@@ -1,6 +1,7 @@
 package com.swm.studywithmentor.service.impl;
 
 import com.swm.studywithmentor.model.dto.FieldDto;
+import com.swm.studywithmentor.model.dto.create.FieldCreateDto;
 import com.swm.studywithmentor.model.entity.Field;
 import com.swm.studywithmentor.model.exception.ActionConflict;
 import com.swm.studywithmentor.model.exception.ApplicationException;
@@ -46,7 +47,7 @@ public class FieldServiceImpl implements FieldService {
     }
 
     @Override
-    public FieldDto createField(FieldDto fieldDto) {
+    public FieldDto createField(FieldCreateDto fieldDto) {
         Field field = mapper.toEntity(fieldDto);
         field.setId(null);
         field = fieldRepository.save(field);

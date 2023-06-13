@@ -3,6 +3,7 @@ package com.swm.studywithmentor.service.impl;
 import com.querydsl.core.types.Predicate;
 import com.swm.studywithmentor.model.dto.CourseDto;
 import com.swm.studywithmentor.model.dto.PageResult;
+import com.swm.studywithmentor.model.dto.create.CourseCreateDto;
 import com.swm.studywithmentor.model.dto.search.CourseSearchDto;
 import com.swm.studywithmentor.model.entity.Field;
 import com.swm.studywithmentor.model.entity.course.Course;
@@ -68,12 +69,12 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public CourseDto createCourse(CourseDto courseDto) {
+    public CourseDto createCourse(CourseCreateDto courseDto) {
         Course course = mapper.toEntity(courseDto);
         course.setId(null);
         course.setStatus(CourseStatus.ENABLE);
-        Field field = fieldRepository.findById(courseDto.getField().getId())
-                .orElseThrow(() -> new NotFoundException(Field.class, courseDto.getField().getId()));
+        Field field = fieldRepository.findById(courseDto.getFieldId())
+                .orElseThrow(() -> new NotFoundException(Field.class, courseDto.getFieldId()));
         // TODO: set mentor after implement user repository
         course.setField(field);
         course = courseRepository.save(course);

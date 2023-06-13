@@ -1,6 +1,7 @@
 package com.swm.studywithmentor.controller;
 
 import com.swm.studywithmentor.model.dto.FieldDto;
+import com.swm.studywithmentor.model.dto.create.FieldCreateDto;
 import com.swm.studywithmentor.service.FieldService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,7 +35,7 @@ public class FieldController {
     }
 
     @PostMapping
-    public ResponseEntity<FieldDto> createField(@Validated @RequestBody FieldDto dto) {
+    public ResponseEntity<FieldDto> createField(@Validated @RequestBody FieldCreateDto dto) {
         FieldDto resultDto = fieldService.createField(dto);
         return new ResponseEntity<>(resultDto, HttpStatus.OK);
     }
