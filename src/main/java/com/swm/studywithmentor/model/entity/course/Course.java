@@ -3,6 +3,7 @@ package com.swm.studywithmentor.model.entity.course;
 import com.swm.studywithmentor.model.entity.BaseEntity;
 import com.swm.studywithmentor.model.entity.Clazz;
 import com.swm.studywithmentor.model.entity.Field;
+import com.swm.studywithmentor.model.entity.Image;
 import com.swm.studywithmentor.model.entity.session.Session;
 import com.swm.studywithmentor.model.entity.user.User;
 import lombok.*;
@@ -26,7 +27,8 @@ public class Course extends BaseEntity {
     private String fullName;
     private String description;
     private String learningOutcome;
-    private String intendedLearner;
+    @Enumerated(EnumType.STRING)
+    private CourseIntendedLearner intendedLearner;
     @Enumerated(EnumType.STRING)
     private CourseStatus status;
     @Enumerated(EnumType.STRING)
@@ -41,4 +43,6 @@ public class Course extends BaseEntity {
     private List<Clazz> clazzes;
     @OneToMany(mappedBy = "course")
     private List<Session> sessions;
+    @OneToMany(mappedBy = "course")
+    private List<Image> images;
 }

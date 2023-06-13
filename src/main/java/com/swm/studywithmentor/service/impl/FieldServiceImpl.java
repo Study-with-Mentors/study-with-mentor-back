@@ -1,25 +1,26 @@
 package com.swm.studywithmentor.service.impl;
 
 import com.swm.studywithmentor.model.dto.FieldDto;
+import com.swm.studywithmentor.model.dto.create.FieldCreateDto;
 import com.swm.studywithmentor.model.entity.Field;
 import com.swm.studywithmentor.model.exception.ActionConflict;
-import com.swm.studywithmentor.model.exception.ApplicationException;
 import com.swm.studywithmentor.model.exception.ConflictException;
+import com.swm.studywithmentor.model.exception.EntityOptimisticLockingException;
 import com.swm.studywithmentor.model.exception.NotFoundException;
 import com.swm.studywithmentor.repository.FieldRepository;
 import com.swm.studywithmentor.service.FieldService;
 import com.swm.studywithmentor.util.ApplicationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
+// TODO: authorization only admin
 public class FieldServiceImpl implements FieldService {
     private final FieldRepository fieldRepository;
     private final ApplicationMapper mapper;
@@ -42,11 +43,11 @@ public class FieldServiceImpl implements FieldService {
         List<Field> fields = fieldRepository.findByNameContains(name);
         return fields.stream()
                 .map(mapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
-    public FieldDto createField(FieldDto fieldDto) {
+    public FieldDto createField(FieldCreateDto fieldDto) {
         Field field = mapper.toEntity(fieldDto);
         field.setId(null);
         field = fieldRepository.save(field);
@@ -57,8 +58,10 @@ public class FieldServiceImpl implements FieldService {
     public FieldDto updateField(FieldDto fieldDto) {
         Field field = fieldRepository.findById(fieldDto.getId())
                 .orElseThrow(() -> new NotFoundException(Field.class, fieldDto.getId()));
+        if (!Objects.equals(fieldDto.getVersion(), field.getVersion())) {
+            throw new EntityOptimisticLockingException(field, field.getId());
+        }
         mapper.toEntity(fieldDto, field);
-        // FIXME: Optimistic locking is not working
         field = fieldRepository.save(field);
         return mapper.toDto(field);
     }

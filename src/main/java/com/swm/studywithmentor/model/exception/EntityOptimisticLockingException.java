@@ -16,4 +16,13 @@ public class EntityOptimisticLockingException extends ApplicationException {
                 cause);
         this.setPayload(entity.getClass().getSimpleName() + "#" + id);
     }
+
+    public EntityOptimisticLockingException(Object entity, UUID id) {
+        super(ExceptionErrorCodeConstants.OPTIMISTIC_LOCKING_FAILED,
+                HTTP_STATUS,
+                String.format("Entity [%s#%s] has been modified or deleted by another transaction",
+                        entity.getClass().getName(),
+                        id.toString()));
+        this.setPayload(entity.getClass().getSimpleName() + "#" + id);
+    }
 }

@@ -18,7 +18,7 @@ public class ApplicationExceptionHandler {
     public ResponseEntity<ErrorMessage> applicationUnexpectedException(ApplicationException ex, WebRequest request) {
         log.error(ex.getMessage(), ex);
         return ResponseEntity.status(ex.getStatus())
-            .body(new ErrorMessage(ex.getErrorCode(), ex.getPayload()));
+            .body(new ErrorMessage(ex.getErrorCode(), ex.getMessage(), ex.getPayload()));
     }
 
     @ExceptionHandler(Exception.class)
@@ -26,7 +26,7 @@ public class ApplicationExceptionHandler {
     public ResponseEntity<ErrorMessage> handleAllException(Exception ex, WebRequest request) {
         log.error(ex.getMessage(), ex);
         return ResponseEntity.internalServerError()
-            .body(new ErrorMessage("UNEXPECTED_ERROR"));
+            .body(new ErrorMessage("Unexpected error happens", ex.getMessage()));
     }
 }
 
@@ -34,9 +34,11 @@ public class ApplicationExceptionHandler {
 @AllArgsConstructor
 class ErrorMessage {
     private String errorCode;
+    private String message;
     private Object payload;
 
-    ErrorMessage(String errorCode) {
+    ErrorMessage(String errorCode, String message) {
         this.errorCode = errorCode;
+        this.message = message;
     }
 }

@@ -8,14 +8,8 @@ import com.swm.studywithmentor.model.entity.course.QCourse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 @Repository
 public class CourseRepositoryCustomImpl implements CourseRepositoryCustom {
-    @PersistenceContext
-    private EntityManager entityManager;
-
     @Override
     public Predicate prepareSearchPredicate(CourseSearchDto courseSearchDto) {
         QCourse course = QCourse.course;
@@ -25,8 +19,8 @@ public class CourseRepositoryCustomImpl implements CourseRepositoryCustom {
             builder.and(course.fullName.contains(name)
                     .or(course.shortName.contains(name)));
         }
-        if (StringUtils.isNotBlank(courseSearchDto.getIntendedLearner())) {
-            builder.and(course.intendedLearner.contains(courseSearchDto.getIntendedLearner()));
+        if (courseSearchDto.getIntendedLearner() != null) {
+            builder.and(course.intendedLearner.eq(courseSearchDto.getIntendedLearner()));
         }
         if (courseSearchDto.getCourseLevel() != null) {
             builder.and(course.courseLevel.eq(courseSearchDto.getCourseLevel()));

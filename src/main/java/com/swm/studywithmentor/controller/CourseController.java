@@ -2,6 +2,7 @@ package com.swm.studywithmentor.controller;
 
 import com.swm.studywithmentor.model.dto.CourseDto;
 import com.swm.studywithmentor.model.dto.PageResult;
+import com.swm.studywithmentor.model.dto.create.CourseCreateDto;
 import com.swm.studywithmentor.model.dto.search.CourseSearchDto;
 import com.swm.studywithmentor.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity<CourseDto> createCourse(@RequestBody CourseDto courseDto) {
+    public ResponseEntity<CourseDto> createCourse(@RequestBody CourseCreateDto courseDto) {
         CourseDto resultDto = courseService.createCourse(courseDto);
         return new ResponseEntity<>(resultDto, HttpStatus.OK);
     }
@@ -42,6 +43,18 @@ public class CourseController {
     public ResponseEntity<CourseDto> updateCourse(@RequestBody CourseDto courseDto, @PathVariable UUID id) {
         courseDto.setId(id);
         CourseDto resultDto = courseService.updateCourse(courseDto);
+        return new ResponseEntity<>(resultDto, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/open")
+    public ResponseEntity<CourseDto> openCourse(@PathVariable UUID id) {
+        CourseDto resultDto = courseService.openCourse(id);
+        return new ResponseEntity<>(resultDto, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/disable")
+    public ResponseEntity<CourseDto> disableCourse(@PathVariable UUID id) {
+        CourseDto resultDto = courseService.disableCourse(id);
         return new ResponseEntity<>(resultDto, HttpStatus.OK);
     }
 

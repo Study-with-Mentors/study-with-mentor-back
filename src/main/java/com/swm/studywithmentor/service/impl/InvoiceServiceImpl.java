@@ -22,7 +22,6 @@ import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,7 +42,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     public List<InvoiceDto> searchInvoices(SearchRequest searchRequest) {
         SearchSpecification<Invoice> searchSpecification = new SearchSpecification<>(searchRequest);
         Pageable pageable = SearchSpecification.getPage(searchRequest.getPage(), searchRequest.getSize());
-        return applicationMapper.invoiceToDto(invoiceRepository.findAll(searchSpecification, pageable).get().collect(Collectors.toList()));
+        return applicationMapper.invoiceToDto(invoiceRepository.findAll(searchSpecification, pageable).get().toList());
     }
 
     @Override
@@ -75,6 +74,7 @@ public class InvoiceServiceImpl implements InvoiceService {
     public InvoiceDto updateInvoice(InvoiceDto invoiceDto) {
         var invoice = findById().apply(invoiceDto.getInvoiceId());
         var enrollmentDto = invoiceDto.getEnrollment();
+        // FIXME: Optimistic locking
         if(enrollmentDto != null && enrollmentDto.getId() != null && !enrollmentDto.getId().equals(invoice.getEnrollment().getId())) {
             var enrollment = enrollmentRepository.findById(invoiceDto.getEnrollment().getId())
                             .orElseThrow(() -> new ApplicationException("NOT_FOUND", HttpStatus.NOT_FOUND, "Not found enrollment" + enrollmentDto.getEnrollmentDate().toString()));

@@ -3,6 +3,13 @@ package com.swm.studywithmentor.util;
 import com.swm.studywithmentor.model.dto.EnrollmentDto;
 import com.swm.studywithmentor.model.dto.InvoiceDto;
 import com.swm.studywithmentor.model.dto.UserDto;
+import com.swm.studywithmentor.model.dto.create.ActivityCreateDto;
+import com.swm.studywithmentor.model.dto.create.ClazzCreateDto;
+import com.swm.studywithmentor.model.dto.create.CourseCreateDto;
+import com.swm.studywithmentor.model.dto.create.FieldCreateDto;
+import com.swm.studywithmentor.model.dto.create.LessonCreateDto;
+import com.swm.studywithmentor.model.dto.create.SessionCreateDto;
+import com.swm.studywithmentor.model.entity.Lesson;
 import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
 import com.swm.studywithmentor.model.entity.invoice.Invoice;
 import com.swm.studywithmentor.model.entity.user.User;
@@ -29,11 +36,11 @@ public class ApplicationMapper {
         this.mapper = mapper;
     }
 
-    public List<EnrollmentDto> enrollmentToDto (List<Enrollment> enrollments) {
+    public List<EnrollmentDto> enrollmentToDto(List<Enrollment> enrollments) {
         return enrollments.stream().map(this::enrollmentToDto).collect(Collectors.toList());
     }
 
-    public EnrollmentDto enrollmentToDto (Enrollment enrollment) {
+    public EnrollmentDto enrollmentToDto(Enrollment enrollment) {
         return mapper.typeMap(Enrollment.class, EnrollmentDto.class)
                 .addMappings(mapping -> mapping.map(src -> src.getInvoice().getInvoiceId(), (destination, value) -> destination.setInvoice((UUID) value)))
                 .map(enrollment);
@@ -50,6 +57,7 @@ public class ApplicationMapper {
     public List<InvoiceDto> invoiceToDto(List<Invoice> invoices) {
         return invoices.stream().map(this::invoiceToDto).collect(Collectors.toList());
     }
+
     public InvoiceDto invoiceToDto(Invoice invoice) {
         return mapper.typeMap(Invoice.class, InvoiceDto.class)
                 //TODO: Total price will be mapped when Clazz finish implemented.
@@ -79,6 +87,7 @@ public class ApplicationMapper {
     public List<Invoice> invoiceToEntity(List<InvoiceDto> invoices) {
         return invoices.stream().map(this::invoiceToEntity).collect(Collectors.toList());
     }
+
     public Invoice invoiceToEntity(InvoiceDto invoice) {
         return mapper.typeMap(InvoiceDto.class, Invoice.class)
                 .addMappings(mapper -> mapper.skip(Invoice::setTotalPrice))
@@ -92,12 +101,16 @@ public class ApplicationMapper {
     public CourseDto toDto(Course course) {
         CourseDto courseDto = mapper.map(course, CourseDto.class);
         courseDto.setField(toDto(course.getField()));
-        // TODO: field mentor
+        courseDto.setMentor(userToDto(course.getMentor()));
         return courseDto;
     }
 
     public Course toEntity(CourseDto courseDto) {
         return mapper.map(courseDto, Course.class);
+    }
+
+    public Course toEntity(CourseCreateDto courseCreateDto) {
+        return mapper.map(courseCreateDto, Course.class);
     }
 
     public void toEntity(CourseDto courseDto, Course course) {
@@ -109,6 +122,10 @@ public class ApplicationMapper {
     }
 
     public Field toEntity(FieldDto fieldDto) {
+        return mapper.map(fieldDto, Field.class);
+    }
+
+    public Field toEntity(FieldCreateDto fieldDto) {
         return mapper.map(fieldDto, Field.class);
     }
 
@@ -142,6 +159,10 @@ public class ApplicationMapper {
         return mapper.map(sessionDto, Session.class);
     }
 
+    public Session toEntity(SessionCreateDto sessionCreateDto) {
+        return mapper.map(sessionCreateDto, Session.class);
+    }
+
     public void toEntity(SessionDto sessionDto, Session session) {
         mapper.map(sessionDto, session);
     }
@@ -152,6 +173,10 @@ public class ApplicationMapper {
 
     public Activity toEntity(ActivityDto activityDto) {
         return mapper.map(activityDto, Activity.class);
+    }
+
+    public Activity toEntity(ActivityCreateDto activityCreateDto) {
+        return mapper.map(activityCreateDto, Activity.class);
     }
 
     public void toEntity(ActivityDto activityDto, Activity activity) {
@@ -166,7 +191,27 @@ public class ApplicationMapper {
         return mapper.map(clazzDto, Clazz.class);
     }
 
+    public Clazz toEntity(ClazzCreateDto clazzCreateDto) {
+        return mapper.map(clazzCreateDto, Clazz.class);
+    }
+
     public void toEntity(ClazzDto clazzDto, Clazz clazz) {
         mapper.map(clazzDto, clazz);
+    }
+
+    public LessonDto toDto(Lesson lesson) {
+        return mapper.map(lesson, LessonDto.class);
+    }
+
+    public Lesson toEntity(LessonDto lessonDto) {
+        return mapper.map(lessonDto, Lesson.class);
+    }
+
+    public Lesson toEntity(LessonCreateDto lessonCreateDto) {
+        return mapper.map(lessonCreateDto, Lesson.class);
+    }
+
+    public void toEntity(LessonDto lessonDto, Lesson lesson) {
+        mapper.map(lessonDto, lesson);
     }
 }
