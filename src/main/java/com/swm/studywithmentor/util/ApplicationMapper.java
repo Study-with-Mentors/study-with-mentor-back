@@ -61,7 +61,6 @@ public class ApplicationMapper {
     public InvoiceDto invoiceToDto(Invoice invoice) {
         return mapper.typeMap(Invoice.class, InvoiceDto.class)
                 //TODO: Total price will be mapped when Clazz finish implemented.
-                .addMappings(mapper -> mapper.skip(InvoiceDto::setTotalPrice))
                 .map(invoice);
     }
 
