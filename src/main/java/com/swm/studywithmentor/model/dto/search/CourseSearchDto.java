@@ -1,5 +1,6 @@
 package com.swm.studywithmentor.model.dto.search;
 
+import com.swm.studywithmentor.model.entity.course.CourseIntendedLearner;
 import com.swm.studywithmentor.model.entity.course.CourseLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,9 +10,9 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class CourseSearchDto {
+public class CourseSearchDto extends BaseSearchDto{
     private String name = "";
-    private String intendedLearner = "";
+    private CourseIntendedLearner intendedLearner = null;
     private CourseLevel courseLevel;
     private List<String> fieldNames;
     private UUID mentorId;
@@ -28,7 +29,7 @@ public class CourseSearchDto {
     }
 
     // alias for `intendedLearner` as `learner`
-    public void setLearner(String learner) {
+    public void setLearner(CourseIntendedLearner learner) {
         intendedLearner = learner;
     }
 }

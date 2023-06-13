@@ -24,6 +24,8 @@ public class Clazz extends BaseEntity{
     private Date startDate;
     private Date endDate;
     private Date enrollmentEndDate;
+    @Enumerated(EnumType.STRING)
+    private ClazzStatus status;
     private float price;
     @ManyToOne
     @JoinColumn(name = "course_id")
