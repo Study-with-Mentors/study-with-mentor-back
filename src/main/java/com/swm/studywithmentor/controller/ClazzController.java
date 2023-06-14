@@ -43,11 +43,6 @@ public class ClazzController {
         return new ResponseEntity<>(clazzService.startNewClazz(clazzDto), HttpStatus.OK);
     }
 
-    @GetMapping("/course/{courseId}")
-    public ResponseEntity<List<ClazzDto>> getClazzByCourse(@PathVariable UUID courseId) {
-        return new ResponseEntity<>(clazzService.getClazzesByCourse(courseId), HttpStatus.OK);
-    }
-
     @GetMapping
     public ResponseEntity<PageResult<ClazzDto>> searchClazzes(ClazzSearchDto clazzSearchDto) {
         return new ResponseEntity<>(clazzService.searchClazzes(clazzSearchDto), HttpStatus.OK);
@@ -75,7 +70,7 @@ public class ClazzController {
         return new ResponseEntity<>(clazzService.getEnrolledStudent(id), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/clazz")
+    @GetMapping("/{id}/lesson")
     public ResponseEntity<List<LessonDto>> getClazzFromCourse(@PathVariable UUID id) {
         return new ResponseEntity<>(clazzService.getClazzFromCourse(id), HttpStatus.OK);
     }

@@ -136,16 +136,6 @@ public class ClazzServiceImpl extends BaseService implements ClazzService {
     }
 
     @Override
-    public List<ClazzDto> getClazzesByCourse(UUID courseId) {
-        // TODO: pagination and maybe searching, filtering, sorting
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new NotFoundException(Course.class, courseId));
-        return course.getClazzes().stream()
-                .map(mapper::toDto)
-                .toList();
-    }
-
-    @Override
     public PageResult<ClazzDto> searchClazzes(ClazzSearchDto dto) {
         PageRequest pageRequest;
         if (dto.getOrderBy() != null) {

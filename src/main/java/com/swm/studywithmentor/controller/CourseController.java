@@ -1,5 +1,6 @@
 package com.swm.studywithmentor.controller;
 
+import com.swm.studywithmentor.model.dto.ClazzDto;
 import com.swm.studywithmentor.model.dto.CourseDto;
 import com.swm.studywithmentor.model.dto.PageResult;
 import com.swm.studywithmentor.model.dto.create.CourseCreateDto;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -26,6 +28,12 @@ public class CourseController {
     public ResponseEntity<CourseDto> getCourse(@PathVariable UUID id) {
         CourseDto dto = courseService.getCourseById(id);
         return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/clazz")
+    public ResponseEntity<List<ClazzDto>> getClazzFromCourse(@PathVariable UUID id) {
+        List<ClazzDto> dtos = courseService.getClazzesByCourse(id);
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
     @GetMapping

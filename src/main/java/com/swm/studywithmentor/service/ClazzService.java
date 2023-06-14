@@ -15,8 +15,6 @@ public interface ClazzService {
 
     ClazzDto getClazz(UUID id);
 
-    List<ClazzDto> getClazzesByCourse(UUID courseId);
-
     PageResult<ClazzDto> searchClazzes(ClazzSearchDto dto);
 
     ClazzDto updateClazz(ClazzDto clazzDto);

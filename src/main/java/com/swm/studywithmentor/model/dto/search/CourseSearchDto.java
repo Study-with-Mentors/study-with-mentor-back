@@ -1,5 +1,6 @@
 package com.swm.studywithmentor.model.dto.search;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.swm.studywithmentor.model.entity.course.CourseIntendedLearner;
 import com.swm.studywithmentor.model.entity.course.CourseLevel;
 import lombok.Getter;
@@ -12,8 +13,11 @@ import java.util.UUID;
 @Setter
 public class CourseSearchDto extends BaseSearchDto{
     private String name = "";
+    @JsonIgnore
     private CourseIntendedLearner intendedLearner = null;
+    @JsonIgnore
     private CourseLevel courseLevel;
+    @JsonIgnore
     private List<String> fieldNames;
     private UUID mentorId;
     private int page;
