@@ -233,7 +233,9 @@ public class ClazzServiceImpl extends BaseService implements ClazzService {
 
     private void checkCurrentUserPermission(Clazz clazz, ActionConflict actionConflict) {
         User user = userService.getCurrentUser();
-        if (clazz.getCourse().getMentor().getId() != user.getId()) {
+        log.info("User id: " + user.getId());
+        log.info("Mentor id: " + clazz.getCourse().getMentor().getId());
+        if (!clazz.getCourse().getMentor().getId().equals(user.getId())) {
             throw new ForbiddenException(Clazz.class, actionConflict, "User does not own the course", user.getId());
         }
     }
