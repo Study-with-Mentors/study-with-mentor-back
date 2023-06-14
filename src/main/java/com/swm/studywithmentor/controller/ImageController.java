@@ -19,7 +19,7 @@ public class ImageController {
     private final ImageService imageService;
 
     @GetMapping("{id}")
-    public ResponseEntity<Image> GetImageById(@PathVariable UUID id) {
+    public ResponseEntity<ImageDto> GetImageById(@PathVariable UUID id) {
         try {
             return ResponseEntity.ok(imageService.GetImageById(id));
         } catch (ApplicationException applicationException) {

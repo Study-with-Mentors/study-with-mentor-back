@@ -31,8 +31,9 @@ public class ImageServiceImpl implements ImageService {
     private final CourseRepository courseRepository;
     private final ApplicationMapper mapper;
     @Override
-    public Image GetImageById(UUID id) {
-        return  imageRepository.findById(id).orElseThrow(() -> new NotFoundException(ImageServiceImpl.class, id));
+    public ImageDto GetImageById(UUID id) {
+        var image = imageRepository.findById(id).orElseThrow(() -> new NotFoundException(ImageServiceImpl.class, id));
+        return  mapper.toDto(image);
     }
 
     @Override

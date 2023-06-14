@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ImageService {
-    Image GetImageById(UUID id);
+    ImageDto GetImageById(UUID id);
 
     List<ImageDto> CreateImages(List<ImageDto> images);
 }
