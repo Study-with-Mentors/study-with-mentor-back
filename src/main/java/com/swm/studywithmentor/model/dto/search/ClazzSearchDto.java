@@ -10,7 +10,7 @@ import java.sql.Date;
 /*
 Clazz search will include course search and more fields to it
  */
-public class ClazzSearchDto extends CourseSearchDto{
+public class ClazzSearchDto extends CourseSearchDto {
     private Date lowerStartDate;
     private Date upperStartDate;
     private Date lowerEndDate;

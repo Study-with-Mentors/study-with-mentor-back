@@ -1,10 +1,12 @@
 package com.swm.studywithmentor.service;
 
+import com.swm.studywithmentor.model.dto.ClazzDto;
 import com.swm.studywithmentor.model.dto.CourseDto;
 import com.swm.studywithmentor.model.dto.PageResult;
 import com.swm.studywithmentor.model.dto.create.CourseCreateDto;
 import com.swm.studywithmentor.model.dto.search.CourseSearchDto;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface CourseService {
@@ -15,4 +17,5 @@ public interface CourseService {
     void deleteCourse(UUID id);
     CourseDto openCourse(UUID id);
     CourseDto disableCourse(UUID id);
+    List<ClazzDto> getClazzesByCourse(UUID id);
 }

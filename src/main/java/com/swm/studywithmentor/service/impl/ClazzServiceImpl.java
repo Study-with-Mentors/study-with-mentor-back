@@ -136,16 +136,6 @@ public class ClazzServiceImpl extends BaseService implements ClazzService {
     }
 
     @Override
-    public List<ClazzDto> getClazzesByCourse(UUID courseId) {
-        // TODO: pagination and maybe searching, filtering, sorting
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new NotFoundException(Course.class, courseId));
-        return course.getClazzes().stream()
-                .map(mapper::toDto)
-                .toList();
-    }
-
-    @Override
     public PageResult<ClazzDto> searchClazzes(ClazzSearchDto dto) {
         PageRequest pageRequest;
         if (dto.getOrderBy() != null) {
@@ -243,7 +233,9 @@ public class ClazzServiceImpl extends BaseService implements ClazzService {
 
     private void checkCurrentUserPermission(Clazz clazz, ActionConflict actionConflict) {
         User user = userService.getCurrentUser();
-        if (clazz.getCourse().getMentor().getId() != user.getId()) {
+        log.info("User id: " + user.getId());
+        log.info("Mentor id: " + clazz.getCourse().getMentor().getId());
+        if (!clazz.getCourse().getMentor().getId().equals(user.getId())) {
             throw new ForbiddenException(Clazz.class, actionConflict, "User does not own the course", user.getId());
         }
     }

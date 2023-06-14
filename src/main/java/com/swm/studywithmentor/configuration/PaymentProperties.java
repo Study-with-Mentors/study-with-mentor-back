@@ -2,12 +2,10 @@ package com.swm.studywithmentor.configuration;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component
 @Getter
-@PropertySource("classpath:application-${spring.profiles.active}.properties")
 public class PaymentProperties {
     @Value("${app.vnp.terminalId}")
     private String vnpTmnCode;

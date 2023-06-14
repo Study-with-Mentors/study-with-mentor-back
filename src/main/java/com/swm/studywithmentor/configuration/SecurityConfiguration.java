@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,6 +21,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration {
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -57,12 +59,8 @@ public class SecurityConfiguration {
             .csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-            .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .authorizeRequests()
-            .antMatchers("/test", "/login", "/login/google").permitAll()
-            .antMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
-            // Comment out the following line for the ease of testing
-            .anyRequest().authenticated();
+            .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        // TODO: Use @Secured() or @PreAuthorize() for authorization
         return http.build();
     }
 }
