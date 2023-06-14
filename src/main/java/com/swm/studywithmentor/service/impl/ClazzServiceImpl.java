@@ -36,6 +36,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import javax.transaction.Transactional;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Service
+@Transactional
 @Slf4j
 public class ClazzServiceImpl extends BaseService implements ClazzService {
     private final ClazzRepository clazzRepository;
@@ -106,7 +108,7 @@ public class ClazzServiceImpl extends BaseService implements ClazzService {
 
         for (LessonCreateDto lessonCreateDto : clazzDto.getLessonCreateDtos()) {
             // validate clazz lesson time not duplicate with other clazz of the mentor's courses
-            List<Lesson> timeConflictedLessons = lessonRepository.findLessonBetweenTime(lessonCreateDto.getStartTime(), lessonCreateDto.getEndTime(), user.getId());
+            List<Lesson> timeConflictedLessons = lessonRepository.findLessonInTimeRange(lessonCreateDto.getStartTime(), lessonCreateDto.getEndTime(), user.getId());
             if (!timeConflictedLessons.isEmpty()) {
                 throw new ConflictException(Lesson.class, ActionConflict.CREATE, "There are other clazz that at the same time", lessonCreateDto.getStartTime(), lessonCreateDto.getEndTime(), timeConflictedLessons);
             }
