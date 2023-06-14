@@ -23,7 +23,6 @@ import java.util.function.Function;
 
 @Service
 @Transactional
-//TODO: validate ID format
 public class EnrollmentServiceImpl implements EnrollmentService {
 
     private final EnrollmentRepository enrollmentRepository;
@@ -41,7 +40,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     public List<EnrollmentDto> getEnrollments() {
-        //TODO: use specification and pagination
         var enrollments = enrollmentRepository.findAll();
         return applicationMapper.enrollmentToDto(enrollments);
     }
