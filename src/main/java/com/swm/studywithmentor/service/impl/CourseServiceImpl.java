@@ -1,6 +1,7 @@
 package com.swm.studywithmentor.service.impl;
 
 import com.querydsl.core.types.Predicate;
+import com.swm.studywithmentor.model.dto.ClazzDto;
 import com.swm.studywithmentor.model.dto.CourseDto;
 import com.swm.studywithmentor.model.dto.PageResult;
 import com.swm.studywithmentor.model.dto.create.CourseCreateDto;
@@ -32,6 +33,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -168,5 +170,15 @@ public class CourseServiceImpl extends BaseService implements CourseService {
         course.setStatus(CourseStatus.DISABLE);
         course = courseRepository.save(course);
         return mapper.toDto(course);
+    }
+
+    @Override
+    public List<ClazzDto> getClazzesByCourse(UUID id) {
+        // TODO: pagination and maybe searching, filtering, sorting
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(Course.class, id));
+        return course.getClazzes().stream()
+                .map(mapper::toDto)
+                .toList();
     }
 }
