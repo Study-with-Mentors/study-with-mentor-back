@@ -3,20 +3,12 @@ package com.swm.studywithmentor.util;
 import com.swm.studywithmentor.model.dto.EnrollmentDto;
 import com.swm.studywithmentor.model.dto.InvoiceDto;
 import com.swm.studywithmentor.model.dto.UserDto;
-import com.swm.studywithmentor.model.dto.create.ActivityCreateDto;
-import com.swm.studywithmentor.model.dto.create.ClazzCreateDto;
-import com.swm.studywithmentor.model.dto.create.CourseCreateDto;
-import com.swm.studywithmentor.model.dto.create.FieldCreateDto;
-import com.swm.studywithmentor.model.dto.create.LessonCreateDto;
-import com.swm.studywithmentor.model.dto.create.SessionCreateDto;
-import com.swm.studywithmentor.model.entity.Lesson;
+import com.swm.studywithmentor.model.dto.create.*;
+import com.swm.studywithmentor.model.entity.*;
 import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
 import com.swm.studywithmentor.model.entity.invoice.Invoice;
 import com.swm.studywithmentor.model.entity.user.User;
 import com.swm.studywithmentor.model.dto.*;
-import com.swm.studywithmentor.model.entity.Activity;
-import com.swm.studywithmentor.model.entity.Clazz;
-import com.swm.studywithmentor.model.entity.Field;
 import com.swm.studywithmentor.model.entity.course.Course;
 import com.swm.studywithmentor.model.entity.session.Session;
 import org.modelmapper.ModelMapper;
@@ -213,5 +205,22 @@ public class ApplicationMapper {
 
     public void toEntity(LessonDto lessonDto, Lesson lesson) {
         mapper.map(lessonDto, lesson);
+    }
+
+    public Image toEntity(ImageDto dto) {
+        return mapper.map(dto, Image.class);
+
+    }
+    public List<Image> toEntity (List<ImageDto> dtos) {
+        return dtos.stream().map(this::toEntity).collect(Collectors.toList());
+    }
+    public ImageDto toDto(Image entity) {
+        return mapper.typeMap(Image.class, ImageDto.class)
+                .addMappings(mapping -> mapping.map(image -> image.getCourse().getId(), ImageDto::setCourse))
+                .map(entity);
+    }
+
+    public List<ImageDto> toDto(List<Image> entities) {
+        return entities.stream().map(this::toDto).collect(Collectors.toList());
     }
 }
