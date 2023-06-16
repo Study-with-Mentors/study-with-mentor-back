@@ -10,7 +10,6 @@ import com.swm.studywithmentor.model.exception.ActionConflict;
 import com.swm.studywithmentor.model.exception.ConflictException;
 import com.swm.studywithmentor.model.exception.EntityOptimisticLockingException;
 import com.swm.studywithmentor.model.exception.NotFoundException;
-import com.swm.studywithmentor.repository.ClazzRepository;
 import com.swm.studywithmentor.repository.CourseRepository;
 import com.swm.studywithmentor.repository.SessionRepository;
 import com.swm.studywithmentor.service.SessionService;
