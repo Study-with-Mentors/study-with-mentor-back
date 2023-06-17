@@ -1,7 +1,6 @@
 package com.swm.studywithmentor.controller;
 
 import com.swm.studywithmentor.model.dto.LessonDto;
-import com.swm.studywithmentor.model.dto.search.LessonTimeRangeDto;
 import com.swm.studywithmentor.service.LessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -31,11 +29,6 @@ public class LessonController {
     public ResponseEntity<LessonDto> getLesson(@PathVariable  UUID id) {
         LessonDto dto = lessonService.getLesson(id);
         return new ResponseEntity<>(dto, HttpStatus.OK);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<LessonDto>> getLessonInTimeRange(LessonTimeRangeDto dto) {
-        return new ResponseEntity<>(lessonService.getLessonByTimeRange(dto), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
