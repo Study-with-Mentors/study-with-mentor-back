@@ -12,6 +12,7 @@ import com.swm.studywithmentor.model.entity.user.User;
 import com.swm.studywithmentor.model.exception.ActionConflict;
 import com.swm.studywithmentor.model.exception.ApplicationException;
 import com.swm.studywithmentor.model.exception.ConflictException;
+import com.swm.studywithmentor.model.exception.NotFoundException;
 import com.swm.studywithmentor.repository.ClazzRepository;
 import com.swm.studywithmentor.repository.EnrollmentRepository;
 import com.swm.studywithmentor.repository.UserRepository;
@@ -50,7 +51,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         this.applicationMapper = applicationMapper;
         this.userService = userService;
         findById = id -> enrollmentRepository.findById(id)
-                .orElseThrow(() -> new ApplicationException("NOT_FOUND", HttpStatus.NOT_FOUND , "Not found enrollment " + id.toString()));
+                .orElseThrow(() -> new NotFoundException(this.getClass(), id));
     }
 
     @Override
@@ -87,7 +88,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         var clazz = clazzRepository.findById(createDto.getClassId())
                 .orElseThrow(() -> new ConflictException(Enrollment.class, ActionConflict.CREATE, "Clazz not found", createDto.getClassId()));
         User student = userRepository.findById(createDto.getStudentId())
-                .orElseThrow(() -> new ConflictException(Enrollment.class, ActionConflict.CREATE, "User not found", createDto.getStudentId()));
+                .orElseThrow(() -> new ConflictException(Enrollment.class, ActionConflict.CREATE, "Student not found", createDto.getStudentId()));
         var enrollment = Enrollment.builder()
                         .student(student)
                         .enrollmentDate(new Date(System.currentTimeMillis()))

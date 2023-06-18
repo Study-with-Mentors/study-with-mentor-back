@@ -138,7 +138,8 @@ public class PaymentServiceImpl implements PaymentService {
                 ipAdress = request.getLocalAddr();
             }
         } catch (Exception e) {
-            ipAdress = "Invalid IP:" + e.getMessage();
+            log.error(e.getMessage());
+            throw new ApplicationException("internal server error", HttpStatus.INTERNAL_SERVER_ERROR, "Invalid IP");
         }
         return ipAdress;
     }
@@ -219,15 +220,17 @@ public class PaymentServiceImpl implements PaymentService {
     private boolean isValidInvoice(Invoice invoice) {
         if(invoice.getType() != PaymentType.VNPAY) {
             log.info("Invoice use a different payment method");
-            return false;
+            throw new ApplicationException("Bad request", HttpStatus.BAD_REQUEST, "Invoice use a different payment method");
         }
         if(invoice.getStatus() == InvoiceStatus.PAYED) {
-            log.info("Invoice {} is already payed", invoice.getInvoiceId());
-            return false;
+            var message = "Invoice " + invoice.getInvoiceId() + " is already payed";
+            log.info(message);
+            throw new ApplicationException("Bad request", HttpStatus.BAD_REQUEST, message);
         }
         if(invoice.getStatus() == InvoiceStatus.CANCELLED) {
-            log.info("Invoice {} is {}", invoice.getInvoiceId(), InvoiceStatus.CANCELLED.name());
-            return false;
+            var message = "Invoice " + invoice.getInvoiceId() + " is " + InvoiceStatus.CANCELLED.name();
+            log.info(message);
+            throw new ApplicationException("Bad request", HttpStatus.BAD_REQUEST, message);
         }
         return true;
     }
@@ -239,7 +242,7 @@ public class PaymentServiceImpl implements PaymentService {
             return message;
         UUID invoiceId = UUID.fromString(req.getParameter("vnp_TxnRef"));
         var invoice = invoiceRepository.findById(invoiceId)
-                .orElseThrow(() -> new ApplicationException("NOT_FOUND", HttpStatus.NOT_FOUND, "Not found invoice with ID: " + invoiceId));
+                .orElseThrow(() -> new ConflictException(this.getClass(), ActionConflict.UPDATE, "Cannot found invoice", invoiceId));
         if(VNPayStatus.valueOf(responseCode) == VNPayStatus.V00) {
             float totalPrice = Float.parseFloat(req.getParameter("vnp_Amount"))/100;
             invoice.setPayDate(new Date(System.currentTimeMillis()));

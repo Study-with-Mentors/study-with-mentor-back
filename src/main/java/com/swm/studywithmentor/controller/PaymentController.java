@@ -23,14 +23,8 @@ public class PaymentController {
     public ResponseEntity<?> createPayment(@RequestBody InvoiceDto invoiceDto, HttpServletRequest req) {
         String paymentURL;
         var resObjBuilder = ResponseObject.builder();
-        try {
-            paymentURL = paymentService.createPaymentURL(invoiceDto, req);
-            resObjBuilder.message("success").code(200).object(paymentURL);
-        } catch (ApplicationException exception) {
-            log.error(exception.getMessage());
-            resObjBuilder.message("failed").code(500).object(exception.getMessage());
-            return ResponseEntity.internalServerError().body(resObjBuilder.build());
-        }
+        paymentURL = paymentService.createPaymentURL(invoiceDto, req);
+        resObjBuilder.message("success").code(200).object(paymentURL);
         return paymentURL.isEmpty() ? ResponseEntity.accepted().build() : ResponseEntity.ok(resObjBuilder.build());
     }
 

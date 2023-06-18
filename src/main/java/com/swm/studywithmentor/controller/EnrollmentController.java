@@ -29,9 +29,6 @@ public class EnrollmentController {
             UUID enrollmentId = UUID.fromString(id);
             var enrollments = enrollmentService.getEnrollmentById(enrollmentId);
             return ResponseEntity.ok(enrollments);
-        } catch (ApplicationException e) {
-            log.error(e.getMessage());
-            return ResponseEntity.notFound().build();
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());
             return ResponseEntity.badRequest().body("ID: " + id + " is wrong format");
@@ -51,15 +48,10 @@ public class EnrollmentController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateEnrollment(@PathVariable String id, @RequestBody EnrollmentDto enrollmentDto) {
-        try {
-            UUID enrollmentId = UUID.fromString(id);
-            enrollmentDto.setId(enrollmentId);
-            var enrollment = enrollmentService.updateEnrollment(enrollmentDto);
-            return ResponseEntity.ok(enrollment);
-        } catch (ApplicationException e) {
-            log.error(e.getMessage());
-            return ResponseEntity.internalServerError().build();
-        }
+        UUID enrollmentId = UUID.fromString(id);
+        enrollmentDto.setId(enrollmentId);
+        var enrollment = enrollmentService.updateEnrollment(enrollmentDto);
+        return ResponseEntity.ok(enrollment);
     }
 
     @DeleteMapping("/{id}")
