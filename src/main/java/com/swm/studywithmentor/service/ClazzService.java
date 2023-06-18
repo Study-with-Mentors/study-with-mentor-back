@@ -25,5 +25,9 @@ public interface ClazzService {
 
     List<UserDto> getEnrolledStudent(UUID id);
 
-    List<LessonDto> getClazzFromCourse(UUID id);
+    List<LessonDto> getLessonFromClazz(UUID id);
+
+    List<ClazzDto> getClazzOfStudent();
+
+    List<ClazzDto> getClazzOfMentor();
 }

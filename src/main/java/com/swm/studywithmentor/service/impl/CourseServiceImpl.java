@@ -6,9 +6,11 @@ import com.swm.studywithmentor.model.dto.CourseDto;
 import com.swm.studywithmentor.model.dto.PageResult;
 import com.swm.studywithmentor.model.dto.create.CourseCreateDto;
 import com.swm.studywithmentor.model.dto.search.CourseSearchDto;
+import com.swm.studywithmentor.model.entity.Clazz;
 import com.swm.studywithmentor.model.entity.Field;
 import com.swm.studywithmentor.model.entity.course.Course;
 import com.swm.studywithmentor.model.entity.course.CourseStatus;
+import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
 import com.swm.studywithmentor.model.entity.user.User;
 import com.swm.studywithmentor.model.exception.ActionConflict;
 import com.swm.studywithmentor.model.exception.ApplicationException;
@@ -24,6 +26,7 @@ import com.swm.studywithmentor.service.BaseService;
 import com.swm.studywithmentor.service.CourseService;
 import com.swm.studywithmentor.service.UserService;
 import com.swm.studywithmentor.util.ApplicationMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,14 +34,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
+@Slf4j
 public class CourseServiceImpl extends BaseService implements CourseService {
     private final CourseRepository courseRepository;
     private final ClazzRepository clazzRepository;
@@ -60,6 +64,13 @@ public class CourseServiceImpl extends BaseService implements CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ApplicationException(ExceptionErrorCodeConstants.NOT_FOUND, HttpStatus.NOT_FOUND, "Course not found. Id: " + id));
 
+        if (course.getStatus() == CourseStatus.DRAFTING || course.getStatus() == CourseStatus.DISABLE) {
+            User user = userService.getCurrentUser();
+            if (!course.getMentor().getId().equals(user.getId())) {
+                log.info("Unauthorized access to course. User ID {}", user.getId());
+                throw new NotFoundException(Course.class,  course.getId());
+            }
+        }
         return mapper.toDto(course);
     }
 
@@ -177,7 +188,24 @@ public class CourseServiceImpl extends BaseService implements CourseService {
         // TODO: pagination and maybe searching, filtering, sorting
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Course.class, id));
+
+        if (course.getStatus() == CourseStatus.DRAFTING || course.getStatus() == CourseStatus.DISABLE) {
+            User user = userService.getCurrentUser();
+            if (!course.getMentor().getId().equals(user.getId())) {
+                log.info("Unauthorized access to course. User ID {}", user.getId());
+                throw new NotFoundException(Course.class,  course.getId());
+            }
+        }
+
         return course.getClazzes().stream()
+                .map(mapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public List<CourseDto> getCourseOfStudent() {
+        User user = userService.getCurrentUser();
+        return courseRepository.getCourseOfStudent(user.getId()).stream()
                 .map(mapper::toDto)
                 .toList();
     }

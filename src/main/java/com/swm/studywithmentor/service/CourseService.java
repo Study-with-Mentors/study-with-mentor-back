@@ -18,4 +18,5 @@ public interface CourseService {
     CourseDto openCourse(UUID id);
     CourseDto disableCourse(UUID id);
     List<ClazzDto> getClazzesByCourse(UUID id);
+    List<CourseDto> getCourseOfStudent();
 }

@@ -10,7 +10,6 @@ import com.swm.studywithmentor.model.exception.ActionConflict;
 import com.swm.studywithmentor.model.exception.ConflictException;
 import com.swm.studywithmentor.model.exception.EntityOptimisticLockingException;
 import com.swm.studywithmentor.model.exception.NotFoundException;
-import com.swm.studywithmentor.repository.ClazzRepository;
 import com.swm.studywithmentor.repository.CourseRepository;
 import com.swm.studywithmentor.repository.SessionRepository;
 import com.swm.studywithmentor.service.SessionService;
@@ -129,7 +128,6 @@ public class SessionServiceImpl implements SessionService {
         if (!isCourseOpenForEdit(course)) {
             throw new ConflictException(Session.class, ActionConflict.DELETE, "Course is not open for editing. Id: " + course.getId(), course.getId());
         }
-        // FIXME: optimistic locking
         // there is no need to check number of clazz in a course
         // because the check for status ensure that there is no clazz for course
         sessionRepository.delete(session);
