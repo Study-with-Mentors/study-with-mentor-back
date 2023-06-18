@@ -71,7 +71,7 @@ public class ClazzController {
     }
 
     @GetMapping("/{id}/lesson")
-    public ResponseEntity<List<LessonDto>> getClazzFromCourse(@PathVariable UUID id) {
-        return new ResponseEntity<>(clazzService.getClazzFromCourse(id), HttpStatus.OK);
+    public ResponseEntity<List<LessonDto>> getLessonFromClazz(@PathVariable UUID id) {
+        return new ResponseEntity<>(clazzService.getLessonFromClazz(id), HttpStatus.OK);
     }
 }

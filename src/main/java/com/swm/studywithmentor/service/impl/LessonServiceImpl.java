@@ -3,6 +3,7 @@ package com.swm.studywithmentor.service.impl;
 import com.swm.studywithmentor.model.dto.LessonDto;
 import com.swm.studywithmentor.model.dto.search.LessonTimeRangeDto;
 import com.swm.studywithmentor.model.entity.Lesson;
+import com.swm.studywithmentor.model.entity.user.Role;
 import com.swm.studywithmentor.model.entity.user.User;
 import com.swm.studywithmentor.model.exception.ActionConflict;
 import com.swm.studywithmentor.model.exception.ForbiddenException;
@@ -43,9 +44,9 @@ public class LessonServiceImpl implements LessonService {
     public List<LessonDto> getLessonByTimeRange(LessonTimeRangeDto dto) {
         User user = userService.getCurrentUser();
         List<Lesson> lessons = new ArrayList<>();
-        if (dto.getRole().equals("MENTOR")) {
+        if (dto.getRole() == Role.MENTOR) {
             lessons = lessonRepository.findLessonInTimeRange(dto.getLowerTime(), dto.getUpperTime(), user.getId());
-        } else if (dto.getRole().equals("STUDENT")) {
+        } else if (dto.getRole() == Role.USER) {
             lessons = lessonRepository.findLessonBetweenTimeAsStudent(dto.getLowerTime(), dto.getUpperTime(), user.getId());
         }
         return lessons.stream()

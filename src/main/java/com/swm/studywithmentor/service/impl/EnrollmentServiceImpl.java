@@ -71,7 +71,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public EnrollmentDto updateEnrollment(EnrollmentDto enrollmentDto) {
         var enrollment = findById.apply(enrollmentDto.getId());
         User user = userService.getCurrentUser();
-        // FIXME: Optimistic locking
         if(!enrollment.getStudent().getId().equals(user.getId())) {
             throw new ConflictException(Enrollment.class, ActionConflict.UPDATE, "User does not own this enrollment", user.getId());
         }

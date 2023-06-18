@@ -74,7 +74,6 @@ public class InvoiceServiceImpl implements InvoiceService {
     public InvoiceDto updateInvoice(InvoiceDto invoiceDto) {
         var invoice = findById().apply(invoiceDto.getInvoiceId());
         var enrollmentDto = invoiceDto.getEnrollment();
-        // FIXME: Optimistic locking
         if(enrollmentDto != null && enrollmentDto.getId() != null && !enrollmentDto.getId().equals(invoice.getEnrollment().getId())) {
             var enrollment = enrollmentRepository.findById(invoiceDto.getEnrollment().getId())
                             .orElseThrow(() -> new ApplicationException("NOT_FOUND", HttpStatus.NOT_FOUND, "Not found enrollment" + enrollmentDto.getEnrollmentDate().toString()));

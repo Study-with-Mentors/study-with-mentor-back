@@ -128,7 +128,6 @@ public class SessionServiceImpl implements SessionService {
         if (!isCourseOpenForEdit(course)) {
             throw new ConflictException(Session.class, ActionConflict.DELETE, "Course is not open for editing. Id: " + course.getId(), course.getId());
         }
-        // FIXME: optimistic locking
         // there is no need to check number of clazz in a course
         // because the check for status ensure that there is no clazz for course
         sessionRepository.delete(session);
