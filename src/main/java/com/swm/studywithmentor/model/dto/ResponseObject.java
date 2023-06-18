@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ResponseObject {
+public class ResponseObject<T> {
     private int code;
     private String message;
-    private Object object;
+    private T object;
 }

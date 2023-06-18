@@ -3,10 +3,14 @@ package com.swm.studywithmentor.service.impl;
 import com.swm.studywithmentor.configuration.PaymentProperties;
 import com.swm.studywithmentor.model.dto.InvoiceDto;
 import com.swm.studywithmentor.model.dto.payment.VNPayStatus;
+import com.swm.studywithmentor.model.entity.enrollment.EnrollmentStatus;
 import com.swm.studywithmentor.model.entity.invoice.Invoice;
 import com.swm.studywithmentor.model.entity.invoice.InvoiceStatus;
 import com.swm.studywithmentor.model.entity.invoice.PaymentType;
+import com.swm.studywithmentor.model.exception.ActionConflict;
 import com.swm.studywithmentor.model.exception.ApplicationException;
+import com.swm.studywithmentor.model.exception.ConflictException;
+import com.swm.studywithmentor.repository.EnrollmentRepository;
 import com.swm.studywithmentor.repository.InvoiceRepository;
 import com.swm.studywithmentor.service.PaymentService;
 import lombok.Data;
@@ -35,6 +39,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentProperties paymentProperties;
     private final InvoiceRepository invoiceRepository;
+    private final EnrollmentRepository enrollmentRepository;
 
     @Override
     public String md5(String message) {
@@ -140,7 +145,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     public String createPaymentURL(InvoiceDto invoiceDto, HttpServletRequest req)  {
         var find = invoiceRepository.findById(invoiceDto.getInvoiceId())
-                .orElseThrow(() -> new ApplicationException("NOT_FOUND", HttpStatus.NOT_FOUND, "Not found invoice " + invoiceDto.getInvoiceId()));
+                .orElseThrow(() -> new ConflictException(this.getClass(), ActionConflict.CREATE, "Not found clazz", invoiceDto.getInvoiceId()));
         if(!isValidInvoice(find))
             return "";
         //VNPay only support VND
@@ -241,6 +246,12 @@ public class PaymentServiceImpl implements PaymentService {
             invoice.setType(PaymentType.VNPAY);
             invoice.setStatus(InvoiceStatus.PAYED);
             invoice.setTotalPrice(totalPrice);
+            var enrollment = enrollmentRepository.findById(invoice.getEnrollment().getId()).orElse(null);
+            if(enrollment != null) {
+                enrollment.setStatus(EnrollmentStatus.ENROLLED);
+                enrollmentRepository.save(enrollment);
+            }
+            invoiceRepository.save(invoice);
         }
         message = VNPayStatus.valueOf(responseCode).getMessage();
         return message;

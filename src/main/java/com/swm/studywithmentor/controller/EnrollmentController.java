@@ -1,6 +1,7 @@
 package com.swm.studywithmentor.controller;
 
 import com.swm.studywithmentor.model.dto.EnrollmentDto;
+import com.swm.studywithmentor.model.dto.create.EnrollmentCreateDto;
 import com.swm.studywithmentor.model.dto.query.SearchRequest;
 import com.swm.studywithmentor.model.exception.ApplicationException;
 import com.swm.studywithmentor.service.EnrollmentService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
@@ -42,20 +44,9 @@ public class EnrollmentController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createEnrollment(@RequestBody EnrollmentDto enrollmentDto) {
-        try {
-            var enrollment = enrollmentService.createEnrollment(enrollmentDto);
-            if(enrollment != null) {
-                URI uri = new URI("/api/enrollment/" + enrollment.getId().toString());
-                return ResponseEntity.created(uri).build();
-            }
-        } catch (ApplicationException e) {
-            log.error(e.getMessage());
-            return  ResponseEntity.internalServerError().body("Cannot create enrollment");
-        } catch (URISyntaxException e) {
-            log.error(e.getMessage());
-        }
-        return ResponseEntity.internalServerError().build();
+    public ResponseEntity<?> createEnrollment(@RequestBody EnrollmentCreateDto enrollmentDto, HttpServletRequest request) {
+        var responseObject = enrollmentService.createEnrollment(enrollmentDto, request);
+        return ResponseEntity.ok(responseObject);
     }
 
     @PutMapping("/{id}")
