@@ -58,4 +58,10 @@ public class StudentMentorController {
         List<ClazzDto> dtos = clazzService.getClazzOfMentor();
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
+
+    @GetMapping("/mentor/course")
+    public ResponseEntity<List<CourseDto>> getMentorCourse() {
+        List<CourseDto> dtos = courseService.getCourseOfMentor();
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
+    }
 }
