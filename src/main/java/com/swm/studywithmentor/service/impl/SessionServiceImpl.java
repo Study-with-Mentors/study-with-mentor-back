@@ -73,7 +73,7 @@ public class SessionServiceImpl implements SessionService {
         if (!Objects.equals(session.getVersion(), sessionDto.getVersion())) {
             throw new EntityOptimisticLockingException(session, session.getId());
         }
-        if (isCourseOpenForEdit(session.getCourse())) {
+        if (!isCourseOpenForEdit(session.getCourse())) {
             throw new ConflictException(Session.class, ActionConflict.UPDATE, "Course is unable to modify", session.getCourse().getId());
         }
         mapper.toEntity(sessionDto, session);
@@ -96,7 +96,7 @@ public class SessionServiceImpl implements SessionService {
     public SessionDto createSession(SessionCreateDto sessionDto) {
         Course course = courseRepository.findById(sessionDto.getCourseId())
                 .orElseThrow(() -> new NotFoundException(Course.class, sessionDto.getCourseId()));
-        if (isCourseOpenForEdit(course)) {
+        if (!isCourseOpenForEdit(course)) {
             throw new ConflictException(Session.class, ActionConflict.CREATE, "Course is unable to modify", course.getId());
         }
         if (course.getSessions().stream().anyMatch(s -> s.getSessionNum() == sessionDto.getSessionNum())) {
