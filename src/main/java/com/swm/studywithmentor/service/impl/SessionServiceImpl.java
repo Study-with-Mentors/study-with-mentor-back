@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -62,6 +63,7 @@ public class SessionServiceImpl implements SessionService {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException(Course.class, courseId));
         return course.getSessions().stream()
+                .sorted(Comparator.comparing(Session::getSessionNum))
                 .map(mapper::toDto)
                 .toList();
     }
@@ -74,10 +76,32 @@ public class SessionServiceImpl implements SessionService {
         if (!Objects.equals(session.getVersion(), sessionDto.getVersion())) {
             throw new EntityOptimisticLockingException(session, session.getId());
         }
-        if (!Utils.isCourseOpenForEdit(session.getCourse())) {
-            throw new ConflictException(Session.class, ActionConflict.UPDATE, "Course is unable to modify", session.getCourse().getId());
+        Course course = session.getCourse();
+        if (!Utils.isCourseOpenForEdit(course)) {
+            throw new ConflictException(Session.class, ActionConflict.UPDATE, "Course is unable to modify", course.getId());
         }
+        // update session num of all session in the course
+        long oldSessionNum = session.getSessionNum();
+        long newSessionNum = sessionDto.getSessionNum();
         mapper.toEntity(sessionDto, session);
+        // Some shitty things about hibernate managing state make me have to set session num manually
+        session.setSessionNum(oldSessionNum);
+        if (oldSessionNum != newSessionNum) {
+            if (oldSessionNum < newSessionNum) {
+                sessionRepository.decreaseSessionNum(course, oldSessionNum, newSessionNum);
+                long maxNum = sessionRepository.findMaxSessionNum(course);
+                if (newSessionNum > maxNum) {
+                    newSessionNum = maxNum;
+                }
+            } else {
+                // case for oldSessionNum > newSessionNum
+                sessionRepository.increaseSessionNum(course, newSessionNum, oldSessionNum);
+                if (newSessionNum < 1) {
+                    newSessionNum = 1;
+                }
+            }
+            session.setSessionNum(newSessionNum);
+        }
 
         session = sessionRepository.save(session);
 
@@ -90,9 +114,6 @@ public class SessionServiceImpl implements SessionService {
                 .orElseThrow(() -> new NotFoundException(Course.class, sessionDto.getCourseId()));
         if (!Utils.isCourseOpenForEdit(course)) {
             throw new ConflictException(Session.class, ActionConflict.CREATE, "Course is unable to modify", course.getId());
-        }
-        if (course.getSessions().stream().anyMatch(s -> s.getSessionNum() == sessionDto.getSessionNum())) {
-            throw new ConflictException(Session.class, ActionConflict.CREATE, "Duplicate session number", sessionDto.getSessionNum());
         }
         Session session = mapper.toEntity(sessionDto);
         List<Activity> activities = sessionDto.getActivities().stream()
@@ -107,6 +128,12 @@ public class SessionServiceImpl implements SessionService {
         session.setCourse(course);
         course.getSessions().add(session);
 
+        if (session.getSessionNum() == 0) {
+            long nextSessionNum = sessionRepository.findMaxSessionNum(course);
+            session.setSessionNum(nextSessionNum+1);
+        } else {
+            sessionRepository.increaseSessionNum(course, session.getSessionNum());
+        }
         session = sessionRepository.save(session);
 
         return mapper.toDto(session);
@@ -122,6 +149,9 @@ public class SessionServiceImpl implements SessionService {
         }
         // there is no need to check number of clazz in a course
         // because the check for status ensure that there is no clazz for course
+
+        // update session number
+        sessionRepository.decreaseSessionNum(course, session.getSessionNum());
         sessionRepository.delete(session);
     }
 }
