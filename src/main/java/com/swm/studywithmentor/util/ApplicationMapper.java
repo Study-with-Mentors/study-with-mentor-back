@@ -12,6 +12,8 @@ import com.swm.studywithmentor.model.dto.create.SessionCreateDto;
 import com.swm.studywithmentor.model.entity.Lesson;
 import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
 import com.swm.studywithmentor.model.entity.invoice.Invoice;
+import com.swm.studywithmentor.model.entity.user.Mentor;
+import com.swm.studywithmentor.model.entity.user.Student;
 import com.swm.studywithmentor.model.entity.user.User;
 import com.swm.studywithmentor.model.dto.*;
 import com.swm.studywithmentor.model.entity.Activity;
@@ -215,5 +217,25 @@ public class ApplicationMapper {
 
     public void toEntity(LessonDto lessonDto, Lesson lesson) {
         mapper.map(lessonDto, lesson);
+    }
+
+    public UserProfileDto toUserProfileDto(User user) {
+        return mapper.map(user, UserProfileDto.class);
+    }
+
+    public StudentDto toDto(Student student) {
+        return mapper.map(student, StudentDto.class);
+    }
+
+    public void toEntity(StudentDto dto, Student student) {
+        mapper.map(dto, student);
+    }
+
+    public MentorDto toDto(Mentor mentor) {
+        return mapper.map(mentor, MentorDto.class);
+    }
+
+    public void toEntity(MentorDto dto, Mentor mentor) {
+        mapper.map(dto, mentor);
     }
 }
