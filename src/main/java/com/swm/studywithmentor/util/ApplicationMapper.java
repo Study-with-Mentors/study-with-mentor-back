@@ -4,11 +4,13 @@ import com.swm.studywithmentor.model.dto.EnrollmentDto;
 import com.swm.studywithmentor.model.dto.InvoiceDto;
 import com.swm.studywithmentor.model.dto.UserDto;
 import com.swm.studywithmentor.model.dto.create.ActivityCreateDto;
+import com.swm.studywithmentor.model.dto.create.ActivityCreateDtoAlone;
 import com.swm.studywithmentor.model.dto.create.ClazzCreateDto;
 import com.swm.studywithmentor.model.dto.create.CourseCreateDto;
 import com.swm.studywithmentor.model.dto.create.FieldCreateDto;
 import com.swm.studywithmentor.model.dto.create.LessonCreateDto;
 import com.swm.studywithmentor.model.dto.create.SessionCreateDto;
+import com.swm.studywithmentor.model.dto.update.SessionUpdateDto;
 import com.swm.studywithmentor.model.entity.Lesson;
 import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
 import com.swm.studywithmentor.model.entity.invoice.Invoice;
@@ -146,8 +148,7 @@ public class ApplicationMapper {
 
     public SessionDto toDto(Session session) {
         SessionDto sessionDto = mapper.map(session, SessionDto.class);
-        List<ActivityDto> activityDtos = session.getActivities()
-                .stream()
+        List<ActivityDto> activityDtos = session.getActivities().stream()
                 .map(this::toDto)
                 .toList();
         sessionDto.setActivities(activityDtos);
@@ -162,12 +163,22 @@ public class ApplicationMapper {
         return mapper.map(sessionCreateDto, Session.class);
     }
 
-    public void toEntity(SessionDto sessionDto, Session session) {
+    public void toEntity(SessionUpdateDto sessionDto, Session session) {
         mapper.map(sessionDto, session);
     }
 
     public ActivityDto toDto(Activity activity) {
-        return mapper.map(activity, ActivityDto.class);
+        ActivityDto dto = mapper.map(activity, ActivityDto.class);
+        dto.setSessionId(activity.getSession().getId());
+        return dto;
+    }
+
+    public void toDto(ActivityDto dto, Activity activity) {
+        mapper.map(dto, activity);
+    }
+
+    public Activity toEntity(ActivityCreateDtoAlone dto) {
+        return mapper.map(dto, Activity.class);
     }
 
     public Activity toEntity(ActivityDto activityDto) {
