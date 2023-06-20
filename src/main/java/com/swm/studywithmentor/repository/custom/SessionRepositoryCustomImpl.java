@@ -18,10 +18,14 @@ public class SessionRepositoryCustomImpl implements SessionRepositoryCustom {
     public long findMaxSessionNum(Course course) {
         QSession session = QSession.session;
         var query = new JPAQuery<Long>(entityManager);
-        return query.select(session.sessionNum.max())
+        Long num = query.select(session.sessionNum.max())
                 .from(session)
                 .where(session.course.id.eq(course.getId()))
                 .fetchFirst();
+        if (num == null) {
+            return 0;
+        }
+        return num;
     }
 
     @Override
