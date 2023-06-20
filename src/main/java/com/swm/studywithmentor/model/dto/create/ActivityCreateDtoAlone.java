@@ -1,4 +1,4 @@
-package com.swm.studywithmentor.model.dto;
+package com.swm.studywithmentor.model.dto.create;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,11 +9,11 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class ActivityDto extends BaseDto {
+public class ActivityCreateDtoAlone {
+    @NotNull
+    private UUID sessionId;
     @NotEmpty
     private String description;
     @NotEmpty
     private String title;
-    @NotNull
-    private UUID sessionId;
 }

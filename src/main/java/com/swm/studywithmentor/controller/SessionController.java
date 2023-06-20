@@ -1,7 +1,9 @@
 package com.swm.studywithmentor.controller;
 
+import com.swm.studywithmentor.model.dto.ActivityDto;
 import com.swm.studywithmentor.model.dto.SessionDto;
 import com.swm.studywithmentor.model.dto.create.SessionCreateDto;
+import com.swm.studywithmentor.model.dto.update.SessionUpdateDto;
 import com.swm.studywithmentor.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,10 +29,10 @@ public class SessionController {
         return new ResponseEntity<>(sessionDto, HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<List<SessionDto>> getSessions() {
-        List<SessionDto> sessionDtos = sessionService.getSessions();
-        return new ResponseEntity<>(sessionDtos, HttpStatus.OK);
+    @GetMapping("/{id}/activity")
+    public ResponseEntity<List<ActivityDto>> getActivitiesFromSession(@PathVariable(name = "id") UUID sessionId) {
+        List<ActivityDto> dtos = sessionService.getActivitiesFromSession(sessionId);
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
     @GetMapping("/course/{courseId}")
@@ -46,7 +48,7 @@ public class SessionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SessionDto> updateSession(@RequestBody SessionDto dto, @PathVariable UUID id) {
+    public ResponseEntity<SessionDto> updateSession(@RequestBody SessionUpdateDto dto, @PathVariable UUID id) {
         dto.setId(id);
         SessionDto resultDto = sessionService.updateSession(dto);
         return new ResponseEntity<>(resultDto, HttpStatus.OK);
