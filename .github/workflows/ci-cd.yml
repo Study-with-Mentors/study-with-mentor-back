@@ -1,0 +1,51 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+env:
+  JAR_NAME: study-with-mentor.jar
+
+jobs:
+  build:
+    name: Build JAR
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Add deploy resource file
+      run: echo "${{ secrets.APPLICATION_DEPLOY }}" > src/main/resources/application-deploy.yml
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'oracle'
+        cache: maven
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+    - name: Upload JAR
+      uses: actions/upload-artifact@v3
+      with:
+        name: artifact
+        path: target/${{ env.JAR_NAME }}
+  deploy:
+    needs: build
+    name: Deploy to Elastic Beanstalk
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download JAR
+        uses: actions/download-artifact@v3
+        with:
+          name: artifact
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          use_existing_version_if_available: false
+          application_name: swm
+          environment_name: Swm-env-1
+          version_label: ${{ github.ref_name }}
+          region: ap-southeast-1
+          deployment_package: ${{ env.JAR_NAME }}

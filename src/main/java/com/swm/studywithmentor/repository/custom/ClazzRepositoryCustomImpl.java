@@ -3,14 +3,27 @@ package com.swm.studywithmentor.repository.custom;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.swm.studywithmentor.model.dto.search.ClazzSearchDto;
+import com.swm.studywithmentor.model.entity.Clazz;
 import com.swm.studywithmentor.model.entity.QClazz;
+import com.swm.studywithmentor.model.entity.course.CourseStatus;
 import com.swm.studywithmentor.model.entity.course.QCourse;
+import com.swm.studywithmentor.model.entity.enrollment.QEnrollment;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
+import java.util.UUID;
+
 @Repository
 public class ClazzRepositoryCustomImpl implements ClazzRepositoryCustom {
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Override
     public Predicate prepareSearchPredicate(ClazzSearchDto searchDto) {
         QClazz clazz = QClazz.clazz;
@@ -18,6 +31,7 @@ public class ClazzRepositoryCustomImpl implements ClazzRepositoryCustom {
         BooleanBuilder builder = new BooleanBuilder();
 
         // course part
+        builder.and(course.status.ne(CourseStatus.DISABLE));
         if (StringUtils.isNotBlank(searchDto.getName())) {
             String name = searchDto.getName();
             builder.and(course.fullName.contains(name)
@@ -74,5 +88,28 @@ public class ClazzRepositoryCustomImpl implements ClazzRepositoryCustom {
             predicate = Expressions.asBoolean(true).isTrue();
         }
         return predicate;
+    }
+
+    @Override
+    public List<Clazz> getClazzOfStudent(UUID studenId) {
+        QClazz clazz = QClazz.clazz;
+        QEnrollment enrollment = QEnrollment.enrollment;
+        var query = new JPAQuery<Clazz>(entityManager);
+        return query.from(clazz)
+                .where(clazz.id.in(
+                        JPAExpressions.select(enrollment.clazz.id)
+                                .from(enrollment)
+                                .where(enrollment.student.id.eq(studenId))
+                ))
+                .fetch();
+    }
+
+    @Override
+    public List<Clazz> getClazzOfMentor(UUID mentorId) {
+        QClazz clazz = QClazz.clazz;
+        var query = new JPAQuery<Clazz>(entityManager);
+        return query.from(clazz)
+                .where(clazz.course.mentor.id.eq(mentorId))
+                .fetch();
     }
 }

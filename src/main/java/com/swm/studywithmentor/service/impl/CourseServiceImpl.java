@@ -24,6 +24,7 @@ import com.swm.studywithmentor.service.BaseService;
 import com.swm.studywithmentor.service.CourseService;
 import com.swm.studywithmentor.service.UserService;
 import com.swm.studywithmentor.util.ApplicationMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,6 +40,7 @@ import java.util.UUID;
 
 @Service
 @Transactional
+@Slf4j
 public class CourseServiceImpl extends BaseService implements CourseService {
     private final CourseRepository courseRepository;
     private final ClazzRepository clazzRepository;
@@ -60,6 +62,13 @@ public class CourseServiceImpl extends BaseService implements CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ApplicationException(ExceptionErrorCodeConstants.NOT_FOUND, HttpStatus.NOT_FOUND, "Course not found. Id: " + id));
 
+        if (!isCourseCanBeSeenByAll(course)) {
+            User user = userService.getCurrentUser();
+            if (!course.getMentor().getId().equals(user.getId())) {
+                log.info("Unauthorized access to course. User ID {}", user.getId());
+                throw new NotFoundException(Course.class,  course.getId());
+            }
+        }
         return mapper.toDto(course);
     }
 
@@ -104,7 +113,7 @@ public class CourseServiceImpl extends BaseService implements CourseService {
     public CourseDto updateCourse(CourseDto courseDto) {
         Course course = courseRepository.findById(courseDto.getId())
                 .orElseThrow(() -> new NotFoundException(Course.class, courseDto.getId()));
-        if (!(course.getStatus() == CourseStatus.OPEN || course.getStatus() == CourseStatus.DRAFTING)) {
+        if (!isCourseOpenForEdit(course)) {
             throw new ConflictException(Course.class, ActionConflict.UPDATE, "Cannot update course when course status is " + course.getStatus(), course.getId());
         }
         User user = userService.getCurrentUser();
@@ -133,7 +142,7 @@ public class CourseServiceImpl extends BaseService implements CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Course.class, id));
         if (course.getStatus() != CourseStatus.DISABLE) {
-            if (course.getStatus() == CourseStatus.DRAFTING || course.getStatus() == CourseStatus.OPEN) {
+            if (isCourseOpenForEdit(course)) {
                 // DRAFTING and OPEN guarantee course has no clazz
                 courseRepository.delete(course);
             } else {
@@ -177,8 +186,41 @@ public class CourseServiceImpl extends BaseService implements CourseService {
         // TODO: pagination and maybe searching, filtering, sorting
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(Course.class, id));
+
+        if (!isCourseCanBeSeenByAll(course)) {
+            User user = userService.getCurrentUser();
+            if (!course.getMentor().getId().equals(user.getId())) {
+                log.info("Unauthorized access to course. User ID {}", user.getId());
+                throw new NotFoundException(Course.class,  course.getId());
+            }
+        }
+
         return course.getClazzes().stream()
                 .map(mapper::toDto)
                 .toList();
+    }
+
+    @Override
+    public List<CourseDto> getCourseOfStudent() {
+        User user = userService.getCurrentUser();
+        return courseRepository.getCourseOfStudent(user.getId()).stream()
+                .map(mapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public List<CourseDto> getCourseOfMentor() {
+        User user = userService.getCurrentUser();
+        return courseRepository.getCourseByMentor(user).stream()
+                .map(mapper::toDto)
+                .toList();
+    }
+
+    private boolean isCourseOpenForEdit(Course course) {
+        return course.getStatus() == CourseStatus.OPEN || course.getStatus() == CourseStatus.DRAFTING;
+    }
+
+    private boolean isCourseCanBeSeenByAll(Course course) {
+        return course.getStatus() != CourseStatus.DRAFTING && course.getStatus() != CourseStatus.DISABLE;
     }
 }

@@ -1,12 +1,12 @@
 package com.swm.studywithmentor.util;
 
-import com.swm.studywithmentor.model.dto.EnrollmentDto;
-import com.swm.studywithmentor.model.dto.InvoiceDto;
-import com.swm.studywithmentor.model.dto.UserDto;
 import com.swm.studywithmentor.model.dto.create.*;
 import com.swm.studywithmentor.model.entity.*;
+import com.swm.studywithmentor.model.dto.update.SessionUpdateDto;
 import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
 import com.swm.studywithmentor.model.entity.invoice.Invoice;
+import com.swm.studywithmentor.model.entity.user.Mentor;
+import com.swm.studywithmentor.model.entity.user.Student;
 import com.swm.studywithmentor.model.entity.user.User;
 import com.swm.studywithmentor.model.dto.*;
 import com.swm.studywithmentor.model.entity.course.Course;
@@ -29,7 +29,7 @@ public class ApplicationMapper {
     }
 
     public List<EnrollmentDto> enrollmentToDto(List<Enrollment> enrollments) {
-        return enrollments.stream().map(this::enrollmentToDto).collect(Collectors.toList());
+        return enrollments.stream().map(this::enrollmentToDto).toList();
     }
 
     public EnrollmentDto enrollmentToDto(Enrollment enrollment) {
@@ -39,7 +39,7 @@ public class ApplicationMapper {
     }
 
     public List<UserDto> userToDto(List<User> users) {
-        return users.stream().map(this::userToDto).collect(Collectors.toList());
+        return users.stream().map(this::userToDto).toList();
     }
 
     public UserDto userToDto(User user) {
@@ -47,17 +47,16 @@ public class ApplicationMapper {
     }
 
     public List<InvoiceDto> invoiceToDto(List<Invoice> invoices) {
-        return invoices.stream().map(this::invoiceToDto).collect(Collectors.toList());
+        return invoices.stream().map(this::invoiceToDto).toList();
     }
 
     public InvoiceDto invoiceToDto(Invoice invoice) {
         return mapper.typeMap(Invoice.class, InvoiceDto.class)
-                //TODO: Total price will be mapped when Clazz finish implemented.
                 .map(invoice);
     }
 
     public List<Enrollment> enrollmentToEntity(List<EnrollmentDto> enrollmentDtos) {
-        return enrollmentDtos.stream().map(this::enrollmentToEntity).collect(Collectors.toList());
+        return enrollmentDtos.stream().map(this::enrollmentToEntity).toList();
     }
 
     public void enrollmentToEntity(Enrollment enrollment, EnrollmentDto enrollmentDto) {
@@ -69,7 +68,7 @@ public class ApplicationMapper {
     }
 
     public List<User> userToEntity(List<UserDto> userDtos) {
-        return userDtos.stream().map(this::userToEntity).collect(Collectors.toList());
+        return userDtos.stream().map(this::userToEntity).toList();
     }
 
     public User userToEntity(UserDto user) {
@@ -77,7 +76,7 @@ public class ApplicationMapper {
     }
 
     public List<Invoice> invoiceToEntity(List<InvoiceDto> invoices) {
-        return invoices.stream().map(this::invoiceToEntity).collect(Collectors.toList());
+        return invoices.stream().map(this::invoiceToEntity).toList();
     }
 
     public Invoice invoiceToEntity(InvoiceDto invoice) {
@@ -139,10 +138,9 @@ public class ApplicationMapper {
 
     public SessionDto toDto(Session session) {
         SessionDto sessionDto = mapper.map(session, SessionDto.class);
-        List<ActivityDto> activityDtos = session.getActivities()
-                .stream()
+        List<ActivityDto> activityDtos = session.getActivities().stream()
                 .map(this::toDto)
-                .collect(Collectors.toList());
+                .toList();
         sessionDto.setActivities(activityDtos);
         return sessionDto;
     }
@@ -155,12 +153,22 @@ public class ApplicationMapper {
         return mapper.map(sessionCreateDto, Session.class);
     }
 
-    public void toEntity(SessionDto sessionDto, Session session) {
+    public void toEntity(SessionUpdateDto sessionDto, Session session) {
         mapper.map(sessionDto, session);
     }
 
     public ActivityDto toDto(Activity activity) {
-        return mapper.map(activity, ActivityDto.class);
+        ActivityDto dto = mapper.map(activity, ActivityDto.class);
+        dto.setSessionId(activity.getSession().getId());
+        return dto;
+    }
+
+    public void toDto(ActivityDto dto, Activity activity) {
+        mapper.map(dto, activity);
+    }
+
+    public Activity toEntity(ActivityCreateDtoAlone dto) {
+        return mapper.map(dto, Activity.class);
     }
 
     public Activity toEntity(ActivityDto activityDto) {
@@ -192,7 +200,10 @@ public class ApplicationMapper {
     }
 
     public LessonDto toDto(Lesson lesson) {
-        return mapper.map(lesson, LessonDto.class);
+        LessonDto dto = mapper.map(lesson, LessonDto.class);
+        dto.setClazzId(lesson.getClazz().getId());
+        dto.setSessionId(lesson.getSession().getId());
+        return dto;
     }
 
     public Lesson toEntity(LessonDto lessonDto) {
@@ -222,5 +233,25 @@ public class ApplicationMapper {
 
     public List<ImageDto> toDto(List<Image> entities) {
         return entities.stream().map(this::toDto).collect(Collectors.toList());
+    }
+
+    public UserProfileDto toUserProfileDto(User user) {
+        return mapper.map(user, UserProfileDto.class);
+    }
+
+    public StudentDto toDto(Student student) {
+        return mapper.map(student, StudentDto.class);
+    }
+
+    public void toEntity(StudentDto dto, Student student) {
+        mapper.map(dto, student);
+    }
+
+    public MentorDto toDto(Mentor mentor) {
+        return mapper.map(mentor, MentorDto.class);
+    }
+
+    public void toEntity(MentorDto dto, Mentor mentor) {
+        mapper.map(dto, mentor);
     }
 }

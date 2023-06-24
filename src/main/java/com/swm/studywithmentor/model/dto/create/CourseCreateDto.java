@@ -1,5 +1,6 @@
 package com.swm.studywithmentor.model.dto.create;
 
+import com.swm.studywithmentor.model.entity.course.CourseIntendedLearner;
 import com.swm.studywithmentor.model.entity.course.CourseLevel;
 import com.swm.studywithmentor.model.entity.course.CourseStatus;
 import lombok.Getter;
@@ -13,9 +14,9 @@ public class CourseCreateDto {
     private String shortName;
     private String fullName;
     private String description;
-    private CourseCreateDto learningOutcome;
+    private String learningOutcome;
     private CourseStatus status;
     private CourseLevel courseLevel;
-    private String intendedLearner;
+    private CourseIntendedLearner intendedLearner;
     private UUID fieldId;
 }

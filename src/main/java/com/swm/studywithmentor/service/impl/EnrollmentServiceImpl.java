@@ -1,22 +1,32 @@
 package com.swm.studywithmentor.service.impl;
 
 import com.swm.studywithmentor.model.dto.EnrollmentDto;
+import com.swm.studywithmentor.model.dto.InvoiceDto;
+import com.swm.studywithmentor.model.dto.ResponseObject;
+import com.swm.studywithmentor.model.dto.create.EnrollmentCreateDto;
 import com.swm.studywithmentor.model.dto.query.SearchRequest;
 import com.swm.studywithmentor.model.dto.query.SearchSpecification;
 import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
+import com.swm.studywithmentor.model.entity.enrollment.EnrollmentStatus;
 import com.swm.studywithmentor.model.entity.user.User;
 import com.swm.studywithmentor.model.exception.ActionConflict;
 import com.swm.studywithmentor.model.exception.ApplicationException;
 import com.swm.studywithmentor.model.exception.ConflictException;
+import com.swm.studywithmentor.model.exception.NotFoundException;
+import com.swm.studywithmentor.repository.ClazzRepository;
 import com.swm.studywithmentor.repository.EnrollmentRepository;
+import com.swm.studywithmentor.repository.UserRepository;
 import com.swm.studywithmentor.service.EnrollmentService;
+import com.swm.studywithmentor.service.InvoiceService;
 import com.swm.studywithmentor.service.UserService;
 import com.swm.studywithmentor.util.ApplicationMapper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -26,16 +36,22 @@ import java.util.function.Function;
 public class EnrollmentServiceImpl implements EnrollmentService {
 
     private final EnrollmentRepository enrollmentRepository;
+    private final InvoiceService invoiceService;
+    private final UserRepository userRepository;
+    private final ClazzRepository clazzRepository;
     private final ApplicationMapper applicationMapper;
     private final Function<UUID, Enrollment> findById;
     private final UserService userService;
 
-    public EnrollmentServiceImpl(EnrollmentRepository enrollmentRepository, ApplicationMapper applicationMapper, UserService userService) {
+    public EnrollmentServiceImpl(EnrollmentRepository enrollmentRepository, InvoiceService invoiceService, UserRepository userRepository, ClazzRepository clazzRepository, ApplicationMapper applicationMapper, UserService userService) {
         this.enrollmentRepository = enrollmentRepository;
+        this.invoiceService = invoiceService;
+        this.userRepository = userRepository;
+        this.clazzRepository = clazzRepository;
         this.applicationMapper = applicationMapper;
         this.userService = userService;
         findById = id -> enrollmentRepository.findById(id)
-                .orElseThrow(() -> new ApplicationException("NOT_FOUND", HttpStatus.NOT_FOUND , "Not found enrollment " + id.toString()));
+                .orElseThrow(() -> new NotFoundException(this.getClass(), id));
     }
 
     @Override
@@ -68,10 +84,25 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Override
+    public ResponseObject<?> createEnrollment(EnrollmentCreateDto createDto, HttpServletRequest request) {
+        var clazz = clazzRepository.findById(createDto.getClassId())
+                .orElseThrow(() -> new ConflictException(Enrollment.class, ActionConflict.CREATE, "Clazz not found", createDto.getClassId()));
+        User student = userRepository.findById(createDto.getStudentId())
+                .orElseThrow(() -> new ConflictException(Enrollment.class, ActionConflict.CREATE, "Student not found", createDto.getStudentId()));
+        var enrollment = Enrollment.builder()
+                        .student(student)
+                        .enrollmentDate(new Date(System.currentTimeMillis()))
+                        .clazz(clazz)
+                        .status(EnrollmentStatus.NONE)
+                        .build();
+        enrollment = enrollmentRepository.save(enrollment);
+        return invoiceService.createInvoice(createDto.getPaymentType(), enrollment, request);
+    }
+
+    @Override
     public EnrollmentDto updateEnrollment(EnrollmentDto enrollmentDto) {
         var enrollment = findById.apply(enrollmentDto.getId());
         User user = userService.getCurrentUser();
-        // FIXME: Optimistic locking
         if(!enrollment.getStudent().getId().equals(user.getId())) {
             throw new ConflictException(Enrollment.class, ActionConflict.UPDATE, "User does not own this enrollment", user.getId());
         }
