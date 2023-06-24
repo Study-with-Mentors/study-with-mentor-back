@@ -1,5 +1,7 @@
 package com.swm.studywithmentor.controller;
 
+import com.swm.studywithmentor.model.entity.ClazzStatus;
+import com.swm.studywithmentor.model.entity.course.CourseIntendedLearner;
 import com.swm.studywithmentor.model.entity.course.CourseLevel;
 import com.swm.studywithmentor.model.entity.course.CourseStatus;
 import com.swm.studywithmentor.model.entity.enrollment.EnrollmentStatus;
@@ -28,6 +30,11 @@ public class EnumsController {
     @GetMapping("/course/level")
     public ResponseEntity<?> getCourseLevel() {
         return ResponseEntity.ok(CourseLevel.values());
+    }
+
+    @GetMapping("/course/intendtedLeanrer")
+    public ResponseEntity<?> getIntendtedLearner() {
+        return ResponseEntity.ok(CourseIntendedLearner.values());
     }
 
     @GetMapping("/enrollment/status")
@@ -64,5 +71,10 @@ public class EnumsController {
     public ResponseEntity<?> getUserRole() {
         var roles = Arrays.stream(Role.values()).filter(r -> r.compareTo(Role.ADMIN) != 0).toList();
         return ResponseEntity.ok(roles);
+    }
+
+    @GetMapping("/clazz/status")
+    public ResponseEntity<?> getClazzStatus() {
+        return ResponseEntity.ok(ClazzStatus.values());
     }
 }
