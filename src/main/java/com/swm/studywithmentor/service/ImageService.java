@@ -1,14 +1,14 @@
 package com.swm.studywithmentor.service;
 
 import com.swm.studywithmentor.model.dto.create.ImageDto;
-import com.swm.studywithmentor.model.entity.Image;
-import org.springframework.http.ResponseEntity;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface ImageService {
-    ImageDto GetImageById(UUID id);
-
-    List<ImageDto> CreateImages(List<ImageDto> images);
+    ImageDto getImageById(UUID id);
+    ImageDto getCourseImage(UUID courseId);
+    ImageDto getProfileImage();
+    ImageDto getMentorImage(UUID mentoId);
+    ImageDto updateCourseImage(UUID courseId, ImageDto imageDto);
+    ImageDto updateProfileImage(ImageDto imageDto);
 }

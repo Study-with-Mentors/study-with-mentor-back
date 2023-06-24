@@ -4,6 +4,8 @@ import com.swm.studywithmentor.model.dto.MentorDto;
 import com.swm.studywithmentor.model.dto.StudentDto;
 import com.swm.studywithmentor.model.dto.UserDto;
 import com.swm.studywithmentor.model.dto.UserProfileDto;
+import com.swm.studywithmentor.model.dto.create.ImageDto;
+import com.swm.studywithmentor.service.ImageService;
 import com.swm.studywithmentor.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,10 +22,12 @@ import javax.validation.Valid;
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
+    private final ImageService imageService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ImageService imageService) {
         this.userService = userService;
+        this.imageService = imageService;
     }
 
     @GetMapping("/profile")
@@ -32,9 +36,21 @@ public class UserController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
+    @GetMapping("/profile/image")
+    public ResponseEntity<ImageDto> getProfileImage() {
+        ImageDto dto = imageService.getProfileImage();
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
     @PutMapping("/profile")
     public ResponseEntity<UserDto> updateProfile(@Valid @RequestBody UserDto dto) {
         UserDto resultDto = userService.updateProfile(dto);
+        return new ResponseEntity<>(resultDto, HttpStatus.OK);
+    }
+
+    @PutMapping("/profile/image")
+    public ResponseEntity<ImageDto> updateProfileImage(@Valid @RequestBody ImageDto imageDto) {
+        ImageDto resultDto = imageService.updateProfileImage(imageDto);
         return new ResponseEntity<>(resultDto, HttpStatus.OK);
     }
 

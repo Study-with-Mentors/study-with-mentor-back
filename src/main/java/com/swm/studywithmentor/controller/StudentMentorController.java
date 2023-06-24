@@ -5,11 +5,13 @@ import com.swm.studywithmentor.model.dto.CourseDto;
 import com.swm.studywithmentor.model.dto.LessonDto;
 import com.swm.studywithmentor.model.dto.PageResult;
 import com.swm.studywithmentor.model.dto.UserProfileDto;
+import com.swm.studywithmentor.model.dto.create.ImageDto;
 import com.swm.studywithmentor.model.dto.search.LessonTimeRangeDto;
 import com.swm.studywithmentor.model.dto.search.MentorSearchDto;
 import com.swm.studywithmentor.model.entity.user.Role;
 import com.swm.studywithmentor.service.ClazzService;
 import com.swm.studywithmentor.service.CourseService;
+import com.swm.studywithmentor.service.ImageService;
 import com.swm.studywithmentor.service.LessonService;
 import com.swm.studywithmentor.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +30,15 @@ public class StudentMentorController {
     private final ClazzService clazzService;
     private final CourseService courseService;
     private final UserService userService;
+    private final ImageService imageService;
 
     @Autowired
-    public StudentMentorController(LessonService lessonService, ClazzService clazzService, CourseService courseService, UserService userService) {
+    public StudentMentorController(LessonService lessonService, ClazzService clazzService, CourseService courseService, UserService userService, ImageService imageService) {
         this.lessonService = lessonService;
         this.clazzService = clazzService;
         this.courseService = courseService;
         this.userService = userService;
+        this.imageService = imageService;
     }
 
     @GetMapping("/student/lesson")
@@ -83,5 +87,11 @@ public class StudentMentorController {
     public ResponseEntity<PageResult<UserProfileDto>> searchMentor(MentorSearchDto searchDto) {
         PageResult<UserProfileDto> dtos = userService.searchMentors(searchDto);
         return new ResponseEntity<>(dtos, HttpStatus.OK);
+    }
+
+    @GetMapping("/mentor/{id}/image")
+    public ResponseEntity<ImageDto> getMentorImage(@PathVariable UUID id) {
+        ImageDto imageDto = imageService.getMentorImage(id);
+        return new ResponseEntity<>(imageDto, HttpStatus.OK);
     }
 }

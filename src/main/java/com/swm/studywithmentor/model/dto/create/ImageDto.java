@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Builder
 @Data
 @AllArgsConstructor
@@ -16,5 +14,4 @@ public class ImageDto extends BaseDto {
     private String assetId;
     private String publicId;
     private String url;
-    private UUID course;
 }
