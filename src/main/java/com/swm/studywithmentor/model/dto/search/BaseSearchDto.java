@@ -11,6 +11,7 @@ public abstract class BaseSearchDto {
     @JsonIgnore
     private Sort.Direction direction = Sort.Direction.ASC;
     private String orderBy;
+    private int page;
 
     // alias for `direction` as `dir`
     public void setDir(Sort.Direction dir) {

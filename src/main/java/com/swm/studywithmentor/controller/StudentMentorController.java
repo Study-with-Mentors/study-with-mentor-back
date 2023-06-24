@@ -3,30 +3,38 @@ package com.swm.studywithmentor.controller;
 import com.swm.studywithmentor.model.dto.ClazzDto;
 import com.swm.studywithmentor.model.dto.CourseDto;
 import com.swm.studywithmentor.model.dto.LessonDto;
+import com.swm.studywithmentor.model.dto.PageResult;
+import com.swm.studywithmentor.model.dto.UserProfileDto;
 import com.swm.studywithmentor.model.dto.search.LessonTimeRangeDto;
+import com.swm.studywithmentor.model.dto.search.MentorSearchDto;
 import com.swm.studywithmentor.model.entity.user.Role;
 import com.swm.studywithmentor.service.ClazzService;
 import com.swm.studywithmentor.service.CourseService;
 import com.swm.studywithmentor.service.LessonService;
+import com.swm.studywithmentor.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class StudentMentorController {
     private final LessonService lessonService;
     private final ClazzService clazzService;
     private final CourseService courseService;
+    private final UserService userService;
 
     @Autowired
-    public StudentMentorController(LessonService lessonService, ClazzService clazzService, CourseService courseService) {
+    public StudentMentorController(LessonService lessonService, ClazzService clazzService, CourseService courseService, UserService userService) {
         this.lessonService = lessonService;
         this.clazzService = clazzService;
         this.courseService = courseService;
+        this.userService = userService;
     }
 
     @GetMapping("/student/lesson")
@@ -62,6 +70,18 @@ public class StudentMentorController {
     @GetMapping("/mentor/course")
     public ResponseEntity<List<CourseDto>> getMentorCourse() {
         List<CourseDto> dtos = courseService.getCourseOfMentor();
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
+    }
+
+    @GetMapping("/mentor/{id}")
+    public ResponseEntity<UserProfileDto> getMentorProfile(@PathVariable UUID id) {
+        UserProfileDto dto = userService.getMentorProfile(id);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping("/mentor")
+    public ResponseEntity<PageResult<UserProfileDto>> searchMentor(MentorSearchDto searchDto) {
+        PageResult<UserProfileDto> dtos = userService.searchMentors(searchDto);
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 }
