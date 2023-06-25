@@ -9,6 +9,10 @@ public interface ImageService {
     ImageDto getImageById(UUID id);
 
     List<ImageDto> createImages(List<ImageDto> images);
-
     void deleteImage(UUID id);
+    ImageDto getCourseImage(UUID courseId);
+    ImageDto getProfileImage();
+    ImageDto getMentorImage(UUID mentoId);
+    ImageDto updateCourseImage(UUID courseId, ImageDto imageDto);
+    ImageDto updateProfileImage(ImageDto imageDto);
 }

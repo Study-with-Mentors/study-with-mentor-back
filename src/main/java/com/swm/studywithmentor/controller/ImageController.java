@@ -35,6 +35,10 @@ public class ImageController {
         }
     }
 
+    public ResponseEntity<ImageDto> getImageById(@PathVariable UUID id) {
+        return ResponseEntity.ok(imageService.getImageById(id));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> DeleteImage(@PathVariable UUID id) {
         imageService.deleteImage(id);

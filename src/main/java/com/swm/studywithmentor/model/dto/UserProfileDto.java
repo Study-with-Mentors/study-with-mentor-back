@@ -1,5 +1,6 @@
 package com.swm.studywithmentor.model.dto;
 
+import com.swm.studywithmentor.model.dto.create.ImageDto;
 import com.swm.studywithmentor.model.entity.user.Education;
 import com.swm.studywithmentor.model.entity.user.Gender;
 import lombok.Getter;
@@ -14,7 +15,7 @@ public class UserProfileDto extends BaseDto {
     private String firstName;
     private String lastName;
     private Date birthdate;
-    private String profileImage;
+    private ImageDto profileImage;
     private Gender gender;
     private PrivateMentorDto mentor = new PrivateMentorDto();
     private PrivateStudentDto student = new PrivateStudentDto();

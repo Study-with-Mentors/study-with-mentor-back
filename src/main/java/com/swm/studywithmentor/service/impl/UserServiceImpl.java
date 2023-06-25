@@ -1,9 +1,12 @@
 package com.swm.studywithmentor.service.impl;
 
+import com.querydsl.core.types.Predicate;
 import com.swm.studywithmentor.model.dto.MentorDto;
+import com.swm.studywithmentor.model.dto.PageResult;
 import com.swm.studywithmentor.model.dto.StudentDto;
 import com.swm.studywithmentor.model.dto.UserDto;
 import com.swm.studywithmentor.model.dto.UserProfileDto;
+import com.swm.studywithmentor.model.dto.search.MentorSearchDto;
 import com.swm.studywithmentor.model.entity.Field;
 import com.swm.studywithmentor.model.entity.user.Mentor;
 import com.swm.studywithmentor.model.entity.user.Student;
@@ -16,10 +19,14 @@ import com.swm.studywithmentor.repository.FieldRepository;
 import com.swm.studywithmentor.repository.MentorRepository;
 import com.swm.studywithmentor.repository.StudentRepository;
 import com.swm.studywithmentor.repository.UserRepository;
+import com.swm.studywithmentor.service.BaseService;
 import com.swm.studywithmentor.service.UserService;
 import com.swm.studywithmentor.util.ApplicationMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,11 +35,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.UUID;
 
 @Service
 @Transactional
 @Slf4j
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends BaseService implements UserService {
     private final UserRepository userRepository;
     private final StudentRepository studentRepository;
     private final MentorRepository mentorRepository;
@@ -58,7 +66,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException(email));
+                .orElseThrow(() -> new UsernameNotFoundException(email));
     }
 
     @Override
@@ -114,5 +122,41 @@ public class UserServiceImpl implements UserService {
         mapper.toEntity(mentorDto, mentor);
         mentor = mentorRepository.save(mentor);
         return mapper.toDto(mentor);
+    }
+
+    @Override
+    public UserProfileDto getMentorProfile(UUID mentorId) {
+        User user = userRepository.findById(mentorId)
+                .orElseThrow(() -> {
+                    log.warn("User not found: id {}", mentorId);
+                    throw new ConflictException(User.class, ActionConflict.READ, "Conflict when updating profile");
+                });
+        UserProfileDto profileDto = mapper.toUserProfileDto(user);
+        profileDto.setStudent(null);
+        return profileDto;
+    }
+
+    @Override
+    public PageResult<UserProfileDto> searchMentors(MentorSearchDto searchDto) {
+        Predicate searchPredicate = userRepository.prepareSearchPredicate(searchDto);
+        PageRequest pageRequest;
+        if (searchDto.getOrderBy() != null) {
+            Sort.Direction direction = searchDto.getDirection();
+            if (direction == null) {
+                direction = Sort.Direction.ASC;
+            }
+            pageRequest = PageRequest.of(searchDto.getPage(), pageSize, Sort.by(direction, searchDto.getOrderBy()));
+        } else {
+            pageRequest = PageRequest.of(searchDto.getPage(), pageSize);
+        }
+        Page<User> users = userRepository.findAll(searchPredicate, pageRequest);
+        PageResult<UserProfileDto> result = new PageResult<>(
+        );
+        result.setResult(users.stream()
+                .map(mapper::toUserProfileDto)
+                .toList());
+        result.setTotalElements(users.getTotalElements());
+        result.setTotalPages(users.getTotalPages());
+        return result;
     }
 }
