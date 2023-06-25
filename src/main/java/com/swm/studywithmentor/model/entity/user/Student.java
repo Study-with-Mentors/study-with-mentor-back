@@ -30,5 +30,5 @@ public class Student {
     private String bio;
     private String experience;
     @Enumerated(EnumType.STRING)
-    private Education Education;
+    private Education education;
 }

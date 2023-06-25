@@ -4,13 +4,24 @@ import com.swm.studywithmentor.model.dto.ClazzDto;
 import com.swm.studywithmentor.model.dto.CourseDto;
 import com.swm.studywithmentor.model.dto.PageResult;
 import com.swm.studywithmentor.model.dto.create.CourseCreateDto;
+import com.swm.studywithmentor.model.dto.create.ImageDto;
 import com.swm.studywithmentor.model.dto.search.CourseSearchDto;
 import com.swm.studywithmentor.service.CourseService;
+import com.swm.studywithmentor.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,10 +29,12 @@ import java.util.UUID;
 @RequestMapping("/course")
 public class CourseController {
     private final CourseService courseService;
+    private final ImageService imageService;
 
     @Autowired
-    public CourseController(CourseService courseService) {
+    public CourseController(CourseService courseService, ImageService imageService) {
         this.courseService = courseService;
+        this.imageService = imageService;
     }
 
     @GetMapping("/{id}")
@@ -34,6 +47,12 @@ public class CourseController {
     public ResponseEntity<List<ClazzDto>> getClazzFromCourse(@PathVariable UUID id) {
         List<ClazzDto> dtos = courseService.getClazzesByCourse(id);
         return new ResponseEntity<>(dtos, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/image")
+    public ResponseEntity<ImageDto> getImage(@PathVariable UUID id) {
+        ImageDto dto = imageService.getCourseImage(id);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     @GetMapping
@@ -51,6 +70,12 @@ public class CourseController {
     public ResponseEntity<CourseDto> updateCourse(@RequestBody CourseDto courseDto, @PathVariable UUID id) {
         courseDto.setId(id);
         CourseDto resultDto = courseService.updateCourse(courseDto);
+        return new ResponseEntity<>(resultDto, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/image")
+    public ResponseEntity<ImageDto> updateCourseImage(@PathVariable UUID id, @Valid @RequestBody ImageDto dto) {
+        ImageDto resultDto = imageService.updateCourseImage(id, dto);
         return new ResponseEntity<>(resultDto, HttpStatus.OK);
     }
 

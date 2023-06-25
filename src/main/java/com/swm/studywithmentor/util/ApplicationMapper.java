@@ -1,24 +1,38 @@
 package com.swm.studywithmentor.util;
 
+import com.swm.studywithmentor.model.dto.ActivityDto;
+import com.swm.studywithmentor.model.dto.ClazzDto;
+import com.swm.studywithmentor.model.dto.CourseDto;
 import com.swm.studywithmentor.model.dto.EnrollmentDto;
+import com.swm.studywithmentor.model.dto.FieldDto;
 import com.swm.studywithmentor.model.dto.InvoiceDto;
+import com.swm.studywithmentor.model.dto.LessonDto;
+import com.swm.studywithmentor.model.dto.MentorDto;
+import com.swm.studywithmentor.model.dto.SessionDto;
+import com.swm.studywithmentor.model.dto.StudentDto;
 import com.swm.studywithmentor.model.dto.UserDto;
+import com.swm.studywithmentor.model.dto.UserProfileDto;
 import com.swm.studywithmentor.model.dto.create.ActivityCreateDto;
+import com.swm.studywithmentor.model.dto.create.ActivityCreateDtoAlone;
 import com.swm.studywithmentor.model.dto.create.ClazzCreateDto;
 import com.swm.studywithmentor.model.dto.create.CourseCreateDto;
 import com.swm.studywithmentor.model.dto.create.FieldCreateDto;
+import com.swm.studywithmentor.model.dto.create.ImageDto;
 import com.swm.studywithmentor.model.dto.create.LessonCreateDto;
 import com.swm.studywithmentor.model.dto.create.SessionCreateDto;
-import com.swm.studywithmentor.model.entity.Lesson;
-import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
-import com.swm.studywithmentor.model.entity.invoice.Invoice;
-import com.swm.studywithmentor.model.entity.user.User;
-import com.swm.studywithmentor.model.dto.*;
+import com.swm.studywithmentor.model.dto.update.SessionUpdateDto;
 import com.swm.studywithmentor.model.entity.Activity;
 import com.swm.studywithmentor.model.entity.Clazz;
 import com.swm.studywithmentor.model.entity.Field;
+import com.swm.studywithmentor.model.entity.Image;
+import com.swm.studywithmentor.model.entity.Lesson;
 import com.swm.studywithmentor.model.entity.course.Course;
+import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
+import com.swm.studywithmentor.model.entity.invoice.Invoice;
 import com.swm.studywithmentor.model.entity.session.Session;
+import com.swm.studywithmentor.model.entity.user.Mentor;
+import com.swm.studywithmentor.model.entity.user.Student;
+import com.swm.studywithmentor.model.entity.user.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -59,7 +73,6 @@ public class ApplicationMapper {
 
     public InvoiceDto invoiceToDto(Invoice invoice) {
         return mapper.typeMap(Invoice.class, InvoiceDto.class)
-                //TODO: Total price will be mapped when Clazz finish implemented.
                 .map(invoice);
     }
 
@@ -146,8 +159,7 @@ public class ApplicationMapper {
 
     public SessionDto toDto(Session session) {
         SessionDto sessionDto = mapper.map(session, SessionDto.class);
-        List<ActivityDto> activityDtos = session.getActivities()
-                .stream()
+        List<ActivityDto> activityDtos = session.getActivities().stream()
                 .map(this::toDto)
                 .toList();
         sessionDto.setActivities(activityDtos);
@@ -162,12 +174,22 @@ public class ApplicationMapper {
         return mapper.map(sessionCreateDto, Session.class);
     }
 
-    public void toEntity(SessionDto sessionDto, Session session) {
+    public void toEntity(SessionUpdateDto sessionDto, Session session) {
         mapper.map(sessionDto, session);
     }
 
     public ActivityDto toDto(Activity activity) {
-        return mapper.map(activity, ActivityDto.class);
+        ActivityDto dto = mapper.map(activity, ActivityDto.class);
+        dto.setSessionId(activity.getSession().getId());
+        return dto;
+    }
+
+    public void toDto(ActivityDto dto, Activity activity) {
+        mapper.map(dto, activity);
+    }
+
+    public Activity toEntity(ActivityCreateDtoAlone dto) {
+        return mapper.map(dto, Activity.class);
     }
 
     public Activity toEntity(ActivityDto activityDto) {
@@ -215,5 +237,45 @@ public class ApplicationMapper {
 
     public void toEntity(LessonDto lessonDto, Lesson lesson) {
         mapper.map(lessonDto, lesson);
+    }
+
+    public Image toEntity(ImageDto dto) {
+        return mapper.map(dto, Image.class);
+    }
+
+    public void toEntity(ImageDto dto, Image image) {
+        mapper.map(dto, image);
+    }
+
+    public List<Image> toEntity (List<ImageDto> dtos) {
+        return dtos.stream().map(this::toEntity).toList();
+    }
+    public ImageDto toDto(Image entity) {
+        return mapper.typeMap(Image.class, ImageDto.class)
+                .map(entity);
+    }
+
+    public List<ImageDto> toDto(List<Image> entities) {
+        return entities.stream().map(this::toDto).toList();
+    }
+
+    public UserProfileDto toUserProfileDto(User user) {
+        return mapper.map(user, UserProfileDto.class);
+    }
+
+    public StudentDto toDto(Student student) {
+        return mapper.map(student, StudentDto.class);
+    }
+
+    public void toEntity(StudentDto dto, Student student) {
+        mapper.map(dto, student);
+    }
+
+    public MentorDto toDto(Mentor mentor) {
+        return mapper.map(mentor, MentorDto.class);
+    }
+
+    public void toEntity(MentorDto dto, Mentor mentor) {
+        mapper.map(dto, mentor);
     }
 }
