@@ -1,7 +1,6 @@
 package com.swm.studywithmentor.controller;
 
 import com.swm.studywithmentor.model.dto.create.ImageDto;
-import com.swm.studywithmentor.model.entity.Image;
 import com.swm.studywithmentor.model.exception.ApplicationException;
 import com.swm.studywithmentor.service.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,7 @@ public class ImageController {
     @GetMapping("{id}")
     public ResponseEntity<ImageDto> GetImageById(@PathVariable UUID id) {
         try {
-            return ResponseEntity.ok(imageService.GetImageById(id));
+            return ResponseEntity.ok(imageService.getImageById(id));
         } catch (ApplicationException applicationException) {
             return ResponseEntity.notFound().build();
         }
@@ -30,9 +29,15 @@ public class ImageController {
     @PostMapping
     public ResponseEntity<List<ImageDto>> AddImages(@RequestBody ArrayList<ImageDto> images) {
         try {
-            return ResponseEntity.ok(imageService.CreateImages(images));
+            return ResponseEntity.ok(imageService.createImages(images));
         } catch (ApplicationException ex) {
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> DeleteImage(@PathVariable UUID id) {
+        imageService.deleteImage(id);
+        return ResponseEntity.accepted().build();
     }
 }

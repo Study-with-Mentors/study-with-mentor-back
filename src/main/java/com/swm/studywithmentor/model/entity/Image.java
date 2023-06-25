@@ -17,10 +17,7 @@ public class Image extends BaseEntity {
     @Version
     private Long version;
 
-    private String assetId;
-    private String publicId;
     private String url;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
     private Course course;

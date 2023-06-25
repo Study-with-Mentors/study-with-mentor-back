@@ -31,13 +31,13 @@ public class ImageServiceImpl implements ImageService {
     private final CourseRepository courseRepository;
     private final ApplicationMapper mapper;
     @Override
-    public ImageDto GetImageById(UUID id) {
+    public ImageDto getImageById(UUID id) {
         var image = imageRepository.findById(id).orElseThrow(() -> new NotFoundException(ImageServiceImpl.class, id));
         return  mapper.toDto(image);
     }
 
     @Override
-    public List<ImageDto> CreateImages(List<ImageDto> images) {
+    public List<ImageDto> createImages(List<ImageDto> images) {
         if(images == null || images.size() == 0)
             throw new ApplicationException("200", HttpStatus.ACCEPTED, "Request accepted but not do anything");
         try {
@@ -53,7 +53,18 @@ public class ImageServiceImpl implements ImageService {
             return mapper.toDto(imageRepository.saveAll(imagesToSave));
         } catch (ApplicationException exception) {
             log.error(exception.getMessage());
-            throw new ApplicationException("500", HttpStatus.INTERNAL_SERVER_ERROR, "Server ");
+            throw new ApplicationException("500", HttpStatus.INTERNAL_SERVER_ERROR, "Server error");
+        }
+    }
+
+    @Override
+    public void deleteImage(UUID id) {
+        var image = imageRepository.findById(id).orElseThrow(() -> new NotFoundException(ImageServiceImpl.class, id));
+        try {
+            imageRepository.delete(image);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ApplicationException("500", HttpStatus.INTERNAL_SERVER_ERROR, "Server error");
         }
     }
 }
