@@ -32,7 +32,7 @@ public class User extends BaseEntity implements UserDetails {
     private String firstName;
     private String lastName;
     private Date birthdate;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "profile_image_id", referencedColumnName = "image_id")
     private Image profileImage;
     @Enumerated(EnumType.STRING)

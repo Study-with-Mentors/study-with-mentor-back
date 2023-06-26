@@ -223,7 +223,10 @@ public class ApplicationMapper {
     public LessonDto toDto(Lesson lesson) {
         LessonDto dto = mapper.map(lesson, LessonDto.class);
         dto.setClazzId(lesson.getClazz().getId());
+        dto.setCourseId(lesson.getClazz().getCourse().getId());
         dto.setSessionId(lesson.getSession().getId());
+        dto.setCourseName(lesson.getClazz().getCourse().getFullName());
+        dto.setSessionName(lesson.getSession().getSessionName());
         return dto;
     }
 
