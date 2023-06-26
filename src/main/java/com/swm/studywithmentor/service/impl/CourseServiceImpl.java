@@ -107,7 +107,9 @@ public class CourseServiceImpl extends BaseService implements CourseService {
         User user = userService.getCurrentUser();
         course.setMentor(user);
         course.setField(field);
-        course.setImage(new Image());
+        Image image = new Image();
+        course.setImage(image);
+        image.setCourse(course);
         course = courseRepository.save(course);
         return mapper.toDto(course);
     }

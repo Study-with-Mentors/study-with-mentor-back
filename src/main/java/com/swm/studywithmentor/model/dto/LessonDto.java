@@ -13,6 +13,9 @@ public class LessonDto extends BaseDto {
     private Timestamp startTime;
     private Timestamp endTime;
     private String location;
+    private String courseName;
+    private String sessionName;
     private UUID clazzId;
+    private UUID courseId;
     private UUID sessionId;
 }
