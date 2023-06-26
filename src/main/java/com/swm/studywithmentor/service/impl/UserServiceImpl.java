@@ -105,7 +105,11 @@ public class UserServiceImpl extends BaseService implements UserService {
         Student student = studentRepository.findById(user.getId()).orElse(new Student());
         // create new student because i forgot to create student in data.sql
         mapper.toEntity(studentDto, student);
-        student.setStudentId(user.getId());
+        if (student.getUser() == null) {
+            User attachedUser = userRepository.findById(user.getId())
+                    .orElseThrow(() -> new ApplicationException("UNEXPECTED_ERROR", HttpStatus.INTERNAL_SERVER_ERROR, "Something happens"));
+            student.setUser(attachedUser);
+        }
         student = studentRepository.save(student);
         return mapper.toDto(student);
     }
@@ -121,7 +125,11 @@ public class UserServiceImpl extends BaseService implements UserService {
             mentor.setField(field);
         }
         mapper.toEntity(mentorDto, mentor);
-        mentor.setMentorId(user.getId());
+        if (mentor.getUser() == null) {
+            User attachedUser = userRepository.findById(user.getId())
+                    .orElseThrow(() -> new ApplicationException("UNEXPECTED_ERROR", HttpStatus.INTERNAL_SERVER_ERROR, "Something happens"));
+            mentor.setUser(attachedUser);
+        }
         mentor = mentorRepository.save(mentor);
         return mapper.toDto(mentor);
     }
