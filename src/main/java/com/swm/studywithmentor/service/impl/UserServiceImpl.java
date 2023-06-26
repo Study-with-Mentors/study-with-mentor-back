@@ -102,9 +102,10 @@ public class UserServiceImpl extends BaseService implements UserService {
     @Override
     public StudentDto updateStudentProfile(StudentDto studentDto) {
         User user = getCurrentUser();
-        Student student = studentRepository.findById(user.getId())
-                .orElseThrow(() -> new ApplicationException("INTERNAL_ERROR", HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong"));
+        Student student = studentRepository.findById(user.getId()).orElse(new Student());
+        // create new student because i forgot to create student in data.sql
         mapper.toEntity(studentDto, student);
+        student.setStudentId(user.getId());
         student = studentRepository.save(student);
         return mapper.toDto(student);
     }
@@ -112,14 +113,15 @@ public class UserServiceImpl extends BaseService implements UserService {
     @Override
     public MentorDto updateMentorProfile(MentorDto mentorDto) {
         User user = getCurrentUser();
-        Mentor mentor = mentorRepository.findById(user.getId())
-                .orElseThrow(() -> new ApplicationException("INTERNAL_ERROR", HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong"));
-        if (mentorDto.getField() != null && !mentor.getField().getId().equals(mentorDto.getField().getId())) {
+        Mentor mentor = mentorRepository.findById(user.getId()).orElse(new Mentor());
+        // create new mentor because i forgot to create mentor in data.sql
+        if (mentorDto.getField() != null && mentor.getField() != null && !mentor.getField().getId().equals(mentorDto.getField().getId())) {
             Field field = fieldRepository.findById(mentorDto.getField().getId())
                     .orElseThrow(() -> new NotFoundException(Field.class, mentorDto.getField().getId()));
             mentor.setField(field);
         }
         mapper.toEntity(mentorDto, mentor);
+        mentor.setMentorId(user.getId());
         mentor = mentorRepository.save(mentor);
         return mapper.toDto(mentor);
     }
