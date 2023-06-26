@@ -10,37 +10,37 @@ VALUES ('7DE575A8-C635-4A22-39F9-B13139392B1F', 'Physics', 'mi pede, nonummy ut,
         'lorem, vehicula et, rutrum eu, ultrices sit amet, risus. Donec', 0, 'PL');
 
 -- create user
-INSERT INTO [user] (user_id, first_name, last_name, email, password, profile_image, gender, birthdate, role, version)
+INSERT INTO [user] (user_id, first_name, last_name, email, password, profile_image, gender, birthdate, role, enabled, version)
 VALUES ('42477450-39A2-4123-80C5-4B87F7B117D8', 'Kasimir', 'Blair', 'admin@gmail.com',
         '{bcrypt}$2a$10$nLG7abuUxPVWUKnhwtrUGe6xB4iw.9Z66JQHtN92uG5SoLCB43joe', 'http://yahoo.com', 'MALE',
-        '2023-03-20', 'ADMIN', 0),
+        '2023-03-20', 'ADMIN', 1, 0),
        ('63BBC8B6-798F-A84E-AED8-63ACF7AE4BE1', 'Howard', 'Irwin', 'student1@gmail.com',
         '{bcrypt}$2a$10$eXsvSWJaoRkANixk1pGoGuk3mKlWz7Ii4Gi/CVzCpDIv3cLg31hJm', 'https://guardian.co.uk', 'MALE',
-        '2024-04-07', 'USER', 0),
+        '2024-04-07', 'USER', 1, 0),
        ('56BF6B8E-673D-4C50-B185-5878D86219A2', 'Fredericka', 'Swanson', 'student2@gmail.com',
         '{bcrypt}$2a$10$lVcCnNXrTbeullqIZpOPYuflnUcu6mEzYgwX5533gs945b4HWkmNa', 'https://walmart.com', 'FEMALE',
-        '2024-05-18', 'USER', 0),
+        '2024-05-18', 'USER', 1, 0),
        ('26177D9D-86CF-65C0-4758-B1ABA6FA566A', 'Hermione', 'Brady', 'mentor1@gmail.com',
         '{bcrypt}$2a$10$Dd6Cnppxy1m9Ukbr8G3d1OLejJ1atAVCsjDV0mwFfXllartrBobki', 'http://whatsapp.com', 'MALE',
-        '2022-08-04', 'USER', 0),
+        '2022-08-04', 'USER', 1, 0),
        ('8CDA824B-87E7-8218-FB7E-2C7AE5BA9DC2', 'Shoshana', 'Boyd', 'mentor2@gmail.com',
         '{bcrypt}$2a$10$NJD4t441o6KVblbW01Y.SetG4FPB/mVaI4xwQDQ8H86WXTk05ahHe', 'http://zoom.us', 'FEMALE',
-        '2023-11-13', 'USER', 0),
+        '2023-11-13', 'USER', 1, 0),
        ('68CAB493-CDD9-3461-F3B3-6B722EC6137D', 'Kevin', 'Mccarty', 'student3@gmail.com',
         '{bcrypt}$2a$10$r3OOEi0TYx4sV7Vmbxj8eectYfq0NPpcO3ONnd8516xEHsLIXUhvG',
-        'http://facebook.com', 'MALE', '2022-11-27', 'USER', 0),
+        'http://facebook.com', 'MALE', '2022-11-27', 'USER', 1, 0),
        ('2E213D1A-1D65-1583-D4CC-89C6622738E9', 'Odysseus', 'Lewis', 'student4@gmail.com',
         '{bcrypt}$2a$10$xvVtRjMwyFmI1NvqjdRy5.LoSZz5MK.9E4xGIqRG7CoCTB1qJw72.',
-        'https://cnn.com', 'MALE', '2024-02-15', 'USER', 0),
+        'https://cnn.com', 'MALE', '2024-02-15', 'USER', 1, 0),
        ('8585F8A4-7918-61D4-9A1D-268AA9094D37', 'Damon', 'Mccray', 'student5@gmail.com',
         '{bcrypt}$2a$10$DS4cpp/hyQ8wEHaaFJUs1.HUU5zMaxEG60QgWKD3tnWiOG.xyXi8u',
-        'http://netflix.com', 'MALE', '2023-07-07', 'USER', 0),
+        'http://netflix.com', 'MALE', '2023-07-07', 'USER', 1, 0),
        ('DFA97EAB-76C7-3294-D97D-C4AD2F5F6A94', 'Chancellor', 'Guerrero', 'mentor3@gmail.com',
         '{bcrypt}$2a$10$ZaivEffu7o7YctCfOHNL7.pztyiPmpIR2KG4WQbHnDtWLyVRlU4wy',
-        'http://walmart.com', 'FEMALE', '2022-11-12', 'USER', 0),
+        'http://walmart.com', 'FEMALE', '2022-11-12', 'USER', 1, 0),
        ('BDC85B38-0818-2C18-464F-8CAD01D0376E', 'Griffith', 'Frazier', 'mentor4@gmail.com',
         '{bcrypt}$2a$10$8xHL.8K9lbAM3uWkYC6b/e1Ax1ym2dfk8X/Uqu8QkH3E0TTtclNAi',
-        'http://zoom.us', 'FEMALE', '2024-06-04', 'USER', 0);
+        'http://zoom.us', 'FEMALE', '2024-06-04', 'USER', 1, 0);
 
 -- create mentor
 INSERT INTO mentor (mentor_id, bio, degree, version, field_id)

@@ -1,11 +1,13 @@
 package com.swm.studywithmentor.service.impl;
 
 import com.swm.studywithmentor.model.dto.MentorDto;
+import com.swm.studywithmentor.model.dto.SignupDto;
 import com.swm.studywithmentor.model.dto.StudentDto;
 import com.swm.studywithmentor.model.dto.UserDto;
 import com.swm.studywithmentor.model.dto.UserProfileDto;
 import com.swm.studywithmentor.model.entity.Field;
 import com.swm.studywithmentor.model.entity.user.Mentor;
+import com.swm.studywithmentor.model.entity.user.Role;
 import com.swm.studywithmentor.model.entity.user.Student;
 import com.swm.studywithmentor.model.entity.user.User;
 import com.swm.studywithmentor.model.exception.ActionConflict;
@@ -16,8 +18,10 @@ import com.swm.studywithmentor.repository.FieldRepository;
 import com.swm.studywithmentor.repository.MentorRepository;
 import com.swm.studywithmentor.repository.StudentRepository;
 import com.swm.studywithmentor.repository.UserRepository;
+import com.swm.studywithmentor.service.EmailService;
 import com.swm.studywithmentor.service.UserService;
 import com.swm.studywithmentor.util.ApplicationMapper;
+import com.swm.studywithmentor.util.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +29,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -37,15 +42,21 @@ public class UserServiceImpl implements UserService {
     private final StudentRepository studentRepository;
     private final MentorRepository mentorRepository;
     private final FieldRepository fieldRepository;
+    private final EmailService emailService;
     private final ApplicationMapper mapper;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, StudentRepository studentRepository, MentorRepository mentorRepository, FieldRepository fieldRepository, ApplicationMapper mapper) {
+    public UserServiceImpl(UserRepository userRepository, StudentRepository studentRepository, MentorRepository mentorRepository, FieldRepository fieldRepository, EmailService emailService, ApplicationMapper mapper, JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
         this.mentorRepository = mentorRepository;
         this.fieldRepository = fieldRepository;
+        this.emailService = emailService;
         this.mapper = mapper;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -58,7 +69,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException(email));
+                .orElseThrow(() -> new UsernameNotFoundException(email));
     }
 
     @Override
@@ -114,5 +125,37 @@ public class UserServiceImpl implements UserService {
         mapper.toEntity(mentorDto, mentor);
         mentor = mentorRepository.save(mentor);
         return mapper.toDto(mentor);
+    }
+
+    @Override
+    public UserDto addUser(SignupDto signupDto) {
+        userRepository.findByEmail(signupDto.getEmail())
+                .ifPresent(user -> {
+                    throw new ConflictException(User.class,
+                            ActionConflict.CREATE,
+                            "User already exists. Email: " + user.getEmail(),
+                            user.getEmail());
+                });
+        User user = mapper.toEntity(signupDto);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setEnabled(false);
+        user.setRole(Role.USER);
+        user = userRepository.save(user);
+
+        emailService.sendEmailVerification(user.getEmail(), user.getFirstName());
+        return mapper.toDto(user);
+    }
+
+    @Override
+    public void verifyActivationToken(String token) {
+        // Will throw exception if token is invalid
+        jwtTokenProvider.validateToken(token);
+
+        String email = jwtTokenProvider.getEmailFromJwt(token);
+        userRepository.findByEmail(email)
+                .ifPresent(user -> {
+                    user.setEnabled(true);
+                    userRepository.save(user);
+                });
     }
 }

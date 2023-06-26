@@ -148,6 +148,10 @@ public class ApplicationMapper {
         mapper.map(userDto, user);
     }
 
+    public User toEntity(SignupDto signupDto) {
+        return mapper.map(signupDto, User.class);
+    }
+
     public SessionDto toDto(Session session) {
         SessionDto sessionDto = mapper.map(session, SessionDto.class);
         List<ActivityDto> activityDtos = session.getActivities().stream()

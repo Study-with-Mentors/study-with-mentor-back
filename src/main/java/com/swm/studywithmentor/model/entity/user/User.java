@@ -36,6 +36,7 @@ public class User extends BaseEntity implements UserDetails {
     private Gender gender;
     @Enumerated(EnumType.STRING)
     private Role role;
+    private boolean enabled;
     @OneToOne(mappedBy = "user")
     @PrimaryKeyJoinColumn
     private Student student;
@@ -69,11 +70,6 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
         return true;
     }
 }
