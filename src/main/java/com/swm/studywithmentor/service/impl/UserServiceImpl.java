@@ -158,4 +158,24 @@ public class UserServiceImpl implements UserService {
                     userRepository.save(user);
                 });
     }
+
+    @Override
+    public void resendActivationToken(String email) {
+        userRepository.findByEmail(email)
+                .ifPresentOrElse(user -> {
+                            if (user.isEnabled()) {
+                                throw new ConflictException(User.class,
+                                        ActionConflict.UPDATE,
+                                        "User already activated. Email: " + user.getEmail(),
+                                        user.getEmail());
+                            }
+                            emailService.sendEmailVerification(user.getEmail(), user.getFirstName());
+                        },
+                        () -> {
+                            throw new ConflictException(User.class,
+                                    ActionConflict.READ,
+                                    "User not found. Email: " + email,
+                                    email);
+                        });
+    }
 }

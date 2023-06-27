@@ -16,4 +16,5 @@ public interface UserService extends UserDetailsService {
     MentorDto updateMentorProfile(MentorDto mentorDto);
     UserDto addUser(SignupDto signupDto);
     void verifyActivationToken(String token);
+    void resendActivationToken(String email);
 }

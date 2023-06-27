@@ -35,4 +35,9 @@ public class SignupController {
     public void verifyToken(@RequestParam String token) {
         userService.verifyActivationToken(token);
     }
+
+    @GetMapping("/resendUrl")
+    public void resendUrl(@RequestParam String email) {
+        userService.resendActivationToken(email);
+    }
 }
