@@ -170,7 +170,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
         vnpParams.put("vnp_TxnRef", vnpTxnRef);
         vnpParams.put("vnp_OrderInfo", "Thanh toan hoa don: " + vnpTxnRef);
-
+        vnpParams.put("vnp_OrderType", "other");
         String locate = req.getParameter("language");
         if (locate != null && !locate.isEmpty()) {
             vnpParams.put("vnp_Locale", locate);
