@@ -87,8 +87,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public ResponseObject<?> createEnrollment(EnrollmentCreateDto createDto, HttpServletRequest request) {
         var clazz = clazzRepository.findById(createDto.getClassId())
                 .orElseThrow(() -> new ConflictException(Enrollment.class, ActionConflict.CREATE, "Clazz not found", createDto.getClassId()));
-        User student = userRepository.findById(createDto.getStudentId())
-                .orElseThrow(() -> new ConflictException(Enrollment.class, ActionConflict.CREATE, "Student not found", createDto.getStudentId()));
+        User student = userRepository.findById(userService.getCurrentUser().getId())
+                .orElseThrow(() -> new ConflictException(Enrollment.class, ActionConflict.CREATE, "Student not found", userService.getCurrentUser().getId()));
         var enrollment = Enrollment.builder()
                         .student(student)
                         .enrollmentDate(new Date(System.currentTimeMillis()))
