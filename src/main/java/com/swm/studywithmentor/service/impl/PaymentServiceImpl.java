@@ -180,7 +180,7 @@ public class PaymentServiceImpl implements PaymentService {
         vnpParams.put("vnp_ReturnUrl", paymentProperties.getVnpReturnURL());
         vnpParams.put("vnp_IpAddr", vnpIpAddr);
 
-        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        Calendar cld = Calendar.getInstance();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String vnpCreateDate = formatter.format(cld.getTime());
         vnpParams.put("vnp_CreateDate", vnpCreateDate);
