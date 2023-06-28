@@ -82,12 +82,12 @@ VALUES ('63BBC8B6-798F-A84E-AED8-63ACF7AE4BE1', 'COLLEGE', 'first student bio', 
 
 -- create course image
 -- TODO: change url
-INSERT INTO image (image_id, asset_id, public_id, url, version)
-VALUES ('C7CF563D-5EEC-E521-A8C2-363C425435D3', '1', '1', 'https://cdn.britannica.com/05/155405-050-F8969EE6/Spring-flowers-fruit-trees-bloom.jpg', 0),
-       ('0DCE39B1-E5D8-0446-82FC-F82A9FAC8B9E', '2', '2', 'https://cdn.msruas.ac.in/ruas/imager/images/fac_social/programmes/2021/510310/Sociology.f1616144414_37c3d9953bc62f6c35bd93f93217bddd.png', 0),
-       ('121D7DC1-5E94-C931-B461-732EB3D2D3BB', '3', '3', 'https://www.farmersalmanac.com/wp-content/uploads/2023/05/Hello-Spring-945x630-v2.png', 0),
-       ('25DDBA99-E339-5888-A2C1-C91DD6764391', '4', '4', 'https://i0.wp.com/calmatters.org/wp-content/uploads/2021/08/math-curriculum.jpg?fit=2000%2C1500&ssl=1', 0),
-       ('B5262A68-DE7E-7885-317F-72F7E52751E4', '5', '5', 'https://cdn.britannica.com/65/216665-050-A83A782E/Sisyphus-Titian-1548-49-Prado-Museum-Madrid.jpg', 0);
+INSERT INTO image (image_id, url, version)
+VALUES ('C7CF563D-5EEC-E521-A8C2-363C425435D3', 'https://cdn.britannica.com/05/155405-050-F8969EE6/Spring-flowers-fruit-trees-bloom.jpg', 0),
+       ('0DCE39B1-E5D8-0446-82FC-F82A9FAC8B9E', 'https://cdn.msruas.ac.in/ruas/imager/images/fac_social/programmes/2021/510310/Sociology.f1616144414_37c3d9953bc62f6c35bd93f93217bddd.png', 0),
+       ('121D7DC1-5E94-C931-B461-732EB3D2D3BB', 'https://www.farmersalmanac.com/wp-content/uploads/2023/05/Hello-Spring-945x630-v2.png', 0),
+       ('25DDBA99-E339-5888-A2C1-C91DD6764391', 'https://i0.wp.com/calmatters.org/wp-content/uploads/2021/08/math-curriculum.jpg?fit=2000%2C1500&ssl=1', 0),
+       ('B5262A68-DE7E-7885-317F-72F7E52751E4', 'https://cdn.britannica.com/65/216665-050-A83A782E/Sisyphus-Titian-1548-49-Prado-Museum-Madrid.jpg', 0);
 
 -- create course
 INSERT INTO course (course_id, image_id, course_level, description, full_name, intended_learner, learning_outcome,
