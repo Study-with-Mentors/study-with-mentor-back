@@ -26,10 +26,7 @@ public class Image extends BaseEntity {
     @Version
     private Long version;
 
-    private String assetId;
-    private String publicId;
     private String url;
-
     @OneToOne(mappedBy = "image")
     private Course course;
 
