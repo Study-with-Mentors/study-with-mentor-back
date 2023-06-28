@@ -30,7 +30,7 @@ public class Clazz extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
-    @OneToMany(mappedBy = "clazz")
+    @OneToMany(mappedBy = "clazz", cascade = CascadeType.PERSIST)
     private List<Lesson> lessons;
     @OneToMany(mappedBy = "clazz")
     private List<Enrollment> enrollments;
