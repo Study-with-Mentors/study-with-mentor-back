@@ -11,17 +11,17 @@ VALUES ('7DE575A8-C635-4A22-39F9-B13139392B1F', 'Physics', 'mi pede, nonummy ut,
 
 -- create user profile
 -- TODO: change the url
-INSERT INTO image (image_id, asset_id, public_id, url, version)
-VALUES ('42477450-39A2-4123-80C5-4B87F7B117D8', '1', '1', '1', 0),
-       ('63BBC8B6-798F-A84E-AED8-63ACF7AE4BE1', '2', '2', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyIkWCF_2NnTM-imjWtFuzsPEWFYYH-Vk76A&usqp=CAU', 0),
-       ('56BF6B8E-673D-4C50-B185-5878D86219A2', '3', '3', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsQ-YHX2i3RvTDDmpfnde4qyb2P8up7Wi3Ww&usqp=CAU', 0),
-       ('26177D9D-86CF-65C0-4758-B1ABA6FA566A', '4', '4', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIcoD_hp0DavkkRVB542L1kEYmPkEebzIXwg&usqp=CAU', 0),
-       ('8CDA824B-87E7-8218-FB7E-2C7AE5BA9DC2', '5', '5', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyIkWCF_2NnTM-imjWtFuzsPEWFYYH-Vk76A&usqp=CAU', 0),
-       ('68CAB493-CDD9-3461-F3B3-6B722EC6137D', '6', '6', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsQ-YHX2i3RvTDDmpfnde4qyb2P8up7Wi3Ww&usqp=CAU', 0),
-       ('2E213D1A-1D65-1583-D4CC-89C6622738E9', '7', '7', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIcoD_hp0DavkkRVB542L1kEYmPkEebzIXwg&usqp=CAU', 0),
-       ('8585F8A4-7918-61D4-9A1D-268AA9094D37', '8', '8', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyIkWCF_2NnTM-imjWtFuzsPEWFYYH-Vk76A&usqp=CAU', 0),
-       ('DFA97EAB-76C7-3294-D97D-C4AD2F5F6A94', '9', '9', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsQ-YHX2i3RvTDDmpfnde4qyb2P8up7Wi3Ww&usqp=CAU', 0),
-       ('BDC85B38-0818-2C18-464F-8CAD01D0376E', '10', '10', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIcoD_hp0DavkkRVB542L1kEYmPkEebzIXwg&usqp=CAU', 0);
+INSERT INTO image (image_id, url, version)
+VALUES ('42477450-39A2-4123-80C5-4B87F7B117D8', '1', 0),
+       ('63BBC8B6-798F-A84E-AED8-63ACF7AE4BE1', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyIkWCF_2NnTM-imjWtFuzsPEWFYYH-Vk76A&usqp=CAU', 0),
+       ('56BF6B8E-673D-4C50-B185-5878D86219A2', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsQ-YHX2i3RvTDDmpfnde4qyb2P8up7Wi3Ww&usqp=CAU', 0),
+       ('26177D9D-86CF-65C0-4758-B1ABA6FA566A', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIcoD_hp0DavkkRVB542L1kEYmPkEebzIXwg&usqp=CAU', 0),
+       ('8CDA824B-87E7-8218-FB7E-2C7AE5BA9DC2', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyIkWCF_2NnTM-imjWtFuzsPEWFYYH-Vk76A&usqp=CAU', 0),
+       ('68CAB493-CDD9-3461-F3B3-6B722EC6137D', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsQ-YHX2i3RvTDDmpfnde4qyb2P8up7Wi3Ww&usqp=CAU', 0),
+       ('2E213D1A-1D65-1583-D4CC-89C6622738E9', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIcoD_hp0DavkkRVB542L1kEYmPkEebzIXwg&usqp=CAU', 0),
+       ('8585F8A4-7918-61D4-9A1D-268AA9094D37', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyIkWCF_2NnTM-imjWtFuzsPEWFYYH-Vk76A&usqp=CAU', 0),
+       ('DFA97EAB-76C7-3294-D97D-C4AD2F5F6A94', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsQ-YHX2i3RvTDDmpfnde4qyb2P8up7Wi3Ww&usqp=CAU', 0),
+       ('BDC85B38-0818-2C18-464F-8CAD01D0376E', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIcoD_hp0DavkkRVB542L1kEYmPkEebzIXwg&usqp=CAU', 0);
 
 -- create user
 INSERT INTO [user] (user_id, first_name, last_name, email, password, profile_image_id, gender, birthdate, role, version)
