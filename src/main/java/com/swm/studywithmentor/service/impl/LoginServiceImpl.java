@@ -4,6 +4,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
+import com.swm.studywithmentor.model.entity.Image;
 import com.swm.studywithmentor.model.entity.user.Role;
 import com.swm.studywithmentor.model.entity.user.User;
 import com.swm.studywithmentor.model.exception.AccountLockedException;
@@ -131,13 +132,17 @@ public class LoginServiceImpl implements LoginService {
     }
 
     private User createUserFromGoogle(GoogleIdToken.Payload payload) {
-        User user = new User();
-        user.setEmail(payload.getEmail());
-        user.setFirstName((String) payload.get("given_name"));
-        user.setLastName((String) payload.get("family_name"));
-        user.setProfileImage((String) payload.get("picture"));
-        user.setEnabled(true);
-        user.setRole(Role.USER);
+        Image avatar = new Image();
+        avatar.setUrl((String) payload.get("picture"));
+
+        User user = User.builder()
+                .email(payload.getEmail())
+                .firstName((String) payload.get("given_name"))
+                .lastName((String) payload.get("family_name"))
+                .profileImage(avatar)
+                .enabled(true)
+                .role(Role.USER)
+                .build();
         return userRepository.save(user);
     }
 }
