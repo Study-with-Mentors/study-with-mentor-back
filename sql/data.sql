@@ -11,55 +11,56 @@ VALUES ('7DE575A8-C635-4A22-39F9-B13139392B1F', 'Physics', 'mi pede, nonummy ut,
 
 -- create user profile
 -- TODO: change the url
-INSERT INTO image (image_id, asset_id, public_id, url, version)
-VALUES ('42477450-39A2-4123-80C5-4B87F7B117D8', '1', '1', '1', 0),
-       ('63BBC8B6-798F-A84E-AED8-63ACF7AE4BE1', '2', '2', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyIkWCF_2NnTM-imjWtFuzsPEWFYYH-Vk76A&usqp=CAU', 0),
-       ('56BF6B8E-673D-4C50-B185-5878D86219A2', '3', '3', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsQ-YHX2i3RvTDDmpfnde4qyb2P8up7Wi3Ww&usqp=CAU', 0),
-       ('26177D9D-86CF-65C0-4758-B1ABA6FA566A', '4', '4', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIcoD_hp0DavkkRVB542L1kEYmPkEebzIXwg&usqp=CAU', 0),
-       ('8CDA824B-87E7-8218-FB7E-2C7AE5BA9DC2', '5', '5', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyIkWCF_2NnTM-imjWtFuzsPEWFYYH-Vk76A&usqp=CAU', 0),
-       ('68CAB493-CDD9-3461-F3B3-6B722EC6137D', '6', '6', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsQ-YHX2i3RvTDDmpfnde4qyb2P8up7Wi3Ww&usqp=CAU', 0),
-       ('2E213D1A-1D65-1583-D4CC-89C6622738E9', '7', '7', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIcoD_hp0DavkkRVB542L1kEYmPkEebzIXwg&usqp=CAU', 0),
-       ('8585F8A4-7918-61D4-9A1D-268AA9094D37', '8', '8', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyIkWCF_2NnTM-imjWtFuzsPEWFYYH-Vk76A&usqp=CAU', 0),
-       ('DFA97EAB-76C7-3294-D97D-C4AD2F5F6A94', '9', '9', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsQ-YHX2i3RvTDDmpfnde4qyb2P8up7Wi3Ww&usqp=CAU', 0),
-       ('BDC85B38-0818-2C18-464F-8CAD01D0376E', '10', '10', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIcoD_hp0DavkkRVB542L1kEYmPkEebzIXwg&usqp=CAU', 0);
+INSERT INTO image (image_id, url, version)
+VALUES ('42477450-39A2-4123-80C5-4B87F7B117D8', '1', 0),
+       ('63BBC8B6-798F-A84E-AED8-63ACF7AE4BE1', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyIkWCF_2NnTM-imjWtFuzsPEWFYYH-Vk76A&usqp=CAU', 0),
+       ('56BF6B8E-673D-4C50-B185-5878D86219A2', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsQ-YHX2i3RvTDDmpfnde4qyb2P8up7Wi3Ww&usqp=CAU', 0),
+       ('26177D9D-86CF-65C0-4758-B1ABA6FA566A', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIcoD_hp0DavkkRVB542L1kEYmPkEebzIXwg&usqp=CAU', 0),
+       ('8CDA824B-87E7-8218-FB7E-2C7AE5BA9DC2', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyIkWCF_2NnTM-imjWtFuzsPEWFYYH-Vk76A&usqp=CAU', 0),
+       ('68CAB493-CDD9-3461-F3B3-6B722EC6137D', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsQ-YHX2i3RvTDDmpfnde4qyb2P8up7Wi3Ww&usqp=CAU', 0),
+       ('2E213D1A-1D65-1583-D4CC-89C6622738E9', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIcoD_hp0DavkkRVB542L1kEYmPkEebzIXwg&usqp=CAU', 0),
+       ('8585F8A4-7918-61D4-9A1D-268AA9094D37', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyIkWCF_2NnTM-imjWtFuzsPEWFYYH-Vk76A&usqp=CAU', 0),
+       ('DFA97EAB-76C7-3294-D97D-C4AD2F5F6A94', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsQ-YHX2i3RvTDDmpfnde4qyb2P8up7Wi3Ww&usqp=CAU', 0),
+       ('BDC85B38-0818-2C18-464F-8CAD01D0376E', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIcoD_hp0DavkkRVB542L1kEYmPkEebzIXwg&usqp=CAU', 0);
 
 -- create user
-INSERT INTO [user] (user_id, first_name, last_name, email, password, profile_image_id, gender, birthdate, role, version)
+INSERT INTO [user] (user_id, first_name, last_name, email, password, profile_image_id, gender, birthdate, role, enabled, version)
 VALUES ('42477450-39A2-4123-80C5-4B87F7B117D8', 'Kasimir', 'Blair', 'admin@gmail.com',
         '{bcrypt}$2a$10$nLG7abuUxPVWUKnhwtrUGe6xB4iw.9Z66JQHtN92uG5SoLCB43joe', '42477450-39A2-4123-80C5-4B87F7B117D8',
         'MALE',
-        '2023-03-20', 'ADMIN', 0),
+        '2023-03-20', 'ADMIN', 1, 0),
        ('63BBC8B6-798F-A84E-AED8-63ACF7AE4BE1', 'Howard', 'Irwin', 'student1@gmail.com',
         '{bcrypt}$2a$10$eXsvSWJaoRkANixk1pGoGuk3mKlWz7Ii4Gi/CVzCpDIv3cLg31hJm', '63BBC8B6-798F-A84E-AED8-63ACF7AE4BE1',
         'MALE',
-        '2024-04-07', 'USER', 0),
+        '2024-04-07', 'USER', 1, 0),
        ('56BF6B8E-673D-4C50-B185-5878D86219A2', 'Fredericka', 'Swanson', 'student2@gmail.com',
         '{bcrypt}$2a$10$lVcCnNXrTbeullqIZpOPYuflnUcu6mEzYgwX5533gs945b4HWkmNa', '56BF6B8E-673D-4C50-B185-5878D86219A2',
         'FEMALE',
-        '2024-05-18', 'USER', 0),
+        '2024-05-18', 'USER', 1, 0),
        ('26177D9D-86CF-65C0-4758-B1ABA6FA566A', 'Hermione', 'Brady', 'mentor1@gmail.com',
         '{bcrypt}$2a$10$Dd6Cnppxy1m9Ukbr8G3d1OLejJ1atAVCsjDV0mwFfXllartrBobki', '26177D9D-86CF-65C0-4758-B1ABA6FA566A',
         'MALE',
-        '2022-08-04', 'USER', 0),
+        '2022-08-04', 'USER', 1, 0),
        ('8CDA824B-87E7-8218-FB7E-2C7AE5BA9DC2', 'Shoshana', 'Boyd', 'mentor2@gmail.com',
         '{bcrypt}$2a$10$NJD4t441o6KVblbW01Y.SetG4FPB/mVaI4xwQDQ8H86WXTk05ahHe', '8CDA824B-87E7-8218-FB7E-2C7AE5BA9DC2',
         'FEMALE',
-        '2023-11-13', 'USER', 0),
+        '2023-11-13', 'USER', 1, 0),
        ('68CAB493-CDD9-3461-F3B3-6B722EC6137D', 'Kevin', 'Mccarty', 'student3@gmail.com',
         '{bcrypt}$2a$10$r3OOEi0TYx4sV7Vmbxj8eectYfq0NPpcO3ONnd8516xEHsLIXUhvG',
-        '68CAB493-CDD9-3461-F3B3-6B722EC6137D', 'MALE', '2022-11-27', 'USER', 0),
+        '68CAB493-CDD9-3461-F3B3-6B722EC6137D', 'MALE', '2022-11-27', 'USER', 1, 0),
        ('2E213D1A-1D65-1583-D4CC-89C6622738E9', 'Odysseus', 'Lewis', 'student4@gmail.com',
         '{bcrypt}$2a$10$xvVtRjMwyFmI1NvqjdRy5.LoSZz5MK.9E4xGIqRG7CoCTB1qJw72.',
-        '2E213D1A-1D65-1583-D4CC-89C6622738E9', 'MALE', '2024-02-15', 'USER', 0),
+        '2E213D1A-1D65-1583-D4CC-89C6622738E9', 'MALE', '2024-02-15', 'USER', 1, 0),
        ('8585F8A4-7918-61D4-9A1D-268AA9094D37', 'Damon', 'Mccray', 'student5@gmail.com',
         '{bcrypt}$2a$10$DS4cpp/hyQ8wEHaaFJUs1.HUU5zMaxEG60QgWKD3tnWiOG.xyXi8u',
-        '8585F8A4-7918-61D4-9A1D-268AA9094D37', 'MALE', '2023-07-07', 'USER', 0),
+        '8585F8A4-7918-61D4-9A1D-268AA9094D37', 'MALE', '2023-07-07', 'USER', 1, 0),
        ('DFA97EAB-76C7-3294-D97D-C4AD2F5F6A94', 'Chancellor', 'Guerrero', 'mentor3@gmail.com',
         '{bcrypt}$2a$10$ZaivEffu7o7YctCfOHNL7.pztyiPmpIR2KG4WQbHnDtWLyVRlU4wy',
-        'DFA97EAB-76C7-3294-D97D-C4AD2F5F6A94', 'FEMALE', '2022-11-12', 'USER', 0),
+        'DFA97EAB-76C7-3294-D97D-C4AD2F5F6A94', 'FEMALE', '2022-11-12', 'USER', 1, 0),
        ('BDC85B38-0818-2C18-464F-8CAD01D0376E', 'Griffith', 'Frazier', 'mentor4@gmail.com',
         '{bcrypt}$2a$10$8xHL.8K9lbAM3uWkYC6b/e1Ax1ym2dfk8X/Uqu8QkH3E0TTtclNAi',
-        'BDC85B38-0818-2C18-464F-8CAD01D0376E', 'FEMALE', '2024-06-04', 'USER', 0);
+        'BDC85B38-0818-2C18-464F-8CAD01D0376E', 'FEMALE', '2024-06-04', 'USER', 1, 0);
+
 -- create mentor
 INSERT INTO mentor (mentor_id, bio, degree, version, field_id)
 VALUES ('26177D9D-86CF-65C0-4758-B1ABA6FA566A', 'some forth one introduction in here', 'MASTER', 0,
@@ -82,12 +83,12 @@ VALUES ('63BBC8B6-798F-A84E-AED8-63ACF7AE4BE1', 'COLLEGE', 'first student bio', 
 
 -- create course image
 -- TODO: change url
-INSERT INTO image (image_id, asset_id, public_id, url, version)
-VALUES ('C7CF563D-5EEC-E521-A8C2-363C425435D3', '1', '1', 'https://cdn.britannica.com/05/155405-050-F8969EE6/Spring-flowers-fruit-trees-bloom.jpg', 0),
-       ('0DCE39B1-E5D8-0446-82FC-F82A9FAC8B9E', '2', '2', 'https://cdn.msruas.ac.in/ruas/imager/images/fac_social/programmes/2021/510310/Sociology.f1616144414_37c3d9953bc62f6c35bd93f93217bddd.png', 0),
-       ('121D7DC1-5E94-C931-B461-732EB3D2D3BB', '3', '3', 'https://www.farmersalmanac.com/wp-content/uploads/2023/05/Hello-Spring-945x630-v2.png', 0),
-       ('25DDBA99-E339-5888-A2C1-C91DD6764391', '4', '4', 'https://i0.wp.com/calmatters.org/wp-content/uploads/2021/08/math-curriculum.jpg?fit=2000%2C1500&ssl=1', 0),
-       ('B5262A68-DE7E-7885-317F-72F7E52751E4', '5', '5', 'https://cdn.britannica.com/65/216665-050-A83A782E/Sisyphus-Titian-1548-49-Prado-Museum-Madrid.jpg', 0);
+INSERT INTO image (image_id, url, version)
+VALUES ('C7CF563D-5EEC-E521-A8C2-363C425435D3', 'https://cdn.britannica.com/05/155405-050-F8969EE6/Spring-flowers-fruit-trees-bloom.jpg', 0),
+       ('0DCE39B1-E5D8-0446-82FC-F82A9FAC8B9E', 'https://cdn.msruas.ac.in/ruas/imager/images/fac_social/programmes/2021/510310/Sociology.f1616144414_37c3d9953bc62f6c35bd93f93217bddd.png', 0),
+       ('121D7DC1-5E94-C931-B461-732EB3D2D3BB', 'https://www.farmersalmanac.com/wp-content/uploads/2023/05/Hello-Spring-945x630-v2.png', 0),
+       ('25DDBA99-E339-5888-A2C1-C91DD6764391', 'https://i0.wp.com/calmatters.org/wp-content/uploads/2021/08/math-curriculum.jpg?fit=2000%2C1500&ssl=1', 0),
+       ('B5262A68-DE7E-7885-317F-72F7E52751E4', 'https://cdn.britannica.com/65/216665-050-A83A782E/Sisyphus-Titian-1548-49-Prado-Museum-Madrid.jpg', 0);
 
 -- create course
 INSERT INTO course (course_id, image_id, course_level, description, full_name, intended_learner, learning_outcome,

@@ -6,6 +6,7 @@ import com.swm.studywithmentor.model.entity.ClazzStatus;
 import com.swm.studywithmentor.model.entity.Lesson;
 import com.swm.studywithmentor.model.entity.QLesson;
 import com.swm.studywithmentor.model.entity.course.QCourse;
+import com.swm.studywithmentor.model.entity.enrollment.EnrollmentStatus;
 import com.swm.studywithmentor.model.entity.enrollment.QEnrollment;
 import org.springframework.stereotype.Repository;
 
@@ -45,6 +46,7 @@ public class LessonRepositoryCustomImpl implements LessonRepositoryCustom {
                 .where(lesson.clazz.enrollments.any().id.in(
                         JPAExpressions.select(QEnrollment.enrollment.id)
                                 .from(QEnrollment.enrollment)
+                                .where(QEnrollment.enrollment.status.eq(EnrollmentStatus.ENROLLED))
                                 .where(QEnrollment.enrollment.student.id.eq(studentId))
                 ))
                 .where(lesson.clazz.status.ne(ClazzStatus.CANCEL))

@@ -7,7 +7,6 @@ import java.util.UUID;
 
 @Data
 public class EnrollmentCreateDto {
-    UUID studentId;
     UUID classId;
     PaymentType paymentType;
 }

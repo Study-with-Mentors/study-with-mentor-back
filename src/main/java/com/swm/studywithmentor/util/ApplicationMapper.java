@@ -9,6 +9,7 @@ import com.swm.studywithmentor.model.dto.InvoiceDto;
 import com.swm.studywithmentor.model.dto.LessonDto;
 import com.swm.studywithmentor.model.dto.MentorDto;
 import com.swm.studywithmentor.model.dto.SessionDto;
+import com.swm.studywithmentor.model.dto.SignupDto;
 import com.swm.studywithmentor.model.dto.StudentDto;
 import com.swm.studywithmentor.model.dto.UserDto;
 import com.swm.studywithmentor.model.dto.UserProfileDto;
@@ -157,6 +158,10 @@ public class ApplicationMapper {
         mapper.map(userDto, user);
     }
 
+    public User toEntity(SignupDto signupDto) {
+        return mapper.map(signupDto, User.class);
+    }
+
     public SessionDto toDto(Session session) {
         SessionDto sessionDto = mapper.map(session, SessionDto.class);
         List<ActivityDto> activityDtos = session.getActivities().stream()
@@ -223,7 +228,10 @@ public class ApplicationMapper {
     public LessonDto toDto(Lesson lesson) {
         LessonDto dto = mapper.map(lesson, LessonDto.class);
         dto.setClazzId(lesson.getClazz().getId());
+        dto.setCourseId(lesson.getClazz().getCourse().getId());
         dto.setSessionId(lesson.getSession().getId());
+        dto.setCourseName(lesson.getClazz().getCourse().getFullName());
+        dto.setSessionName(lesson.getSession().getSessionName());
         return dto;
     }
 

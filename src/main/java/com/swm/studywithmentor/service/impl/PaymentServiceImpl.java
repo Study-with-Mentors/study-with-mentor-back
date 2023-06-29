@@ -43,7 +43,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public String md5(String message) {
-        String digest = null;
+        String digest;
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             digest = createHashedString(message, md);
@@ -59,11 +59,11 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public String Sha256(String message) {
-        String digest = null;
+        String digest;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             digest = createHashedString(message, md);
-        }catch (UnsupportedEncodingException ex) {
+        } catch (UnsupportedEncodingException ex) {
             log.error(ex.getMessage());
             throw new ApplicationException("internal server error", HttpStatus.INTERNAL_SERVER_ERROR, "Encoding is not supported");
         } catch (NoSuchAlgorithmException ex) {
@@ -86,12 +86,12 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public String hashAllFields(Map<String, Object> fields) {
-        List<String> fieldNames = new ArrayList<String>(fields.keySet());
+        List<String> fieldNames = new ArrayList<>(fields.keySet());
         Collections.sort(fieldNames);
         StringBuilder sb = new StringBuilder();
         Iterator<String> itr = fieldNames.iterator();
         while (itr.hasNext()) {
-            String fieldName = (String) itr.next();
+            String fieldName = itr.next();
             String fieldValue = (String) fields.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
                 sb.append(fieldName);
@@ -102,7 +102,7 @@ public class PaymentServiceImpl implements PaymentService {
                 sb.append("&");
             }
         }
-        return hmacSHA512(paymentProperties.getVnpHashSecret(),sb.toString());
+        return hmacSHA512(paymentProperties.getVnpHashSecret(), sb.toString());
     }
 
     @Override
@@ -131,27 +131,28 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public String getIpAddress(HttpServletRequest request) {
-        String ipAdress;
+        String ipAddress;
         try {
-            ipAdress = request.getHeader("X-FORWARDED-FOR");
-            if (ipAdress == null) {
-                ipAdress = request.getLocalAddr();
+            ipAddress = request.getHeader("X-FORWARDED-FOR");
+            if (ipAddress == null) {
+                ipAddress = request.getLocalAddr();
             }
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new ApplicationException("internal server error", HttpStatus.INTERNAL_SERVER_ERROR, "Invalid IP");
         }
-        return ipAdress;
+        return ipAddress;
     }
 
-    public String createPaymentURL(InvoiceDto invoiceDto, HttpServletRequest req)  {
+    public String createPaymentURL(InvoiceDto invoiceDto, HttpServletRequest req) {
         var find = invoiceRepository.findById(invoiceDto.getInvoiceId())
                 .orElseThrow(() -> new ConflictException(this.getClass(), ActionConflict.CREATE, "Not found clazz", invoiceDto.getInvoiceId()));
-        if(!isValidInvoice(find))
+        if (!isValidInvoice(find)) {
             return "";
+        }
         //VNPay only support VND
         //multiply with 100 is required by VNPay
-        long amount = (long)(Math.ceil(find.getTotalPrice()) * 100);
+        long amount = (long) (Math.ceil(find.getTotalPrice()) * 100);
         String bankCode = req.getParameter("bankCode");
 
         String vnpTxnRef = find.getInvoiceId().toString();
@@ -170,7 +171,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
         vnpParams.put("vnp_TxnRef", vnpTxnRef);
         vnpParams.put("vnp_OrderInfo", "Thanh toan hoa don: " + vnpTxnRef);
-
+        vnpParams.put("vnp_OrderType", "other");
         String locate = req.getParameter("language");
         if (locate != null && !locate.isEmpty()) {
             vnpParams.put("vnp_Locale", locate);
@@ -180,7 +181,9 @@ public class PaymentServiceImpl implements PaymentService {
         vnpParams.put("vnp_ReturnUrl", paymentProperties.getVnpReturnURL());
         vnpParams.put("vnp_IpAddr", vnpIpAddr);
 
-        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        Calendar cld = Calendar.getInstance();
+        // Vietnam timezone
+        cld.add(Calendar.HOUR, 7);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String vnpCreateDate = formatter.format(cld.getTime());
         vnpParams.put("vnp_CreateDate", vnpCreateDate);
@@ -217,17 +220,18 @@ public class PaymentServiceImpl implements PaymentService {
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
         return PaymentProperties.vnpPayUrl + "?" + queryUrl;
     }
+
     private boolean isValidInvoice(Invoice invoice) {
-        if(invoice.getType() != PaymentType.VNPAY) {
+        if (invoice.getType() != PaymentType.VNPAY) {
             log.info("Invoice use a different payment method");
             throw new ApplicationException("Bad request", HttpStatus.BAD_REQUEST, "Invoice use a different payment method");
         }
-        if(invoice.getStatus() == InvoiceStatus.PAYED) {
+        if (invoice.getStatus() == InvoiceStatus.PAYED) {
             var message = "Invoice " + invoice.getInvoiceId() + " is already payed";
             log.info(message);
             throw new ApplicationException("Bad request", HttpStatus.BAD_REQUEST, message);
         }
-        if(invoice.getStatus() == InvoiceStatus.CANCELLED) {
+        if (invoice.getStatus() == InvoiceStatus.CANCELLED) {
             var message = "Invoice " + invoice.getInvoiceId() + " is " + InvoiceStatus.CANCELLED.name();
             log.info(message);
             throw new ApplicationException("Bad request", HttpStatus.BAD_REQUEST, message);
@@ -238,19 +242,20 @@ public class PaymentServiceImpl implements PaymentService {
     public String paymentReturn(HttpServletRequest req) {
         String message = "Transaction fail";
         String responseCode = "V" + req.getParameter("vnp_ResponseCode");
-        if(!VNPayStatus.isVNPayStatus(responseCode))
+        if (!VNPayStatus.isVNPayStatus(responseCode)) {
             return message;
+        }
         UUID invoiceId = UUID.fromString(req.getParameter("vnp_TxnRef"));
         var invoice = invoiceRepository.findById(invoiceId)
                 .orElseThrow(() -> new ConflictException(this.getClass(), ActionConflict.UPDATE, "Cannot found invoice", invoiceId));
-        if(VNPayStatus.valueOf(responseCode) == VNPayStatus.V00) {
-            float totalPrice = Float.parseFloat(req.getParameter("vnp_Amount"))/100;
+        if (VNPayStatus.valueOf(responseCode) == VNPayStatus.V00) {
+            float totalPrice = Float.parseFloat(req.getParameter("vnp_Amount")) / 100;
             invoice.setPayDate(new Date(System.currentTimeMillis()));
             invoice.setType(PaymentType.VNPAY);
             invoice.setStatus(InvoiceStatus.PAYED);
             invoice.setTotalPrice(totalPrice);
             var enrollment = enrollmentRepository.findById(invoice.getEnrollment().getId()).orElse(null);
-            if(enrollment != null) {
+            if (enrollment != null) {
                 enrollment.setStatus(EnrollmentStatus.ENROLLED);
                 enrollmentRepository.save(enrollment);
             }
