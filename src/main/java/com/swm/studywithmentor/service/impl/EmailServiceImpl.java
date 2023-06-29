@@ -13,11 +13,12 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.io.UnsupportedEncodingException;
 
 @Service
 @Slf4j
 public class EmailServiceImpl implements EmailService {
-    private static final String SUBJECT = "Study With Mentor";
+    private static final String SENDER_NAME = "Study With Mentor";
     private final JwtTokenProvider tokenProvider;
     private final JavaMailSender sender;
 
@@ -42,11 +43,11 @@ public class EmailServiceImpl implements EmailService {
             MimeMessage mimeMessage = sender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setText(EmailTemplate.buildConfirmCodeEmailV2(name, verifyUrl), true);
-            helper.setSubject(SUBJECT);
+            helper.setSubject("Confirm your email");
             helper.setTo(email);
-            helper.setFrom(from);
+            helper.setFrom(from, SENDER_NAME);
             sender.send(mimeMessage);
-        } catch (MessagingException e) {
+        } catch (MessagingException | UnsupportedEncodingException e) {
             log.error(e.getMessage(), e);
         }
     }
