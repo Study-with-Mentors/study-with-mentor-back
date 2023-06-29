@@ -18,6 +18,7 @@ import com.swm.studywithmentor.repository.EnrollmentRepository;
 import com.swm.studywithmentor.repository.UserRepository;
 import com.swm.studywithmentor.service.EnrollmentService;
 import com.swm.studywithmentor.service.InvoiceService;
+import com.swm.studywithmentor.service.PaymentService;
 import com.swm.studywithmentor.service.UserService;
 import com.swm.studywithmentor.util.ApplicationMapper;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -42,14 +44,16 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final ApplicationMapper applicationMapper;
     private final Function<UUID, Enrollment> findById;
     private final UserService userService;
+    private final PaymentService paymentService;
 
-    public EnrollmentServiceImpl(EnrollmentRepository enrollmentRepository, InvoiceService invoiceService, UserRepository userRepository, ClazzRepository clazzRepository, ApplicationMapper applicationMapper, UserService userService) {
+    public EnrollmentServiceImpl(EnrollmentRepository enrollmentRepository, InvoiceService invoiceService, UserRepository userRepository, ClazzRepository clazzRepository, ApplicationMapper applicationMapper, UserService userService, PaymentService paymentService) {
         this.enrollmentRepository = enrollmentRepository;
         this.invoiceService = invoiceService;
         this.userRepository = userRepository;
         this.clazzRepository = clazzRepository;
         this.applicationMapper = applicationMapper;
         this.userService = userService;
+        this.paymentService = paymentService;
         findById = id -> enrollmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(this.getClass(), id));
     }
@@ -87,15 +91,24 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public ResponseObject<?> createEnrollment(EnrollmentCreateDto createDto, HttpServletRequest request) {
         var clazz = clazzRepository.findById(createDto.getClassId())
                 .orElseThrow(() -> new ConflictException(Enrollment.class, ActionConflict.CREATE, "Clazz not found", createDto.getClassId()));
-        User student = userRepository.findById(createDto.getStudentId())
-                .orElseThrow(() -> new ConflictException(Enrollment.class, ActionConflict.CREATE, "Student not found", createDto.getStudentId()));
-        var enrollment = Enrollment.builder()
-                        .student(student)
-                        .enrollmentDate(new Date(System.currentTimeMillis()))
-                        .clazz(clazz)
-                        .status(EnrollmentStatus.NONE)
-                        .build();
-        enrollment = enrollmentRepository.save(enrollment);
+        User student = userRepository.findById(userService.getCurrentUser().getId())
+                .orElseThrow(() -> new ConflictException(Enrollment.class, ActionConflict.CREATE, "Student not found", userService.getCurrentUser().getId()));
+        Optional<Enrollment> enrollmentOpt = enrollmentRepository.findByClazzAndStudent(clazz, student);
+        Enrollment enrollment;
+        if (enrollmentOpt.isPresent()) {
+            enrollment = enrollmentOpt.get();
+            if (enrollment.getStatus() == EnrollmentStatus.ENROLLED) {
+                throw new ApplicationException("FOUND", HttpStatus.FOUND, "Already in enrolled");
+            }
+        } else {
+            enrollment = Enrollment.builder()
+                    .student(student)
+                    .enrollmentDate(new Date(System.currentTimeMillis()))
+                    .clazz(clazz)
+                    .status(EnrollmentStatus.NONE)
+                    .build();
+            enrollment = enrollmentRepository.save(enrollment);
+        }
         return invoiceService.createInvoice(createDto.getPaymentType(), enrollment, request);
     }
 

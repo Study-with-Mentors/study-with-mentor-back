@@ -1,6 +1,7 @@
 package com.swm.studywithmentor.model.entity.user;
 
 import com.swm.studywithmentor.model.entity.BaseEntity;
+import com.swm.studywithmentor.model.entity.Image;
 import com.swm.studywithmentor.model.entity.course.Course;
 import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
 import lombok.*;
@@ -31,7 +32,9 @@ public class User extends BaseEntity implements UserDetails {
     private String firstName;
     private String lastName;
     private Date birthdate;
-    private String profileImage;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_image_id", referencedColumnName = "image_id")
+    private Image profileImage;
     @Enumerated(EnumType.STRING)
     private Gender gender;
     @Enumerated(EnumType.STRING)

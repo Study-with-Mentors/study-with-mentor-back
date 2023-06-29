@@ -1,5 +1,6 @@
 package com.swm.studywithmentor.model.dto;
 
+import com.swm.studywithmentor.model.dto.create.ImageDto;
 import com.swm.studywithmentor.model.entity.user.Gender;
 import lombok.*;
 
@@ -15,6 +16,6 @@ public class UserDto extends BaseDto {
     private String firstName;
     private String lastName;
     private Date birthdate;
-    private String profileImage;
+    private ImageDto profileImage;
     private Gender gender;
 }

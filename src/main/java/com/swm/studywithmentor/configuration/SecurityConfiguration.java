@@ -21,7 +21,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(securedEnabled = true)
+@EnableMethodSecurity
 public class SecurityConfiguration {
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -60,7 +60,7 @@ public class SecurityConfiguration {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        // TODO: Use @Secured() or @PreAuthorize() for authorization
+        // TODO: Use @PreAuthorize() for authorization
         return http.build();
     }
 }

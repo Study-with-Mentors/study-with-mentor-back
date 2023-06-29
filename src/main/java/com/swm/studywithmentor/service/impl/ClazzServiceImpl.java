@@ -13,7 +13,7 @@ import com.swm.studywithmentor.model.entity.ClazzStatus;
 import com.swm.studywithmentor.model.entity.Lesson;
 import com.swm.studywithmentor.model.entity.course.Course;
 import com.swm.studywithmentor.model.entity.course.CourseStatus;
-import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
+import com.swm.studywithmentor.model.entity.session.Session;
 import com.swm.studywithmentor.model.entity.user.User;
 import com.swm.studywithmentor.model.exception.ActionConflict;
 import com.swm.studywithmentor.model.exception.ConflictException;
@@ -24,13 +24,13 @@ import com.swm.studywithmentor.repository.ClazzRepository;
 import com.swm.studywithmentor.repository.CourseRepository;
 import com.swm.studywithmentor.repository.EnrollmentRepository;
 import com.swm.studywithmentor.repository.LessonRepository;
+import com.swm.studywithmentor.repository.SessionRepository;
 import com.swm.studywithmentor.repository.UserRepository;
 import com.swm.studywithmentor.service.BaseService;
 import com.swm.studywithmentor.service.ClazzService;
 import com.swm.studywithmentor.service.UserService;
 import com.swm.studywithmentor.util.ApplicationMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,8 +45,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -59,9 +57,10 @@ public class ClazzServiceImpl extends BaseService implements ClazzService {
     private final LessonRepository lessonRepository;
     private final UserRepository userRepository;
     private final ApplicationMapper mapper;
+    private final SessionRepository sessionRepository;
 
     @Autowired
-    public ClazzServiceImpl(ClazzRepository clazzRepository, CourseRepository courseRepository, UserService userService, EnrollmentRepository enrollmentRepository, LessonRepository lessonRepository, ApplicationMapper mapper, UserRepository userRepository) {
+    public ClazzServiceImpl(ClazzRepository clazzRepository, CourseRepository courseRepository, UserService userService, EnrollmentRepository enrollmentRepository, LessonRepository lessonRepository, ApplicationMapper mapper, UserRepository userRepository, SessionRepository sessionRepository) {
         this.clazzRepository = clazzRepository;
         this.courseRepository = courseRepository;
         this.userService = userService;
@@ -69,6 +68,7 @@ public class ClazzServiceImpl extends BaseService implements ClazzService {
         this.enrollmentRepository = enrollmentRepository;
         this.userRepository = userRepository;
         this.mapper = mapper;
+        this.sessionRepository = sessionRepository;
     }
 
     @Override
@@ -116,7 +116,12 @@ public class ClazzServiceImpl extends BaseService implements ClazzService {
             if (!timeConflictedLessons.isEmpty()) {
                 throw new ConflictException(Lesson.class, ActionConflict.CREATE, "There are other clazz that at the same time", lessonCreateDto.getStartTime(), lessonCreateDto.getEndTime(), timeConflictedLessons);
             }
+            Session session = sessionRepository.findById(lessonCreateDto.getSessionId())
+                    .orElseThrow(() -> new NotFoundException(Session.class, lessonCreateDto.getSessionId()));
             Lesson lesson = mapper.toEntity(lessonCreateDto);
+            lesson.setId(null);
+            lesson.setSession(session);
+            session.getLessons().add(lesson);
             lesson.setClazz(clazz);
             lessons.add(lesson);
         }

@@ -10,6 +10,7 @@ import com.swm.studywithmentor.model.entity.Clazz;
 import com.swm.studywithmentor.model.entity.QClazz;
 import com.swm.studywithmentor.model.entity.course.CourseStatus;
 import com.swm.studywithmentor.model.entity.course.QCourse;
+import com.swm.studywithmentor.model.entity.enrollment.EnrollmentStatus;
 import com.swm.studywithmentor.model.entity.enrollment.QEnrollment;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
@@ -99,6 +100,7 @@ public class ClazzRepositoryCustomImpl implements ClazzRepositoryCustom {
                 .where(clazz.id.in(
                         JPAExpressions.select(enrollment.clazz.id)
                                 .from(enrollment)
+                                .where(enrollment.status.eq(EnrollmentStatus.ENROLLED))
                                 .where(enrollment.student.id.eq(studenId))
                 ))
                 .fetch();

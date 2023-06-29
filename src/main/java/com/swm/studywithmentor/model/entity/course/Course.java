@@ -43,6 +43,7 @@ public class Course extends BaseEntity {
     private List<Clazz> clazzes;
     @OneToMany(mappedBy = "course")
     private List<Session> sessions;
-    @OneToMany(mappedBy = "course")
-    private List<Image> images;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id")
+    private Image image;
 }
