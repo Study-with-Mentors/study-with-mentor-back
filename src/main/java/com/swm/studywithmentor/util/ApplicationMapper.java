@@ -9,6 +9,7 @@ import com.swm.studywithmentor.model.dto.InvoiceDto;
 import com.swm.studywithmentor.model.dto.LessonDto;
 import com.swm.studywithmentor.model.dto.MentorDto;
 import com.swm.studywithmentor.model.dto.SessionDto;
+import com.swm.studywithmentor.model.dto.SignupDto;
 import com.swm.studywithmentor.model.dto.StudentDto;
 import com.swm.studywithmentor.model.dto.UserDto;
 import com.swm.studywithmentor.model.dto.UserProfileDto;
