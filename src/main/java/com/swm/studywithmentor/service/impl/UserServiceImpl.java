@@ -95,7 +95,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         User user = userRepository.findById(contextUser.getId())
                 .orElseThrow(() -> {
                     log.warn("User not found: id {}", contextUser.getId());
-                    throw new ConflictException(User.class, ActionConflict.READ, "Conflict when updating profile");
+                    return new ConflictException(User.class, ActionConflict.READ, "Conflict when updating profile");
                 });
         return mapper.toUserProfileDto(user);
     }
@@ -201,7 +201,7 @@ public class UserServiceImpl extends BaseService implements UserService {
         User user = userRepository.findById(mentorId)
                 .orElseThrow(() -> {
                     log.warn("User not found: id {}", mentorId);
-                    throw new ConflictException(User.class, ActionConflict.READ, "Conflict when updating profile");
+                    return new ConflictException(User.class, ActionConflict.READ, "Conflict when updating profile");
                 });
         UserProfileDto profileDto = mapper.toUserProfileDto(user);
         profileDto.setStudent(null);

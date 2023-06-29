@@ -1,7 +1,6 @@
 package com.swm.studywithmentor.service.impl;
 
 import com.swm.studywithmentor.model.dto.EnrollmentDto;
-import com.swm.studywithmentor.model.dto.InvoiceDto;
 import com.swm.studywithmentor.model.dto.ResponseObject;
 import com.swm.studywithmentor.model.dto.create.EnrollmentCreateDto;
 import com.swm.studywithmentor.model.dto.query.SearchRequest;
@@ -44,7 +43,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final ApplicationMapper applicationMapper;
     private final Function<UUID, Enrollment> findById;
     private final UserService userService;
-    private final PaymentService paymentService;
 
     public EnrollmentServiceImpl(EnrollmentRepository enrollmentRepository, InvoiceService invoiceService, UserRepository userRepository, ClazzRepository clazzRepository, ApplicationMapper applicationMapper, UserService userService, PaymentService paymentService) {
         this.enrollmentRepository = enrollmentRepository;
@@ -53,7 +51,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         this.clazzRepository = clazzRepository;
         this.applicationMapper = applicationMapper;
         this.userService = userService;
-        this.paymentService = paymentService;
         findById = id -> enrollmentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(this.getClass(), id));
     }
