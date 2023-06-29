@@ -181,6 +181,8 @@ public class PaymentServiceImpl implements PaymentService {
         vnpParams.put("vnp_IpAddr", vnpIpAddr);
 
         Calendar cld = Calendar.getInstance();
+        // Vietnam timezone
+        cld.add(Calendar.HOUR, 7);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String vnpCreateDate = formatter.format(cld.getTime());
         vnpParams.put("vnp_CreateDate", vnpCreateDate);
