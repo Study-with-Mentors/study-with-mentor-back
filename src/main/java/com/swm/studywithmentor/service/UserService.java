@@ -1,6 +1,7 @@
 package com.swm.studywithmentor.service;
 
 import com.swm.studywithmentor.model.dto.MentorDto;
+import com.swm.studywithmentor.model.dto.SignupDto;
 import com.swm.studywithmentor.model.dto.PageResult;
 import com.swm.studywithmentor.model.dto.StudentDto;
 import com.swm.studywithmentor.model.dto.UserDto;
@@ -17,6 +18,9 @@ public interface UserService extends UserDetailsService {
     UserDto updateProfile(UserDto userDto);
     StudentDto updateStudentProfile(StudentDto studentDto);
     MentorDto updateMentorProfile(MentorDto mentorDto);
+    UserDto addUser(SignupDto signupDto);
+    void verifyActivationToken(String token);
+    void resendActivationToken(String email);
     UserProfileDto getMentorProfile(UUID mentorId);
     PageResult<UserProfileDto> searchMentors(MentorSearchDto searchDto);
 }

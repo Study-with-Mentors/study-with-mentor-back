@@ -42,6 +42,17 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    public String generateEmailVerificationToken(String email) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + JWT_EXPIRATION);
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(JWT_SECRET_KEY)
+                .compact();
+    }
+
     public String getEmailFromJwt(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(JWT_SECRET_KEY)

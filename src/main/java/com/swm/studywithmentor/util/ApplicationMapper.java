@@ -9,6 +9,7 @@ import com.swm.studywithmentor.model.dto.InvoiceDto;
 import com.swm.studywithmentor.model.dto.LessonDto;
 import com.swm.studywithmentor.model.dto.MentorDto;
 import com.swm.studywithmentor.model.dto.SessionDto;
+import com.swm.studywithmentor.model.dto.SignupDto;
 import com.swm.studywithmentor.model.dto.StudentDto;
 import com.swm.studywithmentor.model.dto.UserDto;
 import com.swm.studywithmentor.model.dto.UserProfileDto;
@@ -155,6 +156,10 @@ public class ApplicationMapper {
 
     public void toEntity(UserDto userDto, User user) {
         mapper.map(userDto, user);
+    }
+
+    public User toEntity(SignupDto signupDto) {
+        return mapper.map(signupDto, User.class);
     }
 
     public SessionDto toDto(Session session) {
