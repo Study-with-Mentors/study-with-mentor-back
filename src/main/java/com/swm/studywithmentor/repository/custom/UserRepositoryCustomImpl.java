@@ -5,6 +5,8 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.swm.studywithmentor.model.dto.search.MentorSearchDto;
+import com.swm.studywithmentor.model.entity.enrollment.EnrollmentStatus;
+import com.swm.studywithmentor.model.entity.enrollment.QEnrollment;
 import com.swm.studywithmentor.model.entity.user.QUser;
 import com.swm.studywithmentor.model.entity.user.User;
 import org.apache.commons.lang3.StringUtils;
@@ -23,9 +25,11 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom{
     @Override
     public List<User> findUserEnrollInCourse(UUID courseId) {
         var query = new JPAQuery<User>(entityManager);
-        QUser user = QUser.user;
-        return query.from(user)
-                .where(user.enrollments.any().clazz.id.eq(courseId))
+        QEnrollment enrollment = QEnrollment.enrollment;
+        return query.select(enrollment.student)
+                .from(enrollment)
+                .where(enrollment.status.eq(EnrollmentStatus.ENROLLED))
+                .where(enrollment.clazz.course.id.eq(courseId))
                 .fetch();
     }
 

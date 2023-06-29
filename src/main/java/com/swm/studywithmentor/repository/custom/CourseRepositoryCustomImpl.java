@@ -9,6 +9,7 @@ import com.swm.studywithmentor.model.dto.search.CourseSearchDto;
 import com.swm.studywithmentor.model.entity.course.Course;
 import com.swm.studywithmentor.model.entity.course.CourseStatus;
 import com.swm.studywithmentor.model.entity.course.QCourse;
+import com.swm.studywithmentor.model.entity.enrollment.EnrollmentStatus;
 import com.swm.studywithmentor.model.entity.enrollment.QEnrollment;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
@@ -62,6 +63,7 @@ public class CourseRepositoryCustomImpl implements CourseRepositoryCustom {
                 .where(course.id.in(
                         JPAExpressions.select(enrollment.clazz.course.id)
                                 .from(enrollment)
+                                .where(enrollment.status.eq(EnrollmentStatus.ENROLLED))
                                 .where(enrollment.student.id.eq(studentId))
                 ))
                 .fetch();
