@@ -2,15 +2,18 @@ package com.swm.studywithmentor.controller;
 
 import com.swm.studywithmentor.model.dto.ClazzDto;
 import com.swm.studywithmentor.model.dto.CourseDto;
+import com.swm.studywithmentor.model.dto.EnrollmentReportDto;
 import com.swm.studywithmentor.model.dto.LessonDto;
 import com.swm.studywithmentor.model.dto.PageResult;
 import com.swm.studywithmentor.model.dto.UserProfileDto;
 import com.swm.studywithmentor.model.dto.create.ImageDto;
 import com.swm.studywithmentor.model.dto.search.LessonTimeRangeDto;
 import com.swm.studywithmentor.model.dto.search.MentorSearchDto;
+import com.swm.studywithmentor.model.dto.search.TimeRangeDto;
 import com.swm.studywithmentor.model.entity.user.Role;
 import com.swm.studywithmentor.service.ClazzService;
 import com.swm.studywithmentor.service.CourseService;
+import com.swm.studywithmentor.service.EnrollmentService;
 import com.swm.studywithmentor.service.ImageService;
 import com.swm.studywithmentor.service.LessonService;
 import com.swm.studywithmentor.service.UserService;
@@ -31,14 +34,16 @@ public class StudentMentorController {
     private final CourseService courseService;
     private final UserService userService;
     private final ImageService imageService;
+    private final EnrollmentService enrollmentService;
 
     @Autowired
-    public StudentMentorController(LessonService lessonService, ClazzService clazzService, CourseService courseService, UserService userService, ImageService imageService) {
+    public StudentMentorController(LessonService lessonService, ClazzService clazzService, CourseService courseService, UserService userService, ImageService imageService, EnrollmentService enrollmentService) {
         this.lessonService = lessonService;
         this.clazzService = clazzService;
         this.courseService = courseService;
         this.userService = userService;
         this.imageService = imageService;
+        this.enrollmentService = enrollmentService;
     }
 
     @GetMapping("/student/lesson")
@@ -75,6 +80,11 @@ public class StudentMentorController {
     public ResponseEntity<List<CourseDto>> getMentorCourse() {
         List<CourseDto> dtos = courseService.getCourseOfMentor();
         return new ResponseEntity<>(dtos, HttpStatus.OK);
+    }
+
+    @GetMapping("/mentor/course/enrollment/report")
+    public EnrollmentReportDto getEnrollmentReport(TimeRangeDto timeRangeDto) {
+        return enrollmentService.getEnrollmentReport(timeRangeDto);
     }
 
     @GetMapping("/mentor/{id}")

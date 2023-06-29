@@ -1,10 +1,12 @@
 package com.swm.studywithmentor.service.impl;
 
 import com.swm.studywithmentor.model.dto.EnrollmentDto;
+import com.swm.studywithmentor.model.dto.EnrollmentReportDto;
 import com.swm.studywithmentor.model.dto.ResponseObject;
 import com.swm.studywithmentor.model.dto.create.EnrollmentCreateDto;
 import com.swm.studywithmentor.model.dto.query.SearchRequest;
 import com.swm.studywithmentor.model.dto.query.SearchSpecification;
+import com.swm.studywithmentor.model.dto.search.TimeRangeDto;
 import com.swm.studywithmentor.model.entity.enrollment.Enrollment;
 import com.swm.studywithmentor.model.entity.enrollment.EnrollmentStatus;
 import com.swm.studywithmentor.model.entity.user.User;
@@ -17,7 +19,6 @@ import com.swm.studywithmentor.repository.EnrollmentRepository;
 import com.swm.studywithmentor.repository.UserRepository;
 import com.swm.studywithmentor.service.EnrollmentService;
 import com.swm.studywithmentor.service.InvoiceService;
-import com.swm.studywithmentor.service.PaymentService;
 import com.swm.studywithmentor.service.UserService;
 import com.swm.studywithmentor.util.ApplicationMapper;
 import org.springframework.data.domain.Pageable;
@@ -44,7 +45,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final Function<UUID, Enrollment> findById;
     private final UserService userService;
 
-    public EnrollmentServiceImpl(EnrollmentRepository enrollmentRepository, InvoiceService invoiceService, UserRepository userRepository, ClazzRepository clazzRepository, ApplicationMapper applicationMapper, UserService userService, PaymentService paymentService) {
+    public EnrollmentServiceImpl(EnrollmentRepository enrollmentRepository, InvoiceService invoiceService, UserRepository userRepository, ClazzRepository clazzRepository, ApplicationMapper applicationMapper, UserService userService) {
         this.enrollmentRepository = enrollmentRepository;
         this.invoiceService = invoiceService;
         this.userRepository = userRepository;
@@ -113,7 +114,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public EnrollmentDto updateEnrollment(EnrollmentDto enrollmentDto) {
         var enrollment = findById.apply(enrollmentDto.getId());
         User user = userService.getCurrentUser();
-        if(!enrollment.getStudent().getId().equals(user.getId())) {
+        if (!enrollment.getStudent().getId().equals(user.getId())) {
             throw new ConflictException(Enrollment.class, ActionConflict.UPDATE, "User does not own this enrollment", user.getId());
         }
         applicationMapper.enrollmentToEntity(enrollment, enrollmentDto);
@@ -126,9 +127,22 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public void deleteEnrollment(UUID id) {
         var enrollment = findById.apply(id);
         User user = userService.getCurrentUser();
-        if(!enrollment.getStudent().getId().equals(user.getId())) {
+        if (!enrollment.getStudent().getId().equals(user.getId())) {
             throw new ConflictException(Enrollment.class, ActionConflict.DELETE, "User does not own this enrollment", user.getId());
         }
         enrollmentRepository.delete(enrollment);
+    }
+
+    @Override
+    public EnrollmentReportDto getEnrollmentReport(TimeRangeDto timeRangeDto) {
+        User user = userService.getCurrentUser();
+        List<Enrollment> enrollments = enrollmentRepository.getEnrollmentInTimeRange(timeRangeDto, user.getId());
+        EnrollmentReportDto reportDto = new EnrollmentReportDto();
+        reportDto.setNumOfEnrollments(enrollments.size());
+        reportDto.setTotalEarning(enrollments.stream()
+                .mapToDouble(e -> e.getInvoice().getTotalPrice())
+                .sum()
+        );
+        return reportDto;
     }
 }
