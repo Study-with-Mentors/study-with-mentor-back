@@ -102,7 +102,8 @@ public class UserServiceImpl extends BaseService implements UserService {
 
     @Override
     public UserDto updateProfile(UserDto userDto) {
-        User user = getCurrentUser();
+        User user = userRepository.findById(getCurrentUser().getId())
+                .orElseThrow(() -> new NotFoundException(User.class, getCurrentUser().getId()));
         // Not allow changing email
         userDto.setEmail(null);
         mapper.toEntity(userDto, user);
