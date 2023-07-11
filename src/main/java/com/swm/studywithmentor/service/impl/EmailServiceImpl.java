@@ -22,7 +22,7 @@ public class EmailServiceImpl implements EmailService {
     private final JwtTokenProvider tokenProvider;
     private final JavaMailSender sender;
 
-    @Value("${spring.mail.username}")
+    @Value("${app.email-sender}")
     private String from;
 
     @Value("${app.web-host}")
