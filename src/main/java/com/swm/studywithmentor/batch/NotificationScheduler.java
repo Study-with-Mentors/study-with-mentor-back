@@ -34,7 +34,7 @@ public class NotificationScheduler {
         this.userRepository = userRepository;
     }
 
-    @Scheduled(fixedDelay = 300000)
+    @Scheduled(fixedDelay = 86400000)
     @Async
     public void sendNotifications() {
         // get user that have registration token
