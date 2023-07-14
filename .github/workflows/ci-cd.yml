@@ -14,8 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Add deploy resource file
-      run: echo "${{ secrets.APPLICATION_DEPLOY }}" > src/main/resources/application-deploy.yml
+    - name: Add resource files
+      run: |
+        echo "${{ secrets.APPLICATION_DEPLOY }}" > src/main/resources/application-deploy.yml
+        echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > src/main/resources/swm-service-account.json
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
