@@ -92,3 +92,5 @@ nbdist/
 .nb-gradle/
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,java,maven,netbeans
+# Exclude unnesscery fild in resources
+**/resources/*.json

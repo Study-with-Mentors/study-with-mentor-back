@@ -50,6 +50,7 @@ public class User extends BaseEntity implements UserDetails {
     private List<Course> courses;
     @OneToMany(mappedBy = "student")
     private List<Enrollment> enrollments;
+    private String notificationToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

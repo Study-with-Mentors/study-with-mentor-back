@@ -1,5 +1,6 @@
 package com.swm.studywithmentor.model.dto;
 
+import com.swm.studywithmentor.model.dto.create.ImageDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,4 +19,6 @@ public class LessonDto extends BaseDto {
     private UUID clazzId;
     private UUID courseId;
     private UUID sessionId;
+    private String resource;
+    private ImageDto courseImage;
 }

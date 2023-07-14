@@ -1,16 +1,21 @@
 package com.swm.studywithmentor.controller;
 
+import com.swm.studywithmentor.batch.NotificationScheduler;
 import com.swm.studywithmentor.model.dto.MentorDto;
 import com.swm.studywithmentor.model.dto.StudentDto;
 import com.swm.studywithmentor.model.dto.UserDto;
 import com.swm.studywithmentor.model.dto.UserProfileDto;
 import com.swm.studywithmentor.model.dto.create.ImageDto;
+import com.swm.studywithmentor.model.dto.update.NotificationTokenUpdateDto;
 import com.swm.studywithmentor.service.ImageService;
 import com.swm.studywithmentor.service.UserService;
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,11 +28,13 @@ import javax.validation.Valid;
 public class UserController {
     private final UserService userService;
     private final ImageService imageService;
+    private final NotificationScheduler notificationSchedulerTest;
 
     @Autowired
-    public UserController(UserService userService, ImageService imageService) {
+    public UserController(UserService userService, ImageService imageService, NotificationScheduler notificationSchedulerTest) {
         this.userService = userService;
         this.imageService = imageService;
+        this.notificationSchedulerTest = notificationSchedulerTest;
     }
 
     @GetMapping("/profile")
@@ -64,5 +71,21 @@ public class UserController {
     public ResponseEntity<MentorDto> updateMentorProfile(@Valid @RequestBody MentorDto mentorDto) {
         MentorDto dto = userService.updateMentorProfile(mentorDto);
         return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @PutMapping("notification/token")
+    public void updateNotificationToken(@RequestBody NotificationTokenUpdateDto token) {
+        userService.updateNotificationToken(token.getToken());
+    }
+
+    @DeleteMapping("notification/token")
+    public void deleteNotificationToken() {
+        userService.deleteNotificationToken();
+    }
+
+    @Hidden
+    @PostMapping("notification/testing/testing/testing")
+    public void testNotification() {
+        notificationSchedulerTest.sendNotifications();
     }
 }

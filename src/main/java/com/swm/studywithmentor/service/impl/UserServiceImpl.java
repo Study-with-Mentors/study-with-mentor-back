@@ -232,4 +232,18 @@ public class UserServiceImpl extends BaseService implements UserService {
         result.setTotalPages(users.getTotalPages());
         return result;
     }
+
+    @Override
+    public void updateNotificationToken(String token) {
+        User user = getCurrentUser();
+        user.setNotificationToken(token);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void deleteNotificationToken() {
+        User user = getCurrentUser();
+        user.setNotificationToken(null);
+        userRepository.save(user);
+    }
 }

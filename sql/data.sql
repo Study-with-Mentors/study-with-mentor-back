@@ -10,7 +10,6 @@ VALUES ('7DE575A8-C635-4A22-39F9-B13139392B1F', 'Physics', 'mi pede, nonummy ut,
         'lorem, vehicula et, rutrum eu, ultrices sit amet, risus. Donec', 0, 'PL');
 
 -- create user profile
--- TODO: change the url
 INSERT INTO image (image_id, url, version)
 VALUES ('42477450-39A2-4123-80C5-4B87F7B117D8', '1', 0),
        ('63BBC8B6-798F-A84E-AED8-63ACF7AE4BE1', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyIkWCF_2NnTM-imjWtFuzsPEWFYYH-Vk76A&usqp=CAU', 0),

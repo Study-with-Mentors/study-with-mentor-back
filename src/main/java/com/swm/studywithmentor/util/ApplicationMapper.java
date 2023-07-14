@@ -232,6 +232,7 @@ public class ApplicationMapper {
         dto.setSessionId(lesson.getSession().getId());
         dto.setCourseName(lesson.getClazz().getCourse().getFullName());
         dto.setSessionName(lesson.getSession().getSessionName());
+        dto.setResource(lesson.getSession().getResource());
         return dto;
     }
 

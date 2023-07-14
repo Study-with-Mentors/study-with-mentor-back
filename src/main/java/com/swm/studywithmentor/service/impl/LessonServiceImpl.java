@@ -3,6 +3,7 @@ package com.swm.studywithmentor.service.impl;
 import com.swm.studywithmentor.model.dto.LessonDto;
 import com.swm.studywithmentor.model.dto.search.LessonTimeRangeDto;
 import com.swm.studywithmentor.model.entity.Lesson;
+import com.swm.studywithmentor.model.entity.course.Course;
 import com.swm.studywithmentor.model.entity.user.Role;
 import com.swm.studywithmentor.model.entity.user.User;
 import com.swm.studywithmentor.model.exception.ActionConflict;
@@ -43,6 +44,11 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public List<LessonDto> getLessonByTimeRange(LessonTimeRangeDto dto) {
         User user = userService.getCurrentUser();
+        return getLessonByTimeRange(user, dto);
+    }
+
+    @Override
+    public List<LessonDto> getLessonByTimeRange(User user, LessonTimeRangeDto dto) {
         List<Lesson> lessons = new ArrayList<>();
         if (dto.getRole() == Role.MENTOR) {
             lessons = lessonRepository.findLessonInTimeRange(dto.getLowerTime(), dto.getUpperTime(), user.getId());
@@ -50,7 +56,12 @@ public class LessonServiceImpl implements LessonService {
             lessons = lessonRepository.findLessonBetweenTimeAsStudent(dto.getLowerTime(), dto.getUpperTime(), user.getId());
         }
         return lessons.stream()
-                .map(mapper::toDto)
+                .map(lesson -> {
+                    LessonDto lessonDto = mapper.toDto(lesson);
+                    Course course = lesson.getClazz().getCourse();
+                    lessonDto.setCourseImage(mapper.toDto(course.getImage()));
+                    return lessonDto;
+                })
                 .toList();
     }
 

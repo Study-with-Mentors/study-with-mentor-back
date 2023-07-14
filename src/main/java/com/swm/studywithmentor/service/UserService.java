@@ -23,4 +23,6 @@ public interface UserService extends UserDetailsService {
     void resendActivationToken(String email);
     UserProfileDto getMentorProfile(UUID mentorId);
     PageResult<UserProfileDto> searchMentors(MentorSearchDto searchDto);
+    void updateNotificationToken(String token);
+    void deleteNotificationToken();
 }
