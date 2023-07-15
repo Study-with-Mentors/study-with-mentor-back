@@ -68,8 +68,12 @@ public class InvoiceServiceImpl implements InvoiceService {
     public InvoiceDto createInvoice(InvoiceDto invoiceDto) {
         var enrollment = enrollmentRepository.findById(invoiceDto.getEnrollment().getId())
                 .orElseThrow(() -> new ApplicationException("NOT_FOUND", HttpStatus.NOT_FOUND, "Not found enrollment ID: " + invoiceDto.getEnrollment().getId()));
-        var invoice = applicationMapper.invoiceToEntity(invoiceDto);
-        invoice.setEnrollment(enrollment);
+        Invoice invoice = invoiceRepository.findById(enrollment.getId())
+                .orElseGet(() -> {
+                    Invoice createdInvoice = applicationMapper.invoiceToEntity(invoiceDto);
+                    createdInvoice.setEnrollment(enrollment);
+                    return createdInvoice;
+                });
         if(invoiceDto.getStatus().equals(InvoiceStatus.PAYED))
             invoice.setPayDate(new Date(System.currentTimeMillis()));
         invoice.setTotalPrice(enrollment.getClazz().getPrice());
