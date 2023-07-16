@@ -29,6 +29,7 @@ import com.swm.studywithmentor.service.UserService;
 import com.swm.studywithmentor.util.ApplicationMapper;
 import com.swm.studywithmentor.util.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -85,9 +86,9 @@ public class UserServiceImpl extends BaseService implements UserService {
     @Override
     public PageResult<UserDetailsDto> getAllUsers(UserSearchDto searchDto) {
         PageRequest pageRequest = PageRequest.of(searchDto.getPage(),
-                searchDto.getPageSize() != null ? searchDto.getPageSize() : pageSize,
+                ObjectUtils.defaultIfNull(searchDto.getPageSize(), pageSize),
                 searchDto.getDirection(),
-                searchDto.getOrderBy());
+                ObjectUtils.defaultIfNull(searchDto.getOrderBy(), "id"));
         Page<User> usersPage = userRepository.findAll(pageRequest);
         return new PageResult<>(usersPage.getTotalPages(),
                 usersPage.getTotalElements(),
