@@ -2,12 +2,14 @@ package com.swm.studywithmentor.service.impl;
 
 import com.querydsl.core.types.Predicate;
 import com.swm.studywithmentor.model.dto.MentorDto;
-import com.swm.studywithmentor.model.dto.SignupDto;
 import com.swm.studywithmentor.model.dto.PageResult;
+import com.swm.studywithmentor.model.dto.SignupDto;
 import com.swm.studywithmentor.model.dto.StudentDto;
+import com.swm.studywithmentor.model.dto.UserDetailsDto;
 import com.swm.studywithmentor.model.dto.UserDto;
 import com.swm.studywithmentor.model.dto.UserProfileDto;
 import com.swm.studywithmentor.model.dto.search.MentorSearchDto;
+import com.swm.studywithmentor.model.dto.search.UserSearchDto;
 import com.swm.studywithmentor.model.entity.Field;
 import com.swm.studywithmentor.model.entity.user.Mentor;
 import com.swm.studywithmentor.model.entity.user.Role;
@@ -21,8 +23,8 @@ import com.swm.studywithmentor.repository.FieldRepository;
 import com.swm.studywithmentor.repository.MentorRepository;
 import com.swm.studywithmentor.repository.StudentRepository;
 import com.swm.studywithmentor.repository.UserRepository;
-import com.swm.studywithmentor.service.EmailService;
 import com.swm.studywithmentor.service.BaseService;
+import com.swm.studywithmentor.service.EmailService;
 import com.swm.studywithmentor.service.UserService;
 import com.swm.studywithmentor.util.ApplicationMapper;
 import com.swm.studywithmentor.util.JwtTokenProvider;
@@ -78,6 +80,18 @@ public class UserServiceImpl extends BaseService implements UserService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email));
+    }
+
+    @Override
+    public PageResult<UserDetailsDto> getAllUsers(UserSearchDto searchDto) {
+        PageRequest pageRequest = PageRequest.of(searchDto.getPage(),
+                searchDto.getPageSize() != null ? searchDto.getPageSize() : pageSize,
+                searchDto.getDirection(),
+                searchDto.getOrderBy());
+        Page<User> usersPage = userRepository.findAll(pageRequest);
+        return new PageResult<>(usersPage.getTotalPages(),
+                usersPage.getTotalElements(),
+                usersPage.stream().map(mapper::toUserDetailsDto).toList());
     }
 
     @Override

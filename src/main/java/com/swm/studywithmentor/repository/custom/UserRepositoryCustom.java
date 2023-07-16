@@ -9,5 +9,6 @@ import java.util.UUID;
 
 public interface UserRepositoryCustom {
     List<User> findUserEnrollInCourse(UUID courseId);
+
     Predicate prepareSearchPredicate(MentorSearchDto searchDto);
 }

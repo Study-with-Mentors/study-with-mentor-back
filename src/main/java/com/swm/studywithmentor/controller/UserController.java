@@ -2,10 +2,13 @@ package com.swm.studywithmentor.controller;
 
 import com.swm.studywithmentor.batch.NotificationScheduler;
 import com.swm.studywithmentor.model.dto.MentorDto;
+import com.swm.studywithmentor.model.dto.PageResult;
 import com.swm.studywithmentor.model.dto.StudentDto;
+import com.swm.studywithmentor.model.dto.UserDetailsDto;
 import com.swm.studywithmentor.model.dto.UserDto;
 import com.swm.studywithmentor.model.dto.UserProfileDto;
 import com.swm.studywithmentor.model.dto.create.ImageDto;
+import com.swm.studywithmentor.model.dto.search.UserSearchDto;
 import com.swm.studywithmentor.model.dto.update.NotificationTokenUpdateDto;
 import com.swm.studywithmentor.service.ImageService;
 import com.swm.studywithmentor.service.UserService;
@@ -35,6 +38,11 @@ public class UserController {
         this.userService = userService;
         this.imageService = imageService;
         this.notificationSchedulerTest = notificationSchedulerTest;
+    }
+
+    @GetMapping
+    public PageResult<UserDetailsDto> getAllUsers(UserSearchDto searchDto) {
+        return userService.getAllUsers(searchDto);
     }
 
     @GetMapping("/profile")
