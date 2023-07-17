@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/clazz")
+@RequestMapping("/classes")
 public class ClazzController {
     private final ClazzService clazzService;
 
@@ -65,12 +65,12 @@ public class ClazzController {
         return new ResponseEntity<>(clazzService.closeEnrollment(id), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/student")
+    @GetMapping("/{id}/students")
     public ResponseEntity<List<UserDto>> getEnrolledStudent(@PathVariable UUID id) {
         return new ResponseEntity<>(clazzService.getEnrolledStudent(id), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/lesson")
+    @GetMapping("/{id}/lessons")
     public ResponseEntity<List<LessonDto>> getLessonFromClazz(@PathVariable UUID id) {
         return new ResponseEntity<>(clazzService.getLessonFromClazz(id), HttpStatus.OK);
     }

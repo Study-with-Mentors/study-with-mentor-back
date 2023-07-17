@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/course")
+@RequestMapping("/courses")
 public class CourseController {
     private final CourseService courseService;
     private final ImageService imageService;
@@ -43,7 +43,7 @@ public class CourseController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/clazz")
+    @GetMapping("/{id}/classes")
     public ResponseEntity<List<ClazzDto>> getClazzFromCourse(@PathVariable UUID id) {
         List<ClazzDto> dtos = courseService.getClazzesByCourse(id);
         return new ResponseEntity<>(dtos, HttpStatus.OK);

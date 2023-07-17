@@ -46,60 +46,60 @@ public class StudentMentorController {
         this.enrollmentService = enrollmentService;
     }
 
-    @GetMapping("/student/lesson")
+    @GetMapping("/me/student/lessons")
     public ResponseEntity<List<LessonDto>> getLessonInTimeRangeStudent(LessonTimeRangeDto dto) {
         dto.setRole(Role.USER);
         return new ResponseEntity<>(lessonService.getLessonByTimeRange(dto), HttpStatus.OK);
     }
 
-    @GetMapping("/student/clazz")
+    @GetMapping("/me/student/classes")
     public ResponseEntity<List<ClazzDto>> getStudentClazz() {
         List<ClazzDto> dtos = clazzService.getClazzOfStudent();
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    @GetMapping("/student/course")
+    @GetMapping("/me/student/courses")
     public ResponseEntity<List<CourseDto>> getStudentEnrolledCourse() {
         List<CourseDto> dtos = courseService.getCourseOfStudent();
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    @GetMapping("/mentor/lesson")
+    @GetMapping("/me/mentor/lessons")
     public ResponseEntity<List<LessonDto>> getLessonInTimeRangeMentor(LessonTimeRangeDto dto) {
         dto.setRole(Role.MENTOR);
         return new ResponseEntity<>(lessonService.getLessonByTimeRange(dto), HttpStatus.OK);
     }
 
-    @GetMapping("/mentor/clazz")
+    @GetMapping("/me/mentor/classes")
     public ResponseEntity<List<ClazzDto>> getMentorClazz() {
         List<ClazzDto> dtos = clazzService.getClazzOfMentor();
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    @GetMapping("/mentor/course")
+    @GetMapping("/me/mentor/courses")
     public ResponseEntity<List<CourseDto>> getMentorCourse() {
         List<CourseDto> dtos = courseService.getCourseOfMentor();
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    @GetMapping("/mentor/course/enrollment/report")
+    @GetMapping("/me/mentor/enrollments/report")
     public EnrollmentReportDto getEnrollmentReport(TimeRangeDto timeRangeDto) {
         return enrollmentService.getEnrollmentReport(timeRangeDto);
     }
 
-    @GetMapping("/mentor/{id}")
+    @GetMapping("/mentors/{id}")
     public ResponseEntity<UserProfileDto> getMentorProfile(@PathVariable UUID id) {
         UserProfileDto dto = userService.getMentorProfile(id);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @GetMapping("/mentor")
+    @GetMapping("/mentors")
     public ResponseEntity<PageResult<UserProfileDto>> searchMentor(MentorSearchDto searchDto) {
         PageResult<UserProfileDto> dtos = userService.searchMentors(searchDto);
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    @GetMapping("/mentor/{id}/image")
+    @GetMapping("/mentors/{id}/image")
     public ResponseEntity<ImageDto> getMentorImage(@PathVariable UUID id) {
         ImageDto imageDto = imageService.getMentorImage(id);
         return new ResponseEntity<>(imageDto, HttpStatus.OK);

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/session")
+@RequestMapping("/sessions")
 public class SessionController {
     private final SessionService sessionService;
 
@@ -29,14 +29,14 @@ public class SessionController {
         return new ResponseEntity<>(sessionDto, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/activity")
+    @GetMapping("/{id}/activities")
     public ResponseEntity<List<ActivityDto>> getActivitiesFromSession(@PathVariable(name = "id") UUID sessionId) {
         List<ActivityDto> dtos = sessionService.getActivitiesFromSession(sessionId);
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    @GetMapping("/course/{courseId}")
-    public ResponseEntity<List<SessionDto>> getSessionsByCourseId(@PathVariable UUID courseId) {
+    @GetMapping
+    public ResponseEntity<List<SessionDto>> getSessionsByCourseId(@RequestParam UUID courseId) {
         List<SessionDto> sessionDtos = sessionService.getSessionsByCourseId(courseId);
         return new ResponseEntity<>(sessionDtos, HttpStatus.OK);
     }

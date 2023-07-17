@@ -19,7 +19,7 @@ import javax.validation.Valid;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/activity")
+@RequestMapping("/activities")
 public class ActivityController {
     private final ActivityService activityService;
 

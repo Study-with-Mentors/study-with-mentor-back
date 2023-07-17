@@ -16,7 +16,7 @@ import javax.validation.Valid;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/lesson")
+@RequestMapping("/lessons")
 public class LessonController {
     private final LessonService lessonService;
 

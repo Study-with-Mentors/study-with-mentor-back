@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping
 public class UserController {
     private final UserService userService;
     private final ImageService imageService;
@@ -37,37 +37,37 @@ public class UserController {
         this.notificationSchedulerTest = notificationSchedulerTest;
     }
 
-    @GetMapping("/profile")
+    @GetMapping("/me")
     public ResponseEntity<UserProfileDto> getProfile() {
         UserProfileDto dto = userService.getCurrentUserProfile();
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @GetMapping("/profile/image")
+    @GetMapping("/me/image")
     public ResponseEntity<ImageDto> getProfileImage() {
         ImageDto dto = imageService.getProfileImage();
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @PutMapping("/profile")
+    @PutMapping("/me")
     public ResponseEntity<UserDto> updateProfile(@Valid @RequestBody UserDto dto) {
         UserDto resultDto = userService.updateProfile(dto);
         return new ResponseEntity<>(resultDto, HttpStatus.OK);
     }
 
-    @PutMapping("/profile/image")
+    @PutMapping("/me/image")
     public ResponseEntity<ImageDto> updateProfileImage(@Valid @RequestBody ImageDto imageDto) {
         ImageDto resultDto = imageService.updateProfileImage(imageDto);
         return new ResponseEntity<>(resultDto, HttpStatus.OK);
     }
 
-    @PutMapping("/profile/student")
+    @PutMapping("/me/student")
     public ResponseEntity<StudentDto> updateStudentProfile(@Valid @RequestBody StudentDto studentDto) {
         StudentDto dto = userService.updateStudentProfile(studentDto);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @PutMapping("/profile/mentor")
+    @PutMapping("/me/mentor")
     public ResponseEntity<MentorDto> updateMentorProfile(@Valid @RequestBody MentorDto mentorDto) {
         MentorDto dto = userService.updateMentorProfile(mentorDto);
         return new ResponseEntity<>(dto, HttpStatus.OK);
