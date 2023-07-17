@@ -19,9 +19,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public class UserRepositoryCustomImpl implements UserRepositoryCustom{
+public class UserRepositoryCustomImpl implements UserRepositoryCustom {
     @PersistenceContext
     private EntityManager entityManager;
+
     @Override
     public List<User> findUserEnrollInCourse(UUID courseId) {
         var query = new JPAQuery<User>(entityManager);

@@ -12,6 +12,7 @@ public abstract class BaseSearchDto {
     private Sort.Direction direction = Sort.Direction.ASC;
     private String orderBy;
     private int page;
+    private Integer pageSize;
 
     // alias for `direction` as `dir`
     public void setDir(Sort.Direction dir) {

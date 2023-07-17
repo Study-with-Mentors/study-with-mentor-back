@@ -12,6 +12,7 @@ import java.util.UUID;
 public interface CourseService {
     CourseDto getCourseById(UUID id);
     PageResult<CourseDto> searchCourses(CourseSearchDto courseSearchDto);
+    PageResult<CourseDto> searchCourses(CourseSearchDto courseSearchDto, boolean visibleOnly);
     CourseDto createCourse(CourseCreateDto courseDto);
     CourseDto updateCourse(CourseDto courseDto);
     void deleteCourse(UUID id);

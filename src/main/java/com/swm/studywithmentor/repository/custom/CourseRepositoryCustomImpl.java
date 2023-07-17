@@ -25,10 +25,12 @@ public class CourseRepositoryCustomImpl implements CourseRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public Predicate prepareSearchPredicate(CourseSearchDto courseSearchDto) {
+    public Predicate prepareSearchPredicate(CourseSearchDto courseSearchDto, boolean visibleOnly) {
         QCourse course = QCourse.course;
         BooleanBuilder builder = new BooleanBuilder();
-        builder.and(course.status.notIn(CourseStatus.DRAFTING, CourseStatus.DISABLE));
+        if (visibleOnly) {
+            builder.and(course.status.notIn(CourseStatus.DRAFTING, CourseStatus.DISABLE));
+        }
         if (StringUtils.isNotBlank(courseSearchDto.getName())) {
             String name = courseSearchDto.getName();
             builder.and(course.fullName.contains(name)

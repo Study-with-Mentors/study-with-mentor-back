@@ -11,6 +11,7 @@ import com.swm.studywithmentor.model.dto.MentorDto;
 import com.swm.studywithmentor.model.dto.SessionDto;
 import com.swm.studywithmentor.model.dto.SignupDto;
 import com.swm.studywithmentor.model.dto.StudentDto;
+import com.swm.studywithmentor.model.dto.UserDetailsDto;
 import com.swm.studywithmentor.model.dto.UserDto;
 import com.swm.studywithmentor.model.dto.UserProfileDto;
 import com.swm.studywithmentor.model.dto.create.ActivityCreateDto;
@@ -270,6 +271,10 @@ public class ApplicationMapper {
 
     public UserProfileDto toUserProfileDto(User user) {
         return mapper.map(user, UserProfileDto.class);
+    }
+
+    public UserDetailsDto toUserDetailsDto(User user) {
+        return mapper.map(user, UserDetailsDto.class);
     }
 
     public StudentDto toDto(Student student) {
