@@ -8,6 +8,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CourseRepositoryCustom {
-    Predicate prepareSearchPredicate(CourseSearchDto courseSearchDto);
+    Predicate prepareSearchPredicate(CourseSearchDto courseSearchDto, boolean visibleOnly);
     List<Course> getCourseOfStudent(UUID id);
 }

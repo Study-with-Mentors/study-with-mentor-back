@@ -56,7 +56,12 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<PageResult<CourseDto>> searchCourses(CourseSearchDto courseSearchDto) {
+    public PageResult<CourseDto> searchCourses(CourseSearchDto courseSearchDto) {
+        return courseService.searchCourses(courseSearchDto, false);
+    }
+
+    @GetMapping("/visible")
+    public ResponseEntity<PageResult<CourseDto>> searchVisibleCourses(CourseSearchDto courseSearchDto) {
         return new ResponseEntity<>(courseService.searchCourses(courseSearchDto), HttpStatus.OK);
     }
 

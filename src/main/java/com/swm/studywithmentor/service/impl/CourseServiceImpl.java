@@ -68,15 +68,16 @@ public class CourseServiceImpl extends BaseService implements CourseService {
             User user = userService.getCurrentUser();
             if (!course.getMentor().getId().equals(user.getId())) {
                 log.info("Unauthorized access to course. User ID {}", user.getId());
-                throw new NotFoundException(Course.class,  course.getId());
+                throw new NotFoundException(Course.class, course.getId());
             }
         }
         return mapper.toDto(course);
     }
 
     @Override
-    public PageResult<CourseDto> searchCourses(CourseSearchDto courseSearchDto) {
-        Predicate searchPredicate =  courseRepository.prepareSearchPredicate(courseSearchDto);
+    public PageResult<CourseDto> searchCourses(CourseSearchDto courseSearchDto, boolean visibleOnly) {
+        int pageSize = ObjectUtils.defaultIfNull(courseSearchDto.getPageSize(), super.pageSize);
+        Predicate searchPredicate = courseRepository.prepareSearchPredicate(courseSearchDto, visibleOnly);
         PageRequest pageRequest;
         if (courseSearchDto.getOrderBy() != null) {
             Sort.Direction direction = courseSearchDto.getDirection();
@@ -95,6 +96,11 @@ public class CourseServiceImpl extends BaseService implements CourseService {
         resultPage.setTotalPages(courses.getTotalPages());
         resultPage.setTotalElements(courses.getTotalElements());
         return resultPage;
+    }
+
+    @Override
+    public PageResult<CourseDto> searchCourses(CourseSearchDto courseSearchDto) {
+        return searchCourses(courseSearchDto, true);
     }
 
     @Override
@@ -197,7 +203,7 @@ public class CourseServiceImpl extends BaseService implements CourseService {
             User user = userService.getCurrentUser();
             if (!course.getMentor().getId().equals(user.getId())) {
                 log.info("Unauthorized access to course. User ID {}", user.getId());
-                throw new NotFoundException(Course.class,  course.getId());
+                throw new NotFoundException(Course.class, course.getId());
             }
         }
 
