@@ -4,12 +4,14 @@ import com.querydsl.core.types.Predicate;
 import com.swm.studywithmentor.model.dto.ClazzDto;
 import com.swm.studywithmentor.model.dto.CourseDto;
 import com.swm.studywithmentor.model.dto.PageResult;
+import com.swm.studywithmentor.model.dto.SessionDto;
 import com.swm.studywithmentor.model.dto.create.CourseCreateDto;
 import com.swm.studywithmentor.model.dto.search.CourseSearchDto;
 import com.swm.studywithmentor.model.entity.Field;
 import com.swm.studywithmentor.model.entity.Image;
 import com.swm.studywithmentor.model.entity.course.Course;
 import com.swm.studywithmentor.model.entity.course.CourseStatus;
+import com.swm.studywithmentor.model.entity.session.Session;
 import com.swm.studywithmentor.model.entity.user.User;
 import com.swm.studywithmentor.model.exception.ActionConflict;
 import com.swm.studywithmentor.model.exception.ApplicationException;
@@ -36,6 +38,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -208,6 +211,16 @@ public class CourseServiceImpl extends BaseService implements CourseService {
         }
 
         return course.getClazzes().stream()
+                .map(mapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public List<SessionDto> getSessionsOfCourse(UUID courseId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new NotFoundException(Course.class, courseId));
+        return course.getSessions().stream()
+                .sorted(Comparator.comparing(Session::getSessionNum))
                 .map(mapper::toDto)
                 .toList();
     }

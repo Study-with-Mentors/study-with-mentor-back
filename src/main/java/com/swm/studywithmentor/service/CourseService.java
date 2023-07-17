@@ -3,6 +3,7 @@ package com.swm.studywithmentor.service;
 import com.swm.studywithmentor.model.dto.ClazzDto;
 import com.swm.studywithmentor.model.dto.CourseDto;
 import com.swm.studywithmentor.model.dto.PageResult;
+import com.swm.studywithmentor.model.dto.SessionDto;
 import com.swm.studywithmentor.model.dto.create.CourseCreateDto;
 import com.swm.studywithmentor.model.dto.search.CourseSearchDto;
 
@@ -19,6 +20,7 @@ public interface CourseService {
     CourseDto openCourse(UUID id);
     CourseDto disableCourse(UUID id);
     List<ClazzDto> getClazzesByCourse(UUID id);
+    List<SessionDto> getSessionsOfCourse(UUID courseId);
     List<CourseDto> getCourseOfStudent();
     List<CourseDto> getCourseOfMentor();
 }

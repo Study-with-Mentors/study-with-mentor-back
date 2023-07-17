@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -54,16 +53,6 @@ public class SessionServiceImpl implements SessionService {
         Session session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new NotFoundException(Session.class, sessionId));
         return session.getActivities().stream()
-                .map(mapper::toDto)
-                .toList();
-    }
-
-    @Override
-    public List<SessionDto> getSessionsByCourseId(UUID courseId) {
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new NotFoundException(Course.class, courseId));
-        return course.getSessions().stream()
-                .sorted(Comparator.comparing(Session::getSessionNum))
                 .map(mapper::toDto)
                 .toList();
     }

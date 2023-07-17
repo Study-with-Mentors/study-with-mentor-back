@@ -11,7 +11,6 @@ import java.util.UUID;
 public interface SessionService {
     SessionDto getSession(UUID id);
     List<ActivityDto> getActivitiesFromSession(UUID sessionId);
-    List<SessionDto> getSessionsByCourseId(UUID courseId);
     SessionDto updateSession(SessionUpdateDto sessionDto);
     SessionDto createSession(SessionCreateDto sessionDto);
     void deleteSession(UUID id);

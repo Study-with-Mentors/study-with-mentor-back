@@ -35,12 +35,6 @@ public class SessionController {
         return new ResponseEntity<>(dtos, HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<List<SessionDto>> getSessionsByCourseId(@RequestParam UUID courseId) {
-        List<SessionDto> sessionDtos = sessionService.getSessionsByCourseId(courseId);
-        return new ResponseEntity<>(sessionDtos, HttpStatus.OK);
-    }
-
     @PostMapping
     public ResponseEntity<SessionDto> createSession(@RequestBody SessionCreateDto dto) {
         SessionDto resultDto = sessionService.createSession(dto);
