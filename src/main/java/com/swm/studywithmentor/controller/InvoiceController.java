@@ -19,7 +19,7 @@ import java.net.URISyntaxException;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/invoice")
+@RequestMapping("/invoices")
 @Slf4j
 @RequiredArgsConstructor
 public class InvoiceController {

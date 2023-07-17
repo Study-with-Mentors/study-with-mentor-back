@@ -17,7 +17,7 @@ import java.net.URISyntaxException;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/enrollment")
+@RequestMapping("/enrollments")
 @RequiredArgsConstructor
 @Slf4j
 public class EnrollmentController {

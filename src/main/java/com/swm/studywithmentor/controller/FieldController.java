@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/field")
+@RequestMapping("/fields")
 public class FieldController {
     private final FieldService fieldService;
 

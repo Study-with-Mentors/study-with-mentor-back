@@ -3,6 +3,7 @@ package com.swm.studywithmentor.controller;
 import com.swm.studywithmentor.model.dto.ClazzDto;
 import com.swm.studywithmentor.model.dto.CourseDto;
 import com.swm.studywithmentor.model.dto.PageResult;
+import com.swm.studywithmentor.model.dto.SessionDto;
 import com.swm.studywithmentor.model.dto.create.CourseCreateDto;
 import com.swm.studywithmentor.model.dto.create.ImageDto;
 import com.swm.studywithmentor.model.dto.search.CourseSearchDto;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,7 +28,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/course")
+@RequestMapping("/courses")
 public class CourseController {
     private final CourseService courseService;
     private final ImageService imageService;
@@ -43,7 +45,7 @@ public class CourseController {
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/clazz")
+    @GetMapping("/{id}/classes")
     public ResponseEntity<List<ClazzDto>> getClazzFromCourse(@PathVariable UUID id) {
         List<ClazzDto> dtos = courseService.getClazzesByCourse(id);
         return new ResponseEntity<>(dtos, HttpStatus.OK);
@@ -53,6 +55,11 @@ public class CourseController {
     public ResponseEntity<ImageDto> getImage(@PathVariable UUID id) {
         ImageDto dto = imageService.getCourseImage(id);
         return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/sessions")
+    public List<SessionDto> getSessions(@PathVariable UUID id) {
+        return courseService.getSessionsOfCourse(id);
     }
 
     @GetMapping
