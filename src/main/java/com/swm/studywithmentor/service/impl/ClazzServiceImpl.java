@@ -148,6 +148,7 @@ public class ClazzServiceImpl extends BaseService implements ClazzService {
 
     @Override
     public PageResult<ClazzDto> searchClazzes(ClazzSearchDto dto) {
+        int pageSize = org.apache.commons.lang3.ObjectUtils.defaultIfNull(dto.getPageSize(), super.pageSize);
         PageRequest pageRequest;
         if (dto.getOrderBy() != null) {
             Sort.Direction direction = dto.getDirection();
