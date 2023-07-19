@@ -42,7 +42,7 @@ public class EmailServiceImpl implements EmailService {
 
             MimeMessage mimeMessage = sender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-            helper.setText(EmailTemplate.buildConfirmCodeEmailV2(name, verifyUrl), true);
+            helper.setText(EmailTemplate.buildConfirmCodeEmail(verifyUrl), true);
             helper.setSubject("Confirm your email");
             helper.setTo(email);
             helper.setFrom(from, SENDER_NAME);
