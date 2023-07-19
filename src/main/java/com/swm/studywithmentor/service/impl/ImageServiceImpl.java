@@ -39,16 +39,17 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public ImageDto getImageById(UUID id) {
         var image = imageRepository.findById(id).orElseThrow(() -> new NotFoundException(ImageServiceImpl.class, id));
-        return  mapper.toDto(image);
+        return mapper.toDto(image);
     }
 
     @Override
     public List<ImageDto> createImages(List<ImageDto> images) {
-        if(images == null || images.size() == 0)
+        if (images == null || images.size() == 0) {
             throw new ApplicationException("200", HttpStatus.ACCEPTED, "Request accepted but not do anything");
+        }
         try {
             var imagesToSave = new ArrayList<Image>();
-            for(var image : images) {
+            for (var image : images) {
                 var imageToSave = mapper.toEntity(image);
                 imagesToSave.add(imageToSave);
             }
@@ -69,6 +70,7 @@ public class ImageServiceImpl implements ImageService {
             throw new ApplicationException("500", HttpStatus.INTERNAL_SERVER_ERROR, "Server error");
         }
     }
+
     public ImageDto getCourseImage(UUID courseId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new NotFoundException(Course.class, courseId));
@@ -112,9 +114,14 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public ImageDto updateProfileImage(ImageDto imageDto) {
         User user = userService.getCurrentUser();
+        imageDto.setId(null);
         Image image = user.getProfileImage();
+        if (image == null) {
+            image = new Image();
+            imageDto.setVersion(null);
+            user.setProfileImage(image);
+        }
         mapper.toEntity(imageDto, image);
-        image = imageRepository.save(image);
-        return mapper.toDto(image);
+        return mapper.toDto(userRepository.save(user).getProfileImage());
     }
 }
