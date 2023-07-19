@@ -146,7 +146,8 @@ public class UserServiceImpl extends BaseService implements UserService {
         User user = getCurrentUser();
         Mentor mentor = mentorRepository.findById(user.getId()).orElse(new Mentor());
         // create new mentor because i forgot to create mentor in data.sql
-        if (mentorDto.getField() != null && mentor.getField() != null && !mentor.getField().getId().equals(mentorDto.getField().getId())) {
+        if (mentorDto.getField() != null &&
+                (mentor.getField() == null || !mentor.getField().getId().equals(mentorDto.getField().getId()))) {
             Field field = fieldRepository.findById(mentorDto.getField().getId())
                     .orElseThrow(() -> new NotFoundException(Field.class, mentorDto.getField().getId()));
             mentor.setField(field);
